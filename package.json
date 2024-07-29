@@ -1,11 +1,11 @@
 {
-  "name": "create-pixi-vn",
+  "name": "create-pixivn",
   "version": "0.1.0",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
   "bin": {
-    "create-pixi-vn": "index.js",
+    "create-pixivn": "index.js",
     "cva": "index.js"
   },
   "files": [
@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DRincs-Productions/create-pixi-vn.git"
+    "url": "git+https://github.com/DRincs-Productions/create-pixivn.git"
   },
   "bugs": {
     "url": "https://github.com/DRincs-Productions/pixi-vn/issues"
