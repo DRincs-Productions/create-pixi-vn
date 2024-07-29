@@ -25,7 +25,7 @@ const cwd = process.cwd()
 
 // prettier-ignore
 const helpMessage = `\
-Usage: create-pixivn [OPTION]... [DIRECTORY]
+Usage: create-pixi-vn [OPTION]... [DIRECTORY]
 
 Create a new Pixi'VN project.
 With no arguments, start the CLI in interactive mode.
