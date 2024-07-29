@@ -1,0 +1,43 @@
+{
+  "name": "create-pixi-vn",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "GPL-3.0",
+  "author": "DRincs-Productions",
+  "bin": {
+    "create-pixi-vn": "index.js",
+    "cva": "index.js"
+  },
+  "files": [
+    "index.js",
+    "template-*",
+    "dist"
+  ],
+  "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": "^18.0.0 || >=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DRincs-Productions/create-pixi-vn.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DRincs-Productions/pixi-vn/issues"
+  },
+  "homepage": "https://pixi-vn.web.app/",
+  "funding": "https://github.com/DRincs-Productions/pixi-vn?sponsor=1",
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/prompts": "^2.4.9",
+    "cross-spawn": "^7.0.3",
+    "kolorist": "^1.8.0",
+    "minimist": "^1.2.8",
+    "prompts": "^2.4.2",
+    "unbuild": "^2.0.0"
+  }
+}
