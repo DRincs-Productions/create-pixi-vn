@@ -71,7 +71,6 @@ const TEMPLATES = FRAMEWORKS.map(
 
 const renameFiles: Record<string, string | undefined> = {
     _gitignore: '.gitignore',
-    _vscode: '.vscode',
     _eslintrc: '.eslintrc',
 }
 
