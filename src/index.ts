@@ -1,7 +1,7 @@
 import spawn from 'cross-spawn'
 import {
-    blue,
     cyan,
+    lightRed,
     red,
     reset
 } from 'kolorist'
@@ -53,13 +53,13 @@ type FrameworkVariant = {
 const FRAMEWORKS: Framework[] = [
     {
         name: 'react',
-        display: 'React',
-        color: cyan,
+        display: 'Basic Visual Novel',
+        color: lightRed,
         variants: [
             {
                 name: 'template-react-vite-muijoy',
-                display: 'Basic Visual Novel (React + Vite + MUI joy)',
-                color: blue,
+                display: 'Web page (Vite + React + MUI joy)',
+                color: cyan,
             },
         ],
     }
