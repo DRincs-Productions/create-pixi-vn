@@ -57,7 +57,7 @@ const FRAMEWORKS: Framework[] = [
         color: lightRed,
         variants: [
             {
-                name: 'template-react-vite-muijoy',
+                name: 'react-vite-muijoy',
                 display: 'Web page (Vite + React + MUI joy)',
                 color: cyan,
             },
