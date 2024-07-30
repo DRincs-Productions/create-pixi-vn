@@ -34,7 +34,7 @@ Options:
   -t, --template NAME        use a specific template
 
 Available templates:
-${cyan('react')}`
+${cyan('basic-visual-novel       react')}`
 
 type ColorFunc = (str: string | number) => string
 type Framework = {
