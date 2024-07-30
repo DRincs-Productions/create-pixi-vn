@@ -70,7 +70,9 @@ const TEMPLATES = FRAMEWORKS.map(
 ).reduce((a, b) => a.concat(b), [])
 
 const renameFiles: Record<string, string | undefined> = {
-    // _gitignore: '.gitignore',
+    _gitignore: '.gitignore',
+    _vscode: '.vscode',
+    _eslintrc: '.eslintrc',
 }
 
 const defaultTargetDir = 'pixi-vn-project'
