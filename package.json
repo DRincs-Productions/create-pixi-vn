@@ -1,6 +1,6 @@
 {
   "name": "create-pixi-vn",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -10,7 +10,7 @@
   },
   "files": [
     "index.js",
-    "template-*",
+    "template-react-vite-muijoy",
     "dist"
   ],
   "scripts": {
