@@ -52,7 +52,7 @@ type FrameworkVariant = {
 
 const GAME_TYPES: GameTypes[] = [
     {
-        name: 'react',
+        name: 'visual-novel',
         display: 'Basic Visual Novel',
         color: magenta,
         variants: [
