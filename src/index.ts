@@ -1,7 +1,7 @@
 import spawn from 'cross-spawn'
 import {
     cyan,
-    lightRed,
+    magenta,
     red,
     reset
 } from 'kolorist'
@@ -54,7 +54,7 @@ const GAME_TYPES: GameTypes[] = [
     {
         name: 'react',
         display: 'Basic Visual Novel',
-        color: lightRed,
+        color: magenta,
         variants: [
             {
                 name: 'react-vite-muijoy',
