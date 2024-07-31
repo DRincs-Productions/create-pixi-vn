@@ -37,7 +37,7 @@ Available templates:
 ${cyan('basic-visual-novel       react')}`
 
 type ColorFunc = (str: string | number) => string
-type Framework = {
+type GameTypes = {
     name: string
     display: string
     color: ColorFunc
@@ -50,7 +50,7 @@ type FrameworkVariant = {
     customCommand?: string
 }
 
-const FRAMEWORKS: Framework[] = [
+const GAME_TYPES: GameTypes[] = [
     {
         name: 'react',
         display: 'Basic Visual Novel',
@@ -65,13 +65,12 @@ const FRAMEWORKS: Framework[] = [
     }
 ]
 
-const TEMPLATES = FRAMEWORKS.map(
+const TEMPLATES = GAME_TYPES.map(
     (f) => (f.variants && f.variants.map((v) => v.name)) || [f.name],
 ).reduce((a, b) => a.concat(b), [])
 
 const renameFiles: Record<string, string | undefined> = {
     _gitignore: '.gitignore',
-    _eslintrc: '.eslintrc',
 }
 
 const defaultTargetDir = 'pixi-vn-project'
@@ -161,23 +160,23 @@ async function init() {
                             ? reset(
                                 `"${argTemplate}" isn't a valid template. Please choose from below: `,
                             )
-                            : reset('Select a framework:'),
+                            : reset('Select the type of game you want to create'),
                     initial: 0,
-                    choices: FRAMEWORKS.map((framework) => {
-                        const frameworkColor = framework.color
+                    choices: GAME_TYPES.map((gameTypes) => {
+                        const frameworkColor = gameTypes.color
                         return {
-                            title: frameworkColor(framework.display || framework.name),
-                            value: framework,
+                            title: frameworkColor(gameTypes.display || gameTypes.name),
+                            value: gameTypes,
                         }
                     }),
                 },
                 {
-                    type: (framework: Framework) =>
-                        framework && framework.variants ? 'select' : null,
+                    type: (gameType: GameTypes) =>
+                        gameType && gameType.variants ? 'select' : null,
                     name: 'variant',
-                    message: reset('Select a variant:'),
-                    choices: (framework: Framework) =>
-                        framework.variants.map((variant) => {
+                    message: reset('Select the frameworks to use:'),
+                    choices: (gameType: GameTypes) =>
+                        gameType.variants.map((variant) => {
                             const variantColor = variant.color
                             return {
                                 title: variantColor(variant.display || variant.name),
@@ -216,7 +215,7 @@ async function init() {
     const isYarn1 = pkgManager === 'yarn' && pkgInfo?.version.startsWith('1.')
 
     const { customCommand } =
-        FRAMEWORKS.flatMap((f) => f.variants).find((v) => v.name === template) ?? {}
+        GAME_TYPES.flatMap((f) => f.variants).find((v) => v.name === template) ?? {}
 
     if (customCommand) {
         const fullCustomCommand = customCommand

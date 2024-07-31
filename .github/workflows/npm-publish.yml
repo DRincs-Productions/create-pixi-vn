@@ -35,7 +35,7 @@ jobs:
           git submodule update --init --recursive
           sudo apt install rename
           rm .gitmodules
-          for dir in */; do [[ $dir = template-* ]] && cd $dir && rm .git && mv .vscode vscode && rename 's/^\.(.*)/_$1/' .* && ls && cd ..; done
+          for dir in */; do [[ $dir = template-* ]] && cd $dir && rm .git && rename 's/^\.git(.*)/_$1/' .git* && ls && cd ..; done
           npm ci
           npm run build
       - run: npm publish -f
