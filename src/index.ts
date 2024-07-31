@@ -301,7 +301,7 @@ async function init() {
             break
         default:
             console.log(`  ${pkgManager} install`)
-            console.log(`  ${pkgManager} run dev`)
+            console.log(`  ${pkgManager} run start`)
             break
     }
     console.log()
