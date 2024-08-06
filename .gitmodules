@@ -1,3 +1,8 @@
 [submodule "template-react-vite-muijoy"]
 	path = template-react-vite-muijoy
 	url = https://github.com/DRincs-Productions/pixi-vn-react-template
+	branch = main
+[submodule "template-react-vite-muijoy-multidevice"]
+	path = template-react-vite-muijoy-multidevice
+	url = https://github.com/DRincs-Productions/pixi-vn-react-template
+	branch = electron
