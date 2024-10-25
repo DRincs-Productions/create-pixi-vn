@@ -322,14 +322,12 @@ async function init() {
             break
     }
 
-    let projectPath = path.resolve(root)
-
     if (ide === undefined) {
         return
     }
     try {
         const resolved = await which(ide)
-        spawn(resolved, [projectPath], { detached: true })
+        spawn(resolved, [root], { detached: true })
     } catch (error) {
         console.error(
             `Could not open project using ${ide}, since ${ide} was not in your PATH`,
