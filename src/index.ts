@@ -327,7 +327,6 @@ async function init() {
     }
     try {
         const resolved = await which(ide)
-        console.log(`\nOpening in ${ide}... Folter: ${root}`)
         spawn(resolved, [root], { detached: true })
     } catch (error) {
         console.error(
