@@ -95,7 +95,7 @@ async function init() {
         targetDir === '.' ? path.basename(path.resolve()) : targetDir
 
     let result: prompts.Answers<
-        'projectName' | 'overwrite' | 'packageName' | 'framework' | 'variant'
+        'projectName' | 'overwrite' | 'packageName' | 'framework' | 'variant' | 'ide'
     >
 
     prompts.override({
@@ -189,6 +189,18 @@ async function init() {
                             }
                         }),
                 },
+                // which IDE do you want to use?
+                {
+                    type: 'select',
+                    name: 'ide',
+                    message: 'Which IDE do you want to use?',
+                    choices: [
+                        { title: 'Visual Studio Code', value: 'vscode' },
+                        { title: 'Cursor', value: 'cursor' },
+                        { title: 'Other', value: 'other' },
+                    ],
+                    initial: 0,
+                }
             ],
             {
                 onCancel: () => {
@@ -202,7 +214,7 @@ async function init() {
     }
 
     // user choice associated with prompts
-    const { framework, overwrite, packageName, variant } = result
+    const { framework, overwrite, packageName, variant, ide } = result
 
     const root = path.join(cwd, targetDir)
 
@@ -308,6 +320,20 @@ async function init() {
             console.log(`  ${pkgManager} install`)
             console.log(`  ${pkgManager} run start`)
             break
+    }
+
+    let projectPath = path.resolve(root)
+
+    if (ide === undefined) {
+        return
+    }
+    try {
+        const resolved = await which(ide)
+        spawn(resolved, [projectPath], { detached: true })
+    } catch (error) {
+        console.error(
+            `Could not open project using ${ide}, since ${ide} was not in your PATH`,
+        )
     }
     console.log()
 }
