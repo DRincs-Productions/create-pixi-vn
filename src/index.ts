@@ -327,8 +327,11 @@ async function init() {
         return
     }
     try {
-        const resolved = await which(ide)
-        spawn(resolved, [root], { detached: true })
+        // const resolved = await which(ide)
+        // spawn(resolved, [root], { detached: true })
+        await which(ide)
+        console.log(`\nOpening in ${ide}...`)
+        spawn.sync(ide, [root], { stdio: 'inherit' })
     } catch (error) {
         console.error(
             `Could not open project using ${ide}, since ${ide} was not in your PATH`,
