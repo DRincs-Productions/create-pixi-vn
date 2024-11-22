@@ -59,12 +59,12 @@ const GAME_TYPES: GameTypes[] = [
         variants: [
             {
                 name: 'react-vite-muijoy',
-                display: 'Web page (Vite + React + MUI joy)',
+                display: 'Web page (Vite + React + MUI-joy)',
                 color: cyan,
             },
             {
-                name: 'react-vite-muijoy-multidevice',
-                display: 'Multi Device (Vite + React + MUI joy + Electron Forge)',
+                name: 'react-vite-muijoy-electron',
+                display: 'Multi Device (Vite + React + MUI-joy + Electron Forge)',
                 color: cyan,
             },
         ],
