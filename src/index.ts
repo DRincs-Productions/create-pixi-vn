@@ -305,7 +305,9 @@ async function init() {
     write('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
     const cdProjectName = path.relative(cwd, root)
-    console.log(`\nDone. Now run:\n`)
+    console.log(`\nDone.\n`)
+    console.log(`\nNow README.md for more information about the project.\n`)
+    console.log(`\nTo run the game:\n`)
     if (root !== cwd) {
         console.log(
             `  cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName
