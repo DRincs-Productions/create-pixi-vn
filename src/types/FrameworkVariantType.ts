@@ -5,5 +5,6 @@ type FrameworkVariantType = {
     display: string
     color: ColorFuncType
     customCommand?: string
+    multiDevice?: boolean
 }
 export default FrameworkVariantType

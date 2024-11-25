@@ -1,15 +1,14 @@
 import spawn from 'cross-spawn'
+import inquirer from 'inquirer'
 import {
     cyan,
     magenta,
-    red,
-    reset
+    red
 } from 'kolorist'
 import minimist from 'minimist'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import prompts from 'prompts'
 import which from 'which'
 import GameTypes from './types/GameTypes'
 
@@ -54,6 +53,7 @@ const GAME_TYPES: GameTypes[] = [
                 name: 'react-vite-muijoy-electron',
                 display: 'Multi Device (Vite + React + MUI-joy + Electron Forge)',
                 color: cyan,
+                multiDevice: true,
             },
         ],
     }
@@ -82,80 +82,65 @@ async function init() {
     let targetDir = argTargetDir || defaultTargetDir
     const getProjectName = () =>
         targetDir === '.' ? path.basename(path.resolve()) : targetDir
-
-    let result: prompts.Answers<
-        'projectName' | 'overwrite' | 'packageName' | 'framework' | 'variant' | 'ide'
-    >
-
-    prompts.override({
-        overwrite: argv.overwrite,
-    })
+    let result: any
 
     try {
-        result = await prompts(
+        result = await inquirer.prompt(
             [
                 {
-                    type: argTargetDir ? null : 'text',
-                    name: 'projectName',
-                    message: reset('Project name:'),
-                    initial: defaultTargetDir,
-                    onState: (state) => {
-                        targetDir = formatTargetDir(state.value) || defaultTargetDir
-                    },
+                    type: "input",
+                    name: "projectName",
+                    message: "Project name:",
+                    default: defaultTargetDir,
+                    transformer: (value) => formatTargetDir(value) || defaultTargetDir,
+                    when: () => !argTargetDir,
                 },
                 {
-                    type: () =>
-                        !fs.existsSync(targetDir) || isEmpty(targetDir) ? null : 'select',
-                    name: 'overwrite',
-                    message: () =>
-                        (targetDir === '.'
-                            ? 'Current directory'
-                            : `Target directory "${targetDir}"`) +
-                        ` is not empty. Please choose how to proceed:`,
-                    initial: 0,
+                    type: "list",
+                    name: "overwrite",
+                    message: "Overwrite existing files?",
+                    default: "yes",
                     choices: [
                         {
-                            title: 'Remove existing files and continue',
-                            value: 'yes',
+                            description: "Remove existing files and continue",
+                            name: "Yes",
+                            value: "yes",
                         },
                         {
-                            title: 'Cancel operation',
-                            value: 'no',
+                            description: "Cancel operation",
+                            name: "No",
+                            value: "no",
                         },
                         {
-                            title: 'Ignore files and continue',
-                            value: 'ignore',
+                            description: "Ignore files and continue",
+                            name: "Ignore",
+                            value: "ignore",
                         },
                     ],
+                    when: ({ projectName }) => fs.existsSync(projectName) && !isEmpty(projectName),
                 },
                 {
-                    type: (_, { overwrite }: { overwrite?: string }) => {
-                        if (overwrite === 'no') {
-                            throw new Error(red('✖') + ' Operation cancelled')
+                    type: "input",
+                    name: "overwriteChecker",
+                    message: "Type \"yes\" to continue:",
+                    when: ({ overwrite }) => {
+                        if (overwrite === 1) {
+                            throw new Error(red("✖") + " Operation cancelled")
                         }
-                        return null
-                    },
-                    name: 'overwriteChecker',
+                        return false
+                    }
                 },
                 {
-                    type: () => (isValidPackageName(getProjectName()) ? null : 'text'),
-                    name: 'packageName',
-                    message: reset('Package name:'),
-                    initial: () => toValidPackageName(getProjectName()),
-                    validate: (dir) =>
-                        isValidPackageName(dir) || 'Invalid package.json name',
+                    type: "input",
+                    name: "packageName",
+                    message: "Package name:",
+                    default: () => toValidPackageName(getProjectName()),
+                    validate: (dir) => isValidPackageName(dir) || "Invalid package name. The name can only include URL-friendly characters.",
                 },
                 {
-                    type:
-                        argTemplate && TEMPLATES.includes(argTemplate) ? null : 'select',
-                    name: 'framework',
-                    message:
-                        typeof argTemplate === 'string' && !TEMPLATES.includes(argTemplate)
-                            ? reset(
-                                `"${argTemplate}" isn't a valid template. Please choose from below: `,
-                            )
-                            : reset('Select the type of game you want to create'),
-                    initial: 0,
+                    type: "list",
+                    name: "framework",
+                    message: "Select the type of game you want to create",
                     choices: GAME_TYPES.map((gameTypes) => {
                         const frameworkColor = gameTypes.color
                         return {
@@ -165,42 +150,47 @@ async function init() {
                     }),
                 },
                 {
-                    type: (gameType: GameTypes) =>
-                        gameType && gameType.variants ? 'select' : null,
-                    name: 'variant',
-                    message: reset('Select the frameworks to use:'),
-                    choices: (gameType: GameTypes) =>
-                        gameType.variants.map((variant) => {
+                    type: "list",
+                    name: "variant",
+                    message: "Select the frameworks to use:",
+                    choices: ({ framework }) => {
+                        return framework.variants.map((variant) => {
                             const variantColor = variant.color
                             return {
                                 title: variantColor(variant.display || variant.name),
                                 value: variant.name,
+                                name: variant.display,
                             }
-                        }),
+                        })
+                    },
                 },
-                // which IDE do you want to use?
                 {
-                    type: 'select',
-                    name: 'ide',
-                    message: 'Which IDE do you want to use?',
+                    type: "list",
+                    name: "ide",
+                    message: "Which IDE do you want to use?",
                     choices: [
-                        { title: 'Visual Studio Code', value: 'vscode' },
-                        { title: 'Cursor', value: 'cursor' },
-                        { title: 'Other', value: 'other' },
+                        { name: "Visual Studio Code", value: "vscode" },
+                        { name: "Cursor", value: "cursor" },
+                        { name: "Other", value: "other" },
                     ],
-                    initial: 0,
-                }
-            ],
-            {
-                onCancel: () => {
-                    throw new Error(red('✖') + ' Operation cancelled')
+                    default: "vscode",
                 },
-            },
+            ]
         )
-    } catch (cancelled: any) {
-        console.log(cancelled.message)
-        return
     }
+    catch (cancelled) {
+        console.log(cancelled)
+    }
+    //         {
+    //             onCancel: () => {
+    //                 throw new Error(red('✖') + ' Operation cancelled')
+    //             },
+    //         },
+    //     )
+    // } catch (cancelled: any) {
+    //     console.log(cancelled.message)
+    //     return
+    // }
 
     // user choice associated with prompts
     const { framework, overwrite, packageName, variant, ide } = result
@@ -294,7 +284,7 @@ async function init() {
 
     const cdProjectName = path.relative(cwd, root)
     console.log(`\nDone.\n`)
-    console.log(`\nNow README.md for more information about the project.\n`)
+    console.log(`\nNow README.md for more information about the project.`)
     console.log(`\nTo run the game:\n`)
     if (root !== cwd) {
         console.log(
