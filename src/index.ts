@@ -11,6 +11,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import prompts from 'prompts'
 import which from 'which'
+import GameTypes from './types/GameTypes'
 
 // Avoids autoconversion to number of the project name by defining that the args
 // non associated with an option ( _ ) needs to be parsed as a string. See #4606
@@ -37,19 +38,6 @@ Options:
 Available templates:
 ${cyan('basic-visual-novel       react')}`
 
-type ColorFunc = (str: string | number) => string
-type GameTypes = {
-    name: string
-    display: string
-    color: ColorFunc
-    variants: FrameworkVariant[]
-}
-type FrameworkVariant = {
-    name: string
-    display: string
-    color: ColorFunc
-    customCommand?: string
-}
 
 const GAME_TYPES: GameTypes[] = [
     {
