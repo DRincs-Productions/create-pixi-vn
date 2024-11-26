@@ -96,6 +96,29 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
         }
     }
 
+    // if exist root/src-tauri folder, copy it to root folder
+    const srcTauriDir = path.join(root, 'src-tauri')
+    if (fs.existsSync(srcTauriDir)) {
+        const filesNames = fs.readdirSync(srcTauriDir)
+        for (const fileName of filesNames) {
+            switch (fileName) {
+                case 'Cargo.lock':
+                case 'Cargo.toml':
+                case 'tauri.conf.json':
+                    console.log(path.join(srcTauriDir, fileName))
+                    let file = fs.readFileSync(path.join(srcTauriDir, fileName), 'utf-8')
+                    file = file.replace(/0package-name0/g, packageName)
+                    file = file.replace(/0description0/g, description)
+                    file = file.replace(/0project-name0/g, projectName)
+                    file = file.replace(/0identifier0/g, identifier)
+                    write(path.join('src-tauri', fileName), file)
+                    break
+                default:
+                    write(path.join('src-tauri', fileName))
+            }
+        }
+    }
+
     return { rootFolder: root }
 }
 
