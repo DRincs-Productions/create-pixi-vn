@@ -86,9 +86,9 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             case 'vite.config.ts':
             case 'index.html':
                 let file = fs.readFileSync(path.join(templateDir, fileName), 'utf-8')
-                file = file.replace(/\|package-name\|/g, packageName)
-                file = file.replace(/\|description\|/g, description)
-                file = file.replace(/\|project-name\|/g, projectName)
+                file = file.replace(/0package-name0/g, packageName)
+                file = file.replace(/0description0/g, description)
+                file = file.replace(/0project-name0/g, projectName)
                 write(fileName, file)
                 break
             default:
