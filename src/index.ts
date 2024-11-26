@@ -2,15 +2,18 @@ import spawn from 'cross-spawn'
 import inquirer from 'inquirer'
 import {
     cyan,
-    magenta,
-    red
+    magenta
 } from 'kolorist'
 import minimist from 'minimist'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import which from 'which'
+import { DEFAULT_TARGET_DIR } from './constats'
+import YesNoCancelEnum from './enum/YesNoCancelEnum'
+import projectInfoQuestions from './questions/projectInfoQuestion'
 import GameTypes from './types/GameTypes'
+import { formatTargetDir } from './utilities/dir-utility'
 
 // Avoids autoconversion to number of the project name by defining that the args
 // non associated with an option ( _ ) needs to be parsed as a string. See #4606
@@ -67,76 +70,23 @@ const renameFiles: Record<string, string | undefined> = {
     _gitignore: '.gitignore',
 }
 
-const defaultTargetDir = 'pixi-vn-project'
-
 async function init() {
-    const argTargetDir = formatTargetDir(argv._[0])
-    const argTemplate = argv.template || argv.t
-
-    const help = argv.help
-    if (help) {
-        console.log(helpMessage)
-        return
-    }
-
-    let targetDir = argTargetDir || defaultTargetDir
-    const getProjectName = () =>
-        targetDir === '.' ? path.basename(path.resolve()) : targetDir
-    let result: any
-
     try {
-        result = await inquirer.prompt(
+        const argTargetDir = formatTargetDir(argv._[0])
+        const argTemplate = argv.template || argv.t
+
+        const help = argv.help
+        if (help) {
+            console.log(helpMessage)
+            return
+        }
+
+        let targetDir = argTargetDir || DEFAULT_TARGET_DIR
+
+        let { description, overwrite, overwriteChecker, packageName, projectName } = await projectInfoQuestions({ argTargetDir, targetDir })
+
+        let result = await inquirer.prompt(
             [
-                {
-                    type: "input",
-                    name: "projectName",
-                    message: "Project name:",
-                    default: defaultTargetDir,
-                    transformer: (value) => formatTargetDir(value) || defaultTargetDir,
-                    when: () => !argTargetDir,
-                },
-                {
-                    type: "list",
-                    name: "overwrite",
-                    message: "Overwrite existing files?",
-                    default: "yes",
-                    choices: [
-                        {
-                            description: "Remove existing files and continue",
-                            name: "Yes",
-                            value: "yes",
-                        },
-                        {
-                            description: "Cancel operation",
-                            name: "No",
-                            value: "no",
-                        },
-                        {
-                            description: "Ignore files and continue",
-                            name: "Ignore",
-                            value: "ignore",
-                        },
-                    ],
-                    when: ({ projectName }) => fs.existsSync(projectName) && !isEmpty(projectName),
-                },
-                {
-                    type: "input",
-                    name: "overwriteChecker",
-                    message: "Type \"yes\" to continue:",
-                    when: ({ overwrite }) => {
-                        if (overwrite === 1) {
-                            throw new Error(red("✖") + " Operation cancelled")
-                        }
-                        return false
-                    }
-                },
-                {
-                    type: "input",
-                    name: "packageName",
-                    message: "Package name:",
-                    default: () => toValidPackageName(getProjectName()),
-                    validate: (dir) => isValidPackageName(dir) || "Invalid package name. The name can only include URL-friendly characters.",
-                },
                 {
                     type: "list",
                     name: "framework",
@@ -177,151 +127,146 @@ async function init() {
                 },
             ]
         )
-    }
-    catch (cancelled) {
-        console.log(cancelled)
-    }
-    //         {
-    //             onCancel: () => {
-    //                 throw new Error(red('✖') + ' Operation cancelled')
-    //             },
-    //         },
-    //     )
-    // } catch (cancelled: any) {
-    //     console.log(cancelled.message)
-    //     return
-    // }
+        //         {
+        //             onCancel: () => {
+        //                 throw new Error(red('✖') + ' Operation cancelled')
+        //             },
+        //         },
+        //     )
+        // } catch (cancelled: any) {
+        //     console.log(cancelled.message)
+        //     return
+        // }
 
-    // user choice associated with prompts
-    const { framework, overwrite, packageName, variant, ide } = result
+        // user choice associated with prompts
+        const { framework, variant, ide } = result
 
-    const root = path.join(cwd, targetDir)
+        const root = path.join(cwd, targetDir)
 
-    if (overwrite === 'yes') {
-        emptyDir(root)
-    } else if (!fs.existsSync(root)) {
-        fs.mkdirSync(root, { recursive: true })
-    }
-
-    // determine template
-    let template: string = variant || framework?.name || argTemplate
-
-    const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
-    const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
-    const isYarn1 = pkgManager === 'yarn' && pkgInfo?.version.startsWith('1.')
-
-    const { customCommand } =
-        GAME_TYPES.flatMap((f) => f.variants).find((v) => v.name === template) ?? {}
-
-    if (customCommand) {
-        const fullCustomCommand = customCommand
-            .replace(/^npm create /, () => {
-                // `bun create` uses it's own set of templates,
-                // the closest alternative is using `bun x` directly on the package
-                if (pkgManager === 'bun') {
-                    return 'bun x create-'
-                }
-                return `${pkgManager} create `
-            })
-            // Only Yarn 1.x doesn't support `@version` in the `create` command
-            .replace('@latest', () => (isYarn1 ? '' : '@latest'))
-            .replace(/^npm exec/, () => {
-                // Prefer `pnpm dlx`, `yarn dlx`, or `bun x`
-                if (pkgManager === 'pnpm') {
-                    return 'pnpm dlx'
-                }
-                if (pkgManager === 'yarn' && !isYarn1) {
-                    return 'yarn dlx'
-                }
-                if (pkgManager === 'bun') {
-                    return 'bun x'
-                }
-                // Use `npm exec` in all other cases,
-                // including Yarn 1.x and other custom npm clients.
-                return 'npm exec'
-            })
-
-        const [command, ...args] = fullCustomCommand.split(' ')
-        // we replace TARGET_DIR here because targetDir may include a space
-        const replacedArgs = args.map((arg) =>
-            arg.replace('TARGET_DIR', () => targetDir),
-        )
-        const { status } = spawn.sync(command, replacedArgs, {
-            stdio: 'inherit',
-        })
-        process.exit(status ?? 0)
-    }
-
-    console.log(`\nScaffolding project in ${root}...`)
-
-    const templateDir = path.resolve(
-        fileURLToPath(import.meta.url),
-        '../..',
-        `template-${template}`,
-    )
-
-    const write = (file: string, content?: string) => {
-        const targetPath = path.join(root, renameFiles[file] ?? file)
-        if (content) {
-            fs.writeFileSync(targetPath, content)
-        } else {
-            copy(path.join(templateDir, file), targetPath)
+        if (overwrite === YesNoCancelEnum.Yes) {
+            emptyDir(root)
+        } else if (!fs.existsSync(root)) {
+            fs.mkdirSync(root, { recursive: true })
         }
-    }
 
-    const files = fs.readdirSync(templateDir)
-    for (const file of files.filter((f) => f !== 'package.json')) {
-        write(file)
-    }
+        // determine template
+        let template: string = variant || framework?.name || argTemplate
 
-    const pkg = JSON.parse(
-        fs.readFileSync(path.join(templateDir, `package.json`), 'utf-8'),
-    )
+        const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
+        const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
+        const isYarn1 = pkgManager === 'yarn' && pkgInfo?.version.startsWith('1.')
 
-    pkg.name = packageName || getProjectName()
+        const { customCommand } =
+            GAME_TYPES.flatMap((f) => f.variants).find((v) => v.name === template) ?? {}
 
-    write('package.json', JSON.stringify(pkg, null, 2) + '\n')
+        if (customCommand) {
+            const fullCustomCommand = customCommand
+                .replace(/^npm create /, () => {
+                    // `bun create` uses it's own set of templates,
+                    // the closest alternative is using `bun x` directly on the package
+                    if (pkgManager === 'bun') {
+                        return 'bun x create-'
+                    }
+                    return `${pkgManager} create `
+                })
+                // Only Yarn 1.x doesn't support `@version` in the `create` command
+                .replace('@latest', () => (isYarn1 ? '' : '@latest'))
+                .replace(/^npm exec/, () => {
+                    // Prefer `pnpm dlx`, `yarn dlx`, or `bun x`
+                    if (pkgManager === 'pnpm') {
+                        return 'pnpm dlx'
+                    }
+                    if (pkgManager === 'yarn' && !isYarn1) {
+                        return 'yarn dlx'
+                    }
+                    if (pkgManager === 'bun') {
+                        return 'bun x'
+                    }
+                    // Use `npm exec` in all other cases,
+                    // including Yarn 1.x and other custom npm clients.
+                    return 'npm exec'
+                })
 
-    const cdProjectName = path.relative(cwd, root)
-    console.log(`\nDone.\n`)
-    console.log(`\nNow README.md for more information about the project.`)
-    console.log(`\nTo run the game:\n`)
-    if (root !== cwd) {
-        console.log(
-            `  cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName
-            }`,
+            const [command, ...args] = fullCustomCommand.split(' ')
+            // we replace TARGET_DIR here because targetDir may include a space
+            const replacedArgs = args.map((arg) =>
+                arg.replace('TARGET_DIR', () => targetDir),
+            )
+            const { status } = spawn.sync(command, replacedArgs, {
+                stdio: 'inherit',
+            })
+            process.exit(status ?? 0)
+        }
+
+        console.log(`\nScaffolding project in ${root}...`)
+
+        const templateDir = path.resolve(
+            fileURLToPath(import.meta.url),
+            '../..',
+            `template-${template}`,
         )
-    }
-    switch (pkgManager) {
-        case 'yarn':
-            console.log('  yarn')
-            console.log('  yarn dev')
-            break
-        default:
-            console.log(`  ${pkgManager} install`)
-            console.log(`  ${pkgManager} run start`)
-            break
-    }
 
-    if (ide === undefined) {
-        return
-    }
-    try {
-        // const resolved = await which(ide)
-        // spawn(resolved, [root], { detached: true })
-        await which(ide)
-        console.log(`\nOpening in ${ide}...`)
-        spawn.sync(ide, [root], { stdio: 'inherit' })
+        const write = (file: string, content?: string) => {
+            const targetPath = path.join(root, renameFiles[file] ?? file)
+            if (content) {
+                fs.writeFileSync(targetPath, content)
+            } else {
+                copy(path.join(templateDir, file), targetPath)
+            }
+        }
+
+        const files = fs.readdirSync(templateDir)
+        for (const file of files.filter((f) => f !== 'package.json')) {
+            write(file)
+        }
+
+        const pkg = JSON.parse(
+            fs.readFileSync(path.join(templateDir, `package.json`), 'utf-8'),
+        )
+
+        pkg.name = packageName
+
+        write('package.json', JSON.stringify(pkg, null, 2) + '\n')
+
+        const cdProjectName = path.relative(cwd, root)
+        console.log(`\nDone.\n`)
+        console.log(`\nNow README.md for more information about the project.`)
+        console.log(`\nTo run the game:\n`)
+        if (root !== cwd) {
+            console.log(
+                `  cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName
+                }`,
+            )
+        }
+        switch (pkgManager) {
+            case 'yarn':
+                console.log('  yarn')
+                console.log('  yarn dev')
+                break
+            default:
+                console.log(`  ${pkgManager} install`)
+                console.log(`  ${pkgManager} run start`)
+                break
+        }
+
+        if (ide === undefined) {
+            return
+        }
+        try {
+            // const resolved = await which(ide)
+            // spawn(resolved, [root], { detached: true })
+            await which(ide)
+            console.log(`\nOpening in ${ide}...`)
+            spawn.sync(ide, [root], { stdio: 'inherit' })
+        } catch (error) {
+            console.error(
+                `Could not open project using ${ide}, since ${ide} was not in your PATH`,
+            )
+        }
+        console.log()
     } catch (error) {
-        console.error(
-            `Could not open project using ${ide}, since ${ide} was not in your PATH`,
-        )
+        console.error(error)
     }
-    console.log()
-}
-
-function formatTargetDir(targetDir: string | undefined) {
-    return targetDir?.trim().replace(/\/+$/g, '')
 }
 
 function copy(src: string, dest: string) {
@@ -333,21 +278,6 @@ function copy(src: string, dest: string) {
     }
 }
 
-function isValidPackageName(projectName: string) {
-    return /^(?:@[a-z\d\-*~][a-z\d\-*._~]*\/)?[a-z\d\-~][a-z\d\-._~]*$/.test(
-        projectName,
-    )
-}
-
-function toValidPackageName(projectName: string) {
-    return projectName
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/^[._]/, '')
-        .replace(/[^a-z\d\-~]+/g, '-')
-}
-
 function copyDir(srcDir: string, destDir: string) {
     fs.mkdirSync(destDir, { recursive: true })
     for (const file of fs.readdirSync(srcDir)) {
@@ -357,10 +287,6 @@ function copyDir(srcDir: string, destDir: string) {
     }
 }
 
-function isEmpty(path: string) {
-    const files = fs.readdirSync(path)
-    return files.length === 0 || (files.length === 1 && files[0] === '.git')
-}
 
 function emptyDir(dir: string) {
     if (!fs.existsSync(dir)) {
