@@ -11,13 +11,14 @@ export default async function selectIDE({ rootFolder }: {
         return
     }
     try {
-        console.log(`\nOpening in ${ide}...`)
         let command = ""
         switch (ide) {
             case "vscode":
+                console.log(`\nOpening in Visual Studio Code...`)
                 command = 'code'
                 break
             case "cursor":
+                console.log(`\nOpening in Cursor...`)
                 command = 'cursor'
                 break
         }

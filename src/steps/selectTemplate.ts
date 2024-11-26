@@ -118,6 +118,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             }
         }
     }
+    console.log(`Done.`)
 
     return { rootFolder: root }
 }

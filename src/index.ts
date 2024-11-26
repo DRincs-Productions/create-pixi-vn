@@ -3,6 +3,7 @@ import {
 } from 'kolorist'
 import minimist from 'minimist'
 import path from 'node:path'
+import gitInit from './steps/gitInit'
 import selectIDE from './steps/selectIDE'
 import selectTemplate from './steps/selectTemplate'
 import { formatTargetDir } from './utilities/dir-utility'
@@ -45,11 +46,13 @@ async function init() {
 
         const { rootFolder } = await selectTemplate(argTargetDir)
 
+        await gitInit({ rootFolder })
+
         const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
         const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
 
         const cdProjectName = path.relative(cwd, rootFolder)
-        console.log(`Done.`)
+
         console.log(`\nNow README.md for more information about the project.`)
         console.log(`\nTo run the game:`)
         if (rootFolder !== cwd) {
