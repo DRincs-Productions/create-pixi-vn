@@ -1,4 +1,6 @@
 enum UIFrameworkEnum {
-    React
+    React,
+    Vue,
+    Angular,
 }
 export default UIFrameworkEnum
