@@ -12,7 +12,7 @@ export default async function gitInit({ rootFolder }: {
 
             console.log(`Done.`)
             console.log(`\nNow, you can use GitHub Desktop upload your project to GitHub.`)
-            console.log(`\nGitHub Desktop: https://github.com/apps/desktop`)
+            console.log(`GitHub Desktop: https://github.com/apps/desktop`)
         }
     } catch (error) {
     }
