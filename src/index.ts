@@ -8,7 +8,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import which from 'which'
-import { DEFAULT_TARGET_DIR } from './constats'
+import { DEFAULT_PACKAGE_NAME } from './constats'
 import GameTypesEnum from './enum/GameTypesEnum'
 import NarrativeLanguagesEnum from './enum/NarrativeLanguagesEnum'
 import UIFrameworkEnum from './enum/UIFrameworkEnum'
@@ -58,9 +58,9 @@ async function init() {
             return
         }
 
-        let targetDir = argTargetDir || DEFAULT_TARGET_DIR
+        let targetDir = argTargetDir || DEFAULT_PACKAGE_NAME
 
-        let { description, overwrite, overwriteChecker, packageName, projectName } = await projectInfoQuestions({ argTargetDir, targetDir })
+        let { description, overwrite, packageName, projectName } = await projectInfoQuestions({ argTargetDir, targetDir })
         let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } = await gameTypeQuestions({ packageName })
         let template: string
         switch (gameType) {
@@ -141,18 +141,22 @@ async function init() {
             }
         }
 
-        const files = fs.readdirSync(templateDir)
-        for (const file of files.filter((f) => f !== 'package.json')) {
-            write(file)
+        const filesNames = fs.readdirSync(templateDir)
+        for (const fileName of filesNames) {
+            switch (fileName) {
+                case 'package.json':
+                case 'vite.config.ts':
+                case 'index.html':
+                    let file = fs.readFileSync(path.join(templateDir, fileName), 'utf-8')
+                    file = file.replace(/\|package-name\|/g, packageName)
+                    file = file.replace(/\|description\|/g, description)
+                    file = file.replace(/\|project-name\|/g, projectName)
+                    write(fileName, file)
+                    break
+                default:
+                    write(fileName)
+            }
         }
-
-        const pkg = JSON.parse(
-            fs.readFileSync(path.join(templateDir, `package.json`), 'utf-8'),
-        )
-
-        pkg.name = packageName
-
-        write('package.json', JSON.stringify(pkg, null, 2) + '\n')
 
         const cdProjectName = path.relative(cwd, root)
         console.log(`\nDone.\n`)
