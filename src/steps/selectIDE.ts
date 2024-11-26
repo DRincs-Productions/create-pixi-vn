@@ -27,7 +27,6 @@ export default async function selectIDE({ rootFolder }: {
             spawn.sync(command, [`${rootFolder}/README.md`], { stdio: 'inherit' })
         }
     } catch (error) {
-        console.error(error)
         console.error(
             `Could not open project using ${ide}, since ${ide} was not in your PATH`,
         )

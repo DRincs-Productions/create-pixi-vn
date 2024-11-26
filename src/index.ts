@@ -49,9 +49,9 @@ async function init() {
         const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
 
         const cdProjectName = path.relative(cwd, rootFolder)
-        console.log(`\nDone.\n`)
+        console.log(`Done.`)
         console.log(`\nNow README.md for more information about the project.`)
-        console.log(`\nTo run the game:\n`)
+        console.log(`\nTo run the game:`)
         if (rootFolder !== cwd) {
             console.log(
                 `  cd ${cdProjectName.includes(' ') ? `"${cdProjectName}"` : cdProjectName
@@ -61,11 +61,11 @@ async function init() {
         switch (pkgManager) {
             case 'yarn':
                 console.log('  yarn')
-                console.log('  yarn dev')
+                console.log('  yarn dev\n')
                 break
             default:
                 console.log(`  ${pkgManager} install`)
-                console.log(`  ${pkgManager} run start`)
+                console.log(`  ${pkgManager} run start\n`)
                 break
         }
 
