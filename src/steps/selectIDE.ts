@@ -11,10 +11,23 @@ export default async function selectIDE({ rootFolder }: {
         return
     }
     try {
-        await which(ide)
         console.log(`\nOpening in ${ide}...`)
-        spawn.sync(ide, [rootFolder], { stdio: 'inherit' })
+        let command = ""
+        switch (ide) {
+            case "vscode":
+                command = 'code'
+                break
+            case "cursor":
+                command = 'cursor'
+                break
+        }
+        if (command) {
+            await which(command)
+            spawn.sync(command, [rootFolder], { stdio: 'inherit' })
+            spawn.sync(command, [`${rootFolder}/README.md`], { stdio: 'inherit' })
+        }
     } catch (error) {
+        console.error(error)
         console.error(
             `Could not open project using ${ide}, since ${ide} was not in your PATH`,
         )
