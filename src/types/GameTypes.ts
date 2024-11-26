@@ -1,10 +1,11 @@
-import ColorFuncType from "./ColorFuncType"
-import FrameworkVariantType from "./FrameworkVariantType"
+import GameTypesEnum from "../enum/GameTypesEnum"
+import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum"
+import UIFrameworkEnum from "../enum/UIFrameworkEnum"
 
 type GameTypes = {
+    type: GameTypesEnum
     name: string
-    display: string
-    color: ColorFuncType
-    variants: FrameworkVariantType[]
+    availableUI: UIFrameworkEnum[]
+    availableNarrativeLanguages: NarrativeLanguagesEnum[]
 }
 export default GameTypes
