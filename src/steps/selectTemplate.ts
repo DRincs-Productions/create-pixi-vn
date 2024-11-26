@@ -86,9 +86,9 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             case 'vite.config.ts':
             case 'index.html':
                 let file = fs.readFileSync(path.join(templateDir, fileName), 'utf-8')
-                file = file.replace(/0package-name0/g, packageName)
-                file = file.replace(/0description0/g, description)
-                file = file.replace(/0project-name0/g, projectName)
+                file = file.replace(/my-app-package-name/g, packageName)
+                file = file.replace(/my-app-description/g, description)
+                file = file.replace(/my-app-project-name/g, projectName)
                 write(fileName, file)
                 break
             default:
@@ -110,7 +110,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                     file = file.replace(/my-app-package-name/g, packageName)
                     file = file.replace(/my-app-description/g, description)
                     file = file.replace(/my-app-project-name/g, projectName)
-                    file = file.replace(/my-app-identifier/g, identifier)
+                    file = file.replace(/com.my-app-project-name.app/g, identifier)
                     write(path.join('src-tauri', fileName), file)
                     break
                 default:
