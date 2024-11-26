@@ -1,11 +1,9 @@
-import spawn from 'cross-spawn'
-import inquirer from 'inquirer'
 import {
     cyan
 } from 'kolorist'
 import minimist from 'minimist'
 import path from 'node:path'
-import which from 'which'
+import selectIDE from './steps/selectIDE'
 import selectTemplate from './steps/selectTemplate'
 import { formatTargetDir } from './utilities/dir-utility'
 import { pkgFromUserAgent } from './utilities/pkg-utility'
@@ -35,12 +33,6 @@ Options:
 Available templates:
 ${cyan('basic-visual-novel       react')}`
 
-
-
-const renameFiles: Record<string, string | undefined> = {
-    _gitignore: '.gitignore',
-}
-
 async function init() {
     try {
         const argTargetDir = formatTargetDir(argv._[0])
@@ -52,23 +44,6 @@ async function init() {
         }
 
         const { rootFolder } = await selectTemplate(argTargetDir)
-
-        let { ide } = await inquirer.prompt(
-            [
-                {
-                    type: "list",
-                    name: "ide",
-                    message: "Which IDE do you want to use?",
-                    choices: [
-                        { name: "Visual Studio Code", value: "vscode" },
-                        { name: "Cursor", value: "cursor" },
-                        { name: "Other", value: "other" },
-                    ],
-                    default: "vscode",
-                },
-            ]
-        )
-
 
         const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent)
         const pkgManager = pkgInfo ? pkgInfo.name : 'npm'
@@ -94,20 +69,8 @@ async function init() {
                 break
         }
 
-        if (ide === undefined) {
-            return
-        }
-        try {
-            // const resolved = await which(ide)
-            // spawn(resolved, [root], { detached: true })
-            await which(ide)
-            console.log(`\nOpening in ${ide}...`)
-            spawn.sync(ide, [rootFolder], { stdio: 'inherit' })
-        } catch (error) {
-            console.error(
-                `Could not open project using ${ide}, since ${ide} was not in your PATH`,
-            )
-        }
+        await selectIDE({ rootFolder })
+
         console.log()
     } catch (error) {
         console.error(error)
