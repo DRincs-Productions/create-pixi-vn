@@ -16,9 +16,11 @@ const renameFiles: Record<string, string | undefined> = {
 }
 
 export default async function selectTemplate(argTargetDir: string | undefined): Promise<{
-    rootFolder: string
+    rootFolder: string,
+    fileToOpen?: string
 }> {
     let targetDir = argTargetDir || DEFAULT_PACKAGE_NAME
+    let fileToOpen: string | undefined = undefined
 
     let { description, overwrite, packageName, projectName } = await projectInfoQuestions({ argTargetDir, targetDir })
     let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } = await gameTypeQuestions({ packageName })
@@ -35,6 +37,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             else {
                                 template = 'template-react-vite-muijoy'
                             }
+                            fileToOpen = 'src/labels/startLabel.ts'
                             break
                         case NarrativeLanguagesEnum.Ink:
                             if (multidevice) {
@@ -43,6 +46,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             else {
                                 template = 'template-react-ink-vite-muijoy'
                             }
+                            fileToOpen = 'src/ink_labels/start.ink'
                             break
                         case NarrativeLanguagesEnum.Renpy:
                             throw new Error('There are no templates for this narrative language')
@@ -61,15 +65,15 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             throw new Error('Unknown game type')
     }
 
-    const root = path.join(cwd, targetDir)
+    const rootFolder = path.join(cwd, targetDir)
 
     if (overwrite === YesNoCancelEnum.Yes) {
-        emptyDir(root)
-    } else if (!fs.existsSync(root)) {
-        fs.mkdirSync(root, { recursive: true })
+        emptyDir(rootFolder)
+    } else if (!fs.existsSync(rootFolder)) {
+        fs.mkdirSync(rootFolder, { recursive: true })
     }
 
-    console.log(`\nScaffolding project in ${root}...`)
+    console.log(`\nScaffolding project in ${rootFolder}...`)
 
     const templateDir = path.resolve(
         fileURLToPath(import.meta.url),
@@ -78,7 +82,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
     )
 
     const write = (file: string, content?: string) => {
-        const targetPath = path.join(root, renameFiles[file] ?? file)
+        const targetPath = path.join(rootFolder, renameFiles[file] ?? file)
         if (content) {
             fs.writeFileSync(targetPath, content)
         } else {
@@ -107,7 +111,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
     }
 
     // if exist root/src-tauri folder, copy it to root folder
-    const srcTauriDir = path.join(root, 'src-tauri')
+    const srcTauriDir = path.join(rootFolder, 'src-tauri')
     if (fs.existsSync(srcTauriDir)) {
         const filesNames = fs.readdirSync(srcTauriDir)
         for (const fileName of filesNames) {
@@ -127,7 +131,10 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
     }
     console.log(`Done.`)
 
-    return { rootFolder: root }
+    return {
+        rootFolder,
+        fileToOpen,
+    }
 }
 
 function copyDir(srcDir: string, destDir: string) {

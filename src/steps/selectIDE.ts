@@ -2,8 +2,9 @@ import spawn from 'cross-spawn'
 import which from 'which'
 import ideQuestions from '../questions/ideQuestions'
 
-export default async function selectIDE({ rootFolder }: {
-    rootFolder: string
+export default async function selectIDE({ rootFolder, fileToOpen }: {
+    rootFolder: string,
+    fileToOpen?: string
 }) {
     let { ide } = await ideQuestions()
 
@@ -26,6 +27,9 @@ export default async function selectIDE({ rootFolder }: {
             await which(command)
             spawn.sync(command, [rootFolder], { stdio: 'inherit' })
             spawn.sync(command, [`${rootFolder}/README.md`], { stdio: 'inherit' })
+            if (fileToOpen) {
+                spawn.sync(command, [`${rootFolder}/${fileToOpen}`], { stdio: 'inherit' })
+            }
         }
     } catch (error) {
         console.error(

@@ -44,7 +44,7 @@ async function init() {
             return
         }
 
-        const { rootFolder } = await selectTemplate(argTargetDir)
+        const { rootFolder, fileToOpen } = await selectTemplate(argTargetDir)
 
         await gitInit({ rootFolder })
 
@@ -72,7 +72,7 @@ async function init() {
                 break
         }
 
-        await selectIDE({ rootFolder })
+        await selectIDE({ rootFolder, fileToOpen })
 
         console.log()
     } catch (error) {
