@@ -128,6 +128,14 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             }
         }
     }
+
+    // if exist root/_github folder, rename it to .github
+    const srcGitHubDir = path.join(rootFolder, '_github')
+    if (fs.existsSync(srcGitHubDir)) {
+        fs.renameSync(srcGitHubDir, path.join(rootFolder, '.github'))
+    }
+
+
     console.log(`Done.`)
 
     return {
