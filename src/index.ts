@@ -1,8 +1,10 @@
+import spawn from 'cross-spawn'
 import {
     cyan
 } from 'kolorist'
 import minimist from 'minimist'
 import path from 'node:path'
+import which from 'which'
 import gitInit from './steps/gitInit'
 import selectIDE from './steps/selectIDE'
 import selectTemplate from './steps/selectTemplate'
@@ -53,6 +55,22 @@ async function init() {
 
         const cdProjectName = path.relative(cwd, rootFolder)
 
+        await selectIDE({ rootFolder, fileToOpen })
+
+        // run install
+        console.log(`\nInstalling dependencies...`)
+        try {
+            await which(pkgManager)
+            if (pkgManager === 'yarn') {
+                spawn.sync('yarn', [], { cwd: rootFolder, stdio: 'inherit' })
+            }
+            else {
+                spawn.sync(pkgManager, ['install'], { cwd: rootFolder, stdio: 'inherit' })
+            }
+        } catch (error) {
+            console.error(`Could not use ${pkgManager} to install dependencies`)
+        }
+
         console.log(`\nNow README.md for more information about the project.`)
         console.log(`\nTo run the game:`)
         if (rootFolder !== cwd) {
@@ -63,16 +81,12 @@ async function init() {
         }
         switch (pkgManager) {
             case 'yarn':
-                console.log('  yarn')
                 console.log('  yarn dev\n')
                 break
             default:
-                console.log(`  ${pkgManager} install`)
                 console.log(`  ${pkgManager} run start\n`)
                 break
         }
-
-        await selectIDE({ rootFolder, fileToOpen })
 
         console.log()
     } catch (error) {
