@@ -119,7 +119,6 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                 case 'Cargo.lock':
                 case 'Cargo.toml':
                 case 'tauri.conf.json':
-                    console.log(path.join(srcTauriDir, fileName))
                     let file = fs.readFileSync(path.join(srcTauriDir, fileName), 'utf-8')
                     file = file.replace(/my-app-package-name/g, packageName)
                     file = file.replace(/my-app-description/g, description)
