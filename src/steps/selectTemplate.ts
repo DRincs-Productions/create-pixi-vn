@@ -91,6 +91,9 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                 file = file.replace(/my-app-project-name/g, projectName)
                 write(fileName, file)
                 break
+            case '.git':
+            case 'package-lock.json':
+                break
             default:
                 write(fileName)
         }
@@ -112,9 +115,6 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                     file = file.replace(/my-app-project-name/g, projectName)
                     file = file.replace(/com.my-app-project-name.app/g, identifier)
                     write(path.join('src-tauri', fileName), file)
-                    break
-                default:
-                    write(path.join('src-tauri', fileName))
             }
         }
     }

@@ -61,7 +61,7 @@ export default async function projectInfoQuestions({ argTargetDir, targetDir }: 
                         value: YesNoCancelEnum.Yes,
                     },
                     {
-                        description: "Ignore files and continue",
+                        description: "Keep existing files and continue",
                         name: "Ignore",
                         value: YesNoCancelEnum.No,
                     },
