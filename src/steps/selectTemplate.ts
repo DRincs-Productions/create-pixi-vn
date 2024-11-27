@@ -37,6 +37,13 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             }
                             break
                         case NarrativeLanguagesEnum.Ink:
+                            if (multidevice) {
+                                template = 'template-react-ink-vite-muijoy-tauri'
+                            }
+                            else {
+                                template = 'template-react-ink-vite-muijoy'
+                            }
+                            break
                         case NarrativeLanguagesEnum.Renpy:
                             throw new Error('There are no templates for this narrative language')
                         default:

@@ -10,6 +10,9 @@ export const GAME_TYPES: GameTypes[] = [
         type: GameTypesEnum.VisualNovel,
         name: "Visual Novel",
         availableUI: [UIFrameworkEnum.React],
-        availableNarrativeLanguages: [NarrativeLanguagesEnum.Typescript]
+        availableNarrativeLanguages: [
+            NarrativeLanguagesEnum.Ink,
+            NarrativeLanguagesEnum.Typescript,
+        ]
     }
 ]
