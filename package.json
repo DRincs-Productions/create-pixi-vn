@@ -12,8 +12,8 @@
   "files": [
     "index.js",
     "template-react-vite-muijoy",
-    "template-react-ink-vite-muijoy",
-    "template-react-ink-vite-muijoy-tauri",
+    "template-react-vite-muijoy-ink",
+    "template-react-vite-muijoy-ink-tauri",
     "template-react-vite-muijoy",
     "template-react-vite-muijoy-electron",
     "template-react-vite-muijoy-tauri",

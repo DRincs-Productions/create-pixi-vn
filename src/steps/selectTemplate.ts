@@ -41,10 +41,10 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             break
                         case NarrativeLanguagesEnum.Ink:
                             if (multidevice) {
-                                template = 'template-react-ink-vite-muijoy-tauri'
+                                template = 'template-react-vite-muijoy-ink-tauri'
                             }
                             else {
-                                template = 'template-react-ink-vite-muijoy'
+                                template = 'template-react-vite-muijoy-ink'
                             }
                             fileToOpen = 'src/ink_labels/start.ink'
                             break
