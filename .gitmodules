@@ -12,9 +12,9 @@
 	branch = tauri
 [submodule "template-react-ink-vite-muijoy"]
 	path = template-react-ink-vite-muijoy
-	branch = main
-	url = https://github.com/DRincs-Productions/pixi-vn-react-ink-template
+	branch = ink
+	url = https://github.com/DRincs-Productions/pixi-vn-react-template
 [submodule "template-react-ink-vite-muijoy-tauri"]
 	path = template-react-ink-vite-muijoy-tauri
-	url = https://github.com/DRincs-Productions/pixi-vn-react-ink-template
-	branch = tauri
+	url = https://github.com/DRincs-Productions/pixi-vn-react-template
+	branch = ink-tauri
