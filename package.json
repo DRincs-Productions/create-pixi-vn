@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -41,7 +41,7 @@
     "@types/cross-spawn": "^6.0.6",
     "@types/minimist": "^1.2.5",
     "@types/which": "^3.0.4",
-    "cross-spawn": "^7.0.3",
+    "cross-spawn": "^7.0.6",
     "inquirer": "^12.1.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
