@@ -46,7 +46,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             else {
                                 template = 'template-react-vite-muijoy-ink'
                             }
-                            fileToOpen = 'src/ink_labels/start.ink'
+                            fileToOpen = 'src/ink/start.ink'
                             break
                         case NarrativeLanguagesEnum.Renpy:
                             throw new Error('There are no templates for this narrative language')
