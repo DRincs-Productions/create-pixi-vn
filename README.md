@@ -17,13 +17,16 @@ To initialize a new project, you can use the following command:
 npm create pixi-vn@latest
 
 # yarn
-yarn create pixi-vn@latest
+yarn create pixi-vn
 
 # pnpm
-pnpm create pixi-vn@latest
+pnpm create pixi-vn
 
 # bun
-bun create pixi-vn@latest
+bun create pixi-vn
+
+# bun
+deno init --npm pixi-vn
 ```
 
 The supported template presets are:
