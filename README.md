@@ -1,5 +1,7 @@
 # Getting Started
 
+![pixi-vn-cover](https://github.com/user-attachments/assets/28c41fe1-c539-4ebb-b7d4-8cb9f79e089e)
+
 You can start using Pixi’VN by initializing a new project.
 
 ## Prerequisites
