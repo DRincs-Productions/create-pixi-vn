@@ -20,6 +20,7 @@
     "dist"
   ],
   "scripts": {
+    "start": "node index.js",
     "dev": "unbuild --stub",
     "build": "unbuild",
     "typecheck": "tsc --noEmit",
