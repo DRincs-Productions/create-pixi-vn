@@ -19,6 +19,10 @@ export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder
                 console.log(`\nOpening in Cursor...`);
                 command = "cursor";
                 break;
+            case "codium":
+                console.log(`\nOpening in VSCodium...`);
+                command = "codium";
+                break;
         }
         if (command) {
             await which(command);

@@ -12,6 +12,7 @@ export default function ideQuestions() {
             choices: [
                 { name: "Visual Studio Code", value: IDEEnum.VisualStudioCode },
                 { name: "Cursor", value: IDEEnum.Cursor },
+                { name: "VSCodium", value: IDEEnum.VSCodium },
                 { name: "Other", value: IDEEnum.Other },
             ],
             default: IDEEnum.VisualStudioCode,
