@@ -3,4 +3,4 @@ enum IDEEnum {
     Cursor = "cursor",
     Other = "other",
 }
-export default IDEEnum
+export default IDEEnum;

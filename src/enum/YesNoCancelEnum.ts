@@ -1,6 +1,6 @@
 enum YesNoCancelEnum {
     Yes,
     No,
-    Cancel
+    Cancel,
 }
-export default YesNoCancelEnum
+export default YesNoCancelEnum;

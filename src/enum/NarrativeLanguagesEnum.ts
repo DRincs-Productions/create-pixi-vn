@@ -1,6 +1,6 @@
 enum NarrativeLanguagesEnum {
     Ink,
     Renpy,
-    Typescript
+    Typescript,
 }
-export default NarrativeLanguagesEnum
+export default NarrativeLanguagesEnum;

@@ -3,4 +3,4 @@ enum UIFrameworkEnum {
     Vue,
     Angular,
 }
-export default UIFrameworkEnum
+export default UIFrameworkEnum;

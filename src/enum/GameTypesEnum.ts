@@ -1,4 +1,4 @@
 enum GameTypesEnum {
-    VisualNovel
+    VisualNovel,
 }
-export default GameTypesEnum
+export default GameTypesEnum;
