@@ -12,4 +12,10 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [NarrativeLanguagesEnum.Ink, NarrativeLanguagesEnum.Typescript],
     },
+    {
+        type: GameTypesEnum.GameEngine,
+        name: "Game Engine",
+        availableUI: [],
+        availableNarrativeLanguages: [],
+    },
 ];

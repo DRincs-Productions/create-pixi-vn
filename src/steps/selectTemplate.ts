@@ -61,6 +61,10 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                     throw new Error("Unknown UI framework");
             }
             break;
+        case GameTypesEnum.GameEngine:
+            template = "template-game-engine";
+            fileToOpen = "src/index.ts";
+            break;
         default:
             throw new Error("Unknown game type");
     }

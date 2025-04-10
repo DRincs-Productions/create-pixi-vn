@@ -26,6 +26,7 @@ export default function gameTypeQuestions({ packageName }: { packageName: string
             type: "list",
             name: "UIFramework",
             message: "Select the UI framework you want to use:",
+            when: ({ gameType }) => gameType !== GameTypesEnum.GameEngine,
             choices: ({ gameType }) => {
                 const selectedGameType = GAME_TYPES.find((f) => f.type === gameType);
                 return selectedGameType?.availableUI.map((ui) => {
@@ -52,6 +53,7 @@ export default function gameTypeQuestions({ packageName }: { packageName: string
             type: "list",
             name: "narrativeLanguage",
             message: "Select the narrative language you want to use:",
+            when: ({ gameType }) => gameType !== GameTypesEnum.GameEngine,
             choices: ({ gameType }) => {
                 const selectedGameType = GAME_TYPES.find((f) => f.type === gameType);
                 return selectedGameType?.availableNarrativeLanguages.map((lang) => {
@@ -78,6 +80,7 @@ export default function gameTypeQuestions({ packageName }: { packageName: string
             type: "list",
             name: "multidevice",
             message: "Which devices is the project intended for?",
+            when: ({ gameType }) => gameType !== GameTypesEnum.GameEngine,
             choices: [
                 {
                     name: "Web page",
