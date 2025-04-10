@@ -18,3 +18,7 @@
 	path = template-react-vite-muijoy-ink-tauri
 	url = https://github.com/DRincs-Productions/pixi-vn-react-template
 	branch = ink-tauri
+[submodule "template-game-engine"]
+	path = template-game-engine
+	url = https://github.com/DRincs-Productions/pixi-vn-game-engine-template
+	branch = main
