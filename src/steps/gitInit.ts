@@ -11,7 +11,10 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
             log.warn(`Git repository already exists.`);
             return;
         }
-    } catch (error) {}
+    } catch (error) {
+        log.error(`Error checking git folder: ${error}`);
+        return;
+    }
 
     const initGit = await select({
         message: "Do you want to initialize a git repository? (recommended)",
