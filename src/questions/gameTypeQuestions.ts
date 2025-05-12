@@ -8,7 +8,7 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
     const gameType = await select({
         message: "Select the type of game you want to create:",
         options: GAME_TYPES.map((gameType) => ({
-            name: gameType.name,
+            label: gameType.name,
             value: gameType.type,
         })),
         initialValue: GAME_TYPES[0].type,
@@ -110,8 +110,8 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
                 if (!value) {
                     return "Identifier is required.";
                 }
-                if (!/^[a-zA-Z0-9_.]+$/.test(value)) {
-                    return "Identifier can only contain letters, numbers, underscores and dots.";
+                if (/^[a-zA-Z0-9_.-]+$/.test(value)) {
+                    return "Identifier can only contain letters, numbers, underscores, dots and dashes.";
                 }
             },
         });
