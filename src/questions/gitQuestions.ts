@@ -1,26 +1,19 @@
-import inquirer from "inquirer";
+import { cancel, isCancel, select } from "@clack/prompts";
 
 export default function gitQuestions() {
-    return inquirer.prompt<{
-        initGit: boolean;
-    }>([
-        {
-            type: "list",
-            name: "initGit",
-            message: "Do you want to initialize a git repository? (recommended)",
-            default: true,
-            choices: [
-                {
-                    name: "Yes",
-                    value: true,
-                    description: "You can use GitHub to track changes and collaborate with others.",
-                },
-                {
-                    name: "No",
-                    value: false,
-                    description: "It is not recommended to skip this step.",
-                },
-            ],
-        },
-    ]);
+    const initGit = select({
+        message: "Do you want to initialize a git repository? (recommended)",
+        options: [
+            { value: true, label: "Yes", hint: "You can use GitHub to track changes and collaborate with others." },
+            { value: false, label: "No", hint: "It is not recommended to skip this step." },
+        ],
+        initialValue: true,
+    });
+    if (isCancel(initGit)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
+    return {
+        initGit,
+    };
 }

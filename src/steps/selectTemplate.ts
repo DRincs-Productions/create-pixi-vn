@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 import { DEFAULT_PACKAGE_NAME } from "../constats";
 import GameTypesEnum from "../enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
+import OverwriteEnum from "../enum/OverwriteEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
-import YesNoCancelEnum from "../enum/YesNoCancelEnum";
 import gameTypeQuestions from "../questions/gameTypeQuestions";
 import projectInfoQuestions from "../questions/projectInfoQuestions";
 import { emptyDir } from "../utils/dir-utility";
@@ -71,7 +71,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
 
     const rootFolder = path.join(cwd, targetDir);
 
-    if (overwrite === YesNoCancelEnum.Yes) {
+    if (overwrite === OverwriteEnum.Delete) {
         emptyDir(rootFolder);
     } else if (!fs.existsSync(rootFolder)) {
         fs.mkdirSync(rootFolder, { recursive: true });
