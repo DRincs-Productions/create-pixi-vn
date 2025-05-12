@@ -1,3 +1,4 @@
+import { cancel, confirm, isCancel } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -76,10 +77,17 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
 
     const rootFolder = path.join(cwd, targetDir);
 
-    if (overwrite === OverwriteEnum.Delete) {
-        emptyDir(rootFolder);
-    } else if (!fs.existsSync(rootFolder)) {
-        fs.mkdirSync(rootFolder, { recursive: true });
+    switch (overwrite) {
+        case OverwriteEnum.Delete:
+            emptyDir(rootFolder);
+            break;
+        case OverwriteEnum.Overwrite:
+        case OverwriteEnum.Skip:
+        case OverwriteEnum.Ask:
+            break;
+        default:
+            cancel("Error: Unknown overwrite option");
+            process.exit(0);
     }
 
     console.log(`\nScaffolding project in ${rootFolder}...`);
@@ -97,6 +105,28 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
 
     const filesNames = fs.readdirSync(templateDir);
     for (const fileName of filesNames) {
+        const filePath = path.join(rootFolder, renameFiles[fileName] ?? fileName);
+        if (fs.existsSync(filePath)) {
+            switch (overwrite) {
+                case OverwriteEnum.Ask:
+                    const overwrite = await confirm({
+                        message: `File ${filePath} already exists. Do you want to overwrite it?`,
+                        initialValue: false,
+                    });
+                    if (isCancel(overwrite)) {
+                        cancel("Operation cancelled.");
+                        process.exit(0);
+                    }
+                    if (!overwrite) {
+                        continue;
+                    }
+                case OverwriteEnum.Skip:
+                    continue;
+                case OverwriteEnum.Delete:
+                case OverwriteEnum.Overwrite:
+                    fs.rmSync(filePath, { recursive: true, force: true });
+            }
+        }
         switch (fileName) {
             case "package.json":
             case "vite.config.ts":

@@ -1,7 +1,7 @@
 import { cancel, isCancel, select } from "@clack/prompts";
 
-export default function gitQuestions() {
-    const initGit = select({
+export default async function gitQuestions() {
+    const initGit = await select({
         message: "Do you want to initialize a git repository? (recommended)",
         options: [
             { value: true, label: "Yes", hint: "You can use GitHub to track changes and collaborate with others." },

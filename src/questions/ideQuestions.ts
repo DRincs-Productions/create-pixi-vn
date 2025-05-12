@@ -1,8 +1,8 @@
 import { cancel, isCancel, select } from "@clack/prompts";
 import IDEEnum from "../enum/IDEEnum";
 
-export default function ideQuestions() {
-    const ide = select({
+export default async function ideQuestions() {
+    const ide = await select({
         message: "Which IDE do you want to use?",
         options: [
             { value: IDEEnum.VisualStudioCode, label: "Visual Studio Code" },
