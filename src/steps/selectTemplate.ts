@@ -86,8 +86,8 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
         case OverwriteEnum.Ask:
             break;
         default:
-            cancel("Error: Unknown overwrite option");
-            process.exit(0);
+            fs.mkdirSync(rootFolder, { recursive: true });
+            break;
     }
 
     log.info(`Scaffolding project in ${rootFolder}...`);
@@ -120,11 +120,14 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                     if (!overwrite) {
                         continue;
                     }
+                    fs.rmSync(filePath, { recursive: true, force: true });
+                    break;
                 case OverwriteEnum.Skip:
                     continue;
                 case OverwriteEnum.Delete:
                 case OverwriteEnum.Overwrite:
                     fs.rmSync(filePath, { recursive: true, force: true });
+                    break;
             }
         }
         switch (fileName) {

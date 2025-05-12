@@ -118,7 +118,7 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
                 if (!value) {
                     return "Identifier is required.";
                 }
-                if (/^[a-zA-Z0-9_.-]+$/.test(value)) {
+                if (!/^[a-zA-Z0-9_.\-]+$/.test(value)) {
                     return "Identifier can only contain letters, numbers, underscores, dots and dashes.";
                 }
             },
