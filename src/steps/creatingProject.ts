@@ -55,7 +55,7 @@ export default async function creatingProject({
                 };
 
                 const filesNames = fs.readdirSync(templateDir);
-                for (const fileName of filesNames) {
+                const promises = filesNames.map(async (fileName) => {
                     const filePath = path.join(rootFolder, renameFiles[fileName] ?? fileName);
                     if (fs.existsSync(filePath)) {
                         switch (overwrite) {
@@ -69,12 +69,12 @@ export default async function creatingProject({
                                     process.exit(0);
                                 }
                                 if (!overwrite) {
-                                    continue;
+                                    return;
                                 }
                                 fs.rmSync(filePath, { recursive: true, force: true });
                                 break;
                             case OverwriteEnum.Skip:
-                                continue;
+                                return;
                             case OverwriteEnum.Delete:
                             case OverwriteEnum.Overwrite:
                                 fs.rmSync(filePath, { recursive: true, force: true });
@@ -97,13 +97,14 @@ export default async function creatingProject({
                         default:
                             write(fileName);
                     }
-                }
+                });
+                await Promise.all(promises);
 
                 // if exist root/src-tauri folder, copy it to root folder
                 const srcTauriDir = path.join(rootFolder, "src-tauri");
                 if (fs.existsSync(srcTauriDir)) {
                     const filesNames = fs.readdirSync(srcTauriDir);
-                    for (const fileName of filesNames) {
+                    const promises = filesNames.map(async (fileName) => {
                         switch (fileName) {
                             case "Cargo.lock":
                             case "Cargo.toml":
@@ -115,7 +116,8 @@ export default async function creatingProject({
                                 file = file.replace(/com.my-app-project-name.app/g, identifier);
                                 write(path.join("src-tauri", fileName), file);
                         }
-                    }
+                    });
+                    await Promise.all(promises);
                 }
 
                 // if exist root/_github folder, rename it to .github
@@ -123,7 +125,7 @@ export default async function creatingProject({
                 if (fs.existsSync(srcGitHubDir)) {
                     fs.renameSync(srcGitHubDir, path.join(rootFolder, ".github"));
                 }
-                return "Creating project done";
+                return "Project created";
             },
         },
     ]);
