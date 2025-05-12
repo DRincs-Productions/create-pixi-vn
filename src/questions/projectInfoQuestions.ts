@@ -1,10 +1,9 @@
-import inquirer from "inquirer";
-import { red } from "kolorist";
+import { cancel, isCancel, select, text } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_PACKAGE_NAME, DEFAULT_PROJECT_NAME } from "../constats";
+import { DEFAULT_PROJECT_NAME } from "../constats";
 import YesNoCancelEnum from "../enum/YesNoCancelEnum";
-import { formatTargetDir, isEmptyDir } from "../utils/dir-utility";
+import { isEmptyDir } from "../utils/dir-utility";
 import { isValidPackageName, toValidPackageName } from "../utils/package-utility";
 
 export default async function projectInfoQuestions({
@@ -15,71 +14,89 @@ export default async function projectInfoQuestions({
     targetDir: string;
 }) {
     const getProjectName = () => (targetDir === "." ? path.basename(path.resolve()) : targetDir);
-
-    let res = await inquirer.prompt<{
-        projectName: string;
-        description: string;
-        overwrite: YesNoCancelEnum;
-        packageName: string;
-    }>([
-        {
-            type: "input",
-            name: "projectName",
+    let projectName;
+    if (!argTargetDir) {
+        projectName = await text({
             message: "Project name:",
-            default: DEFAULT_PROJECT_NAME,
-            required: true,
-            transformer: (value) => formatTargetDir(value) || DEFAULT_PROJECT_NAME,
-            when: () => !argTargetDir,
+            defaultValue: DEFAULT_PROJECT_NAME,
+            placeholder: DEFAULT_PROJECT_NAME,
             validate: (dir) => {
                 if (!dir) {
                     return "Project name cannot be empty";
                 }
-                return true;
             },
+        });
+        if (isCancel(projectName)) {
+            cancel("Operation cancelled.");
+            process.exit(0);
+        }
+    } else {
+        projectName = DEFAULT_PROJECT_NAME;
+    }
+    const description = await text({
+        message: "Project description:",
+        defaultValue: "A new game project",
+        placeholder: "A new game project",
+        validate: (dir) => {
+            if (!dir) {
+                return "Project description cannot be empty";
+            }
         },
-        {
-            type: "input",
-            name: "description",
-            message: "Project description:",
-            default: "A new game project",
+    });
+    if (isCancel(description)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
+    const packageName = await text({
+        message: "Package name:",
+        defaultValue: toValidPackageName(getProjectName()),
+        placeholder: toValidPackageName(getProjectName()),
+        validate: (dir) => {
+            if (!dir) {
+                return "Package name cannot be empty";
+            }
+            if (!isValidPackageName(dir)) {
+                return "Invalid package name. The name can only include URL-friendly characters.";
+            }
         },
-        {
-            type: "input",
-            name: "packageName",
-            message: "Package name:",
-            default: () => toValidPackageName(getProjectName()),
-            validate: (dir) =>
-                isValidPackageName(dir) || "Invalid package name. The name can only include URL-friendly characters.",
-        },
-        {
-            type: "list",
-            name: "overwrite",
+    });
+    if (isCancel(packageName)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
+    let overwrite;
+    if (fs.existsSync(packageName) && !isEmptyDir(packageName)) {
+        overwrite = await select({
             message: "Overwrite existing files?",
-            default: "yes",
-            choices: [
+            options: [
                 {
-                    description: "Remove existing files and continue",
-                    name: "Yes",
+                    hint: "Remove existing files and continue",
+                    label: "Yes",
                     value: YesNoCancelEnum.Yes,
                 },
                 {
-                    description: "Keep existing files and continue",
-                    name: "Ignore",
+                    hint: "Keep existing files and continue",
+                    label: "Ignore",
                     value: YesNoCancelEnum.No,
                 },
                 {
-                    description: "Cancel operation",
-                    name: "Cancel",
+                    hint: "Cancel operation",
+                    label: "Cancel",
                     value: YesNoCancelEnum.Cancel,
                 },
             ],
-            when: ({ packageName = DEFAULT_PACKAGE_NAME }) => fs.existsSync(packageName) && !isEmptyDir(packageName),
-        },
-    ]);
-
-    if (res.overwrite === YesNoCancelEnum.Cancel) {
-        throw new Error(red("✖") + " Operation cancelled");
+        });
+        if (isCancel(overwrite) || overwrite === YesNoCancelEnum.Cancel) {
+            cancel("Operation cancelled.");
+            process.exit(0);
+        }
+    } else {
+        overwrite = undefined;
     }
-
-    return res;
+    return {
+        projectName,
+        description,
+        packageName,
+        overwrite,
+    };
 }
