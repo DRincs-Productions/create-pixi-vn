@@ -85,6 +85,7 @@ export default async function projectInfoQuestions({
                     value: YesNoCancelEnum.Cancel,
                 },
             ],
+            initialValue: YesNoCancelEnum.No,
         });
         if (isCancel(overwrite) || overwrite === YesNoCancelEnum.Cancel) {
             cancel("Operation cancelled.");
