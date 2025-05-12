@@ -5,10 +5,10 @@ import path from "node:path";
 
 export default async function gitInit({ rootFolder }: { rootFolder: string }) {
     // Check if exist in rootFolder a .git folder
-    const gitFolder = path.join(rootFolder, ".git`");
+    const gitFolder = path.join(rootFolder, ".git");
     try {
         if (fs.existsSync(gitFolder)) {
-            log.warn(`git folder already exists.`);
+            log.warn(`Git repository already exists.`);
             return;
         }
     } catch (error) {}
