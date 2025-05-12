@@ -26,7 +26,7 @@ export default async function creatingProject({
     projectName: string;
     identifier: string;
 }) {
-    await tasks([
+    const task = await tasks([
         {
             title: `Creating project in ${rootFolder}...`,
             task: async (message) => {
@@ -129,6 +129,10 @@ export default async function creatingProject({
             },
         },
     ]);
+    if (isCancel(task)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
 }
 
 function copyDir(srcDir: string, destDir: string) {
