@@ -38,6 +38,7 @@ ${cyan('basic-visual-novel       react')}`
 async function init() {
     try {
         asciiArtLog();
+        intro(`Welcome to ${cyan("Pixi’VN")}!`);
         const argTargetDir = formatTargetDir(argv._[0]);
 
         const help = argv.help;
@@ -83,6 +84,7 @@ async function init() {
                 console.log(`  ${pkgManager} run start\n`);
                 break;
         }
+        outro(`You're all set!`);
 
         console.log();
     } catch (error) {

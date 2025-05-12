@@ -40,6 +40,7 @@
   "homepage": "https://pixi-vn.web.app/",
   "funding": "https://github.com/DRincs-Productions/pixi-vn?sponsor=1",
   "devDependencies": {
+    "@clack/prompts": "^0.10.1",
     "@types/cross-spawn": "^6.0.6",
     "@types/minimist": "^1.2.5",
     "@types/which": "^3.0.4",
