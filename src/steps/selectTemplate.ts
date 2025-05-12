@@ -1,4 +1,4 @@
-import { cancel, confirm, isCancel } from "@clack/prompts";
+import { cancel, confirm, isCancel, log } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -90,7 +90,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             process.exit(0);
     }
 
-    console.log(`\nScaffolding project in ${rootFolder}...`);
+    log.info(`Scaffolding project in ${rootFolder}...`);
 
     const templateDir = path.resolve(fileURLToPath(import.meta.url), "../..", `${template}`);
 
@@ -170,7 +170,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
         fs.renameSync(srcGitHubDir, path.join(rootFolder, ".github"));
     }
 
-    console.log(`Done.`);
+    log.success(`Done.`);
 
     return {
         rootFolder,

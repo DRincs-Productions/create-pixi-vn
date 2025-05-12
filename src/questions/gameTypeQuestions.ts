@@ -1,4 +1,4 @@
-import { cancel, isCancel, select, text } from "@clack/prompts";
+import { cancel, isCancel, log, select, text } from "@clack/prompts";
 import { cyan, gray, lightRed, red } from "kolorist";
 import { GAME_TYPES } from "../constats";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
@@ -37,7 +37,10 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
             };
         }) || [];
     let UIFramework;
-    if (availableUI.length === 0) {
+    if (availableUI.length === 1) {
+        log.warning(`Only one UI framework available: ${availableUI[0].label}. Using it by default.`);
+        UIFramework = availableUI[0].value;
+    } else if (availableUI.length > 0) {
         UIFramework = await select({
             message: "Select the UI framework you want to use:",
             options: availableUI,
@@ -70,7 +73,12 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
             };
         }) || [];
     let narrativeLanguage;
-    if (availableNarrativeLanguages.length === 0) {
+    if (availableNarrativeLanguages.length === 1) {
+        log.warning(
+            `Only one narrative language available: ${availableNarrativeLanguages[0].label}. Using it by default.`
+        );
+        narrativeLanguage = availableNarrativeLanguages[0].value;
+    } else if (availableNarrativeLanguages.length > 0) {
         narrativeLanguage = await select({
             message: "Select the narrative language you want to use:",
             options: availableNarrativeLanguages,
