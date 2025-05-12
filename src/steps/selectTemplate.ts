@@ -49,16 +49,20 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             fileToOpen = "src/ink/start.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
-                            throw new Error("There are no templates for this narrative language");
+                            cancel("Error: There are no templates for this narrative language");
+                            process.exit(0);
                         default:
-                            throw new Error("Unknown narrative language");
+                            cancel("Error: Unknown narrative language");
+                            process.exit(0);
                     }
                     break;
                 case UIFrameworkEnum.Vue:
                 case UIFrameworkEnum.Angular:
-                    throw new Error("There are no templates for this game type and UI framework");
+                    cancel("Error: There are no templates for this game type and UI framework");
+                    process.exit(0);
                 default:
-                    throw new Error("Unknown UI framework");
+                    cancel("Error: Unknown UI framework");
+                    process.exit(0);
             }
             break;
         case GameTypesEnum.GameEngine:
@@ -66,7 +70,8 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
             fileToOpen = "src/index.ts";
             break;
         default:
-            throw new Error("Unknown game type");
+            cancel("Error: Unknown game type");
+            process.exit(0);
     }
 
     const rootFolder = path.join(cwd, targetDir);
