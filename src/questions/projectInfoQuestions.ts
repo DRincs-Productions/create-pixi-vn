@@ -2,7 +2,7 @@ import { cancel, isCancel, select, text } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
 import { DEFAULT_PROJECT_NAME } from "../constats";
-import YesNoCancelEnum from "../enum/YesNoCancelEnum";
+import OverwriteEnum from "../enum/OverwriteEnum";
 import { isEmptyDir } from "../utils/dir-utility";
 import { isValidPackageName, toValidPackageName } from "../utils/package-utility";
 
@@ -70,24 +70,24 @@ export default async function projectInfoQuestions({
             message: "Overwrite existing files?",
             options: [
                 {
-                    hint: "Remove existing files and continue",
-                    label: "Yes",
-                    value: YesNoCancelEnum.Yes,
+                    hint: "Delete all existing files and create a new project",
+                    label: "Delete all",
+                    value: OverwriteEnum.Delete,
                 },
                 {
-                    hint: "Keep existing files and continue",
-                    label: "Ignore",
-                    value: YesNoCancelEnum.No,
+                    hint: "Overwrite existing conflicting files",
+                    label: "Overwrite",
+                    value: OverwriteEnum.Overwrite,
                 },
                 {
                     hint: "Cancel operation",
                     label: "Cancel",
-                    value: YesNoCancelEnum.Cancel,
+                    value: OverwriteEnum.Cancel,
                 },
             ],
-            initialValue: YesNoCancelEnum.No,
+            initialValue: OverwriteEnum.Overwrite,
         });
-        if (isCancel(overwrite) || overwrite === YesNoCancelEnum.Cancel) {
+        if (isCancel(overwrite) || overwrite === OverwriteEnum.Cancel) {
             cancel("Operation cancelled.");
             process.exit(0);
         }
