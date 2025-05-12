@@ -1,38 +1,61 @@
+import { cancel, isCancel, select, tasks } from "@clack/prompts";
 import spawn from "cross-spawn";
 import which from "which";
-import ideQuestions from "../questions/ideQuestions";
+import IDEEnum from "../enum/IDEEnum";
 
 export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder: string; fileToOpen?: string }) {
-    let { ide } = await ideQuestions();
+    const ide = await select({
+        message: "Which IDE do you want to use?",
+        options: [
+            { value: IDEEnum.VisualStudioCode, label: "Visual Studio Code" },
+            { value: IDEEnum.Cursor, label: "Cursor" },
+            { value: IDEEnum.VSCodium, label: "VSCodium" },
+            { value: IDEEnum.Other, label: "Other" },
+        ],
+        initialValue: IDEEnum.VisualStudioCode,
+    });
+    if (isCancel(ide)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
 
     if (ide === undefined) {
         return;
     }
-    try {
-        let command = "";
-        switch (ide) {
-            case "vscode":
-                console.log(`\nOpening in Visual Studio Code...`);
-                command = "code";
-                break;
-            case "cursor":
-                console.log(`\nOpening in Cursor...`);
-                command = "cursor";
-                break;
-            case "codium":
-                console.log(`\nOpening in VSCodium...`);
-                command = "codium";
-                break;
-        }
-        if (command) {
-            await which(command);
-            spawn.sync(command, [rootFolder], { stdio: "inherit" });
-            spawn.sync(command, [`${rootFolder}/README.md`], { stdio: "inherit" });
-            if (fileToOpen) {
-                spawn.sync(command, [`${rootFolder}/${fileToOpen}`], { stdio: "inherit" });
-            }
-        }
-    } catch (error) {
-        console.error(`Could not open project using ${ide}, since ${ide} was not in your PATH`);
+    let command;
+    let message;
+    switch (ide) {
+        case "vscode":
+            message = "Opening in Visual Studio Code...";
+            command = "code";
+            break;
+        case "cursor":
+            message = "Opening in Cursor...";
+            command = "cursor";
+            break;
+        case "codium":
+            message = "Opening in VSCodium...";
+            command = "codium";
+            break;
+        default:
+            return;
     }
+    await tasks([
+        {
+            title: message,
+            task: async (message) => {
+                try {
+                    await which(command);
+                    spawn.sync(command, [rootFolder], { stdio: "inherit" });
+                    spawn.sync(command, [`${rootFolder}/README.md`], { stdio: "inherit" });
+                    if (fileToOpen) {
+                        spawn.sync(command, [`${rootFolder}/${fileToOpen}`], { stdio: "inherit" });
+                    }
+                    return `Opened project using ${ide}`;
+                } catch (error) {
+                    return `Could not open project using ${ide}, since ${ide} was not in your PATH`;
+                }
+            },
+        },
+    ]);
 }
