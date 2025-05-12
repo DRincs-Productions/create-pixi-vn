@@ -80,6 +80,16 @@ export default async function projectInfoQuestions({
                     value: OverwriteEnum.Overwrite,
                 },
                 {
+                    hint: "Skip existing conflicting files",
+                    label: "Skip",
+                    value: OverwriteEnum.Skip,
+                },
+                {
+                    hint: "Ask for each file",
+                    label: "Ask",
+                    value: OverwriteEnum.Ask,
+                },
+                {
                     hint: "Cancel operation",
                     label: "Cancel",
                     value: OverwriteEnum.Cancel,
