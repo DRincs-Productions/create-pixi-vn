@@ -1,4 +1,4 @@
-import { intro, outro } from "@clack/prompts";
+import { intro, outro, tasks } from "@clack/prompts";
 import { execa } from "execa";
 import { cyan } from "kolorist";
 import minimist from "minimist";
@@ -60,17 +60,24 @@ async function init() {
         await selectIDE({ rootFolder, fileToOpen });
 
         // run install
-        console.log(`\nInstalling dependencies...`);
-        try {
-            await which(pkgManager);
-            if (pkgManager === "yarn") {
-                await execa("yarn", [], { cwd: rootFolder, stdio: "inherit" });
-            } else {
-                await execa(pkgManager, ["install"], { cwd: rootFolder, stdio: "inherit" });
-            }
-        } catch (error) {
-            console.error(`Could not use ${pkgManager} to install dependencies`);
-        }
+        await tasks([
+            {
+                title: `Installing dependencies...`,
+                task: async (message) => {
+                    try {
+                        await which(pkgManager);
+                        if (pkgManager === "yarn") {
+                            await execa("yarn", [], { cwd: rootFolder });
+                        } else {
+                            await execa(pkgManager, ["install"], { cwd: rootFolder });
+                        }
+                    } catch (error) {
+                        return `Could not use ${pkgManager} to install dependencies`;
+                    }
+                    return `Dependencies installed.`;
+                },
+            },
+        ]);
 
         console.log(`\nNow README.md for more information about the project.`);
         console.log(`\nTo run the game:`);
