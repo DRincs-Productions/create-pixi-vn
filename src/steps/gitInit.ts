@@ -33,8 +33,11 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
             {
                 title: `Initializing git repository...`,
                 task: async (message) => {
-                    await execa("git", ["init", "-b", "main"], { cwd: rootFolder, stdio: "inherit" });
-                    await execa("git", ["add", "."], { cwd: rootFolder, stdio: "inherit" });
+                    const initResult = await execa("git", ["init", "-b", "main"], { cwd: rootFolder });
+                    message(initResult.stdout);
+
+                    const addResult = await execa("git", ["add", "."], { cwd: rootFolder });
+                    message(addResult.stdout);
 
                     return "Git repository initialized.";
                 },

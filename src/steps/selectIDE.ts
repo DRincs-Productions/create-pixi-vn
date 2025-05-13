@@ -46,10 +46,13 @@ export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder
             task: async (message) => {
                 try {
                     await which(command);
-                    await execa(command, [rootFolder], { stdio: "inherit" });
-                    await execa(command, [`${rootFolder}/README.md`], { stdio: "inherit" });
+                    const openProject = await execa(command, [rootFolder]);
+                    message(openProject.stdout); // Log the output of opening the project
+                    const openReadme = await execa(command, [`${rootFolder}/README.md`]);
+                    message(openReadme.stdout); // Log the output of opening README.md
                     if (fileToOpen) {
-                        await execa(command, [`${rootFolder}/${fileToOpen}`], { stdio: "inherit" });
+                        const openFile = await execa(command, [`${rootFolder}/${fileToOpen}`]);
+                        message(openFile.stdout); // Log the output of opening the specific file
                     }
                     return `Opened project using ${ide}`;
                 } catch (error) {
