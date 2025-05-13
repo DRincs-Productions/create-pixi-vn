@@ -1,4 +1,4 @@
-import { intro, outro, tasks } from "@clack/prompts";
+import { intro, log, outro, tasks } from "@clack/prompts";
 import { execa } from "execa";
 import { cyan } from "kolorist";
 import minimist from "minimist";
@@ -39,7 +39,7 @@ ${cyan('basic-visual-novel       react')}`
 async function init() {
     try {
         asciiArtLog();
-        intro(`Welcome to ${cyan("Pixi’VN")}!`);
+        intro(`Welcome to ${cyan("Pixi’VN")}! 🎨✨`);
         const argTargetDir = formatTargetDir(argv._[0]);
 
         const help = argv.help;
@@ -79,20 +79,21 @@ async function init() {
             },
         ]);
 
-        console.log(`\nNow README.md for more information about the project.`);
-        console.log(`\nTo run the game:`);
+        log.message(`Refer to the README.md file for detailed information about the project.`);
+        let endLog = `To run the game:`;
         if (rootFolder !== cwd) {
-            console.log(`  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`);
+            endLog += `\n  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`;
         }
         switch (pkgManager) {
             case "yarn":
-                console.log("  yarn dev\n");
+                endLog += `\n  yarn dev`;
                 break;
             default:
-                console.log(`  ${pkgManager} run start\n`);
+                endLog += `\n  ${pkgManager} run start`;
                 break;
         }
-        outro(`You're all set!`);
+        log.message(endLog);
+        outro(`You're all set! 🎉 Now go build your game! 🚀`);
 
         console.log();
     } catch (error) {
