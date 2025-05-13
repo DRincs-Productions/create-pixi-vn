@@ -1,5 +1,5 @@
 import { cancel, isCancel, log, select, tasks } from "@clack/prompts";
-import spawn from "cross-spawn";
+import { execa } from "execa";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -33,8 +33,8 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
             {
                 title: `Initializing git repository...`,
                 task: async (message) => {
-                    spawn.sync("git", ["init", "-b", "main"], { cwd: rootFolder, stdio: "inherit" });
-                    spawn.sync("git", ["add", "."], { cwd: rootFolder, stdio: "inherit" });
+                    await execa("git", ["init", "-b", "main"], { cwd: rootFolder, stdio: "inherit" });
+                    await execa("git", ["add", "."], { cwd: rootFolder, stdio: "inherit" });
 
                     return "Git repository initialized.";
                 },

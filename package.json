@@ -41,16 +41,15 @@
   "funding": "https://github.com/DRincs-Productions/pixi-vn?sponsor=1",
   "devDependencies": {
     "@clack/prompts": "^0.10.1",
-    "@types/cross-spawn": "^6.0.6",
     "@types/minimist": "^1.2.5",
     "@types/which": "^3.0.4",
-    "cross-spawn": "^7.0.6",
     "inquirer": "^12.6.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "unbuild": "^3.5.0"
   },
   "dependencies": {
+    "execa": "^9.5.3",
     "which": "^5.0.0"
   }
 }

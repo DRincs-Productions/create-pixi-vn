@@ -1,5 +1,5 @@
 import { cancel, isCancel, select, tasks } from "@clack/prompts";
-import spawn from "cross-spawn";
+import { execa } from "execa";
 import which from "which";
 import IDEEnum from "../enum/IDEEnum";
 
@@ -46,10 +46,10 @@ export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder
             task: async (message) => {
                 try {
                     await which(command);
-                    spawn.sync(command, [rootFolder], { stdio: "inherit" });
-                    spawn.sync(command, [`${rootFolder}/README.md`], { stdio: "inherit" });
+                    await execa(command, [rootFolder], { stdio: "inherit" });
+                    await execa(command, [`${rootFolder}/README.md`], { stdio: "inherit" });
                     if (fileToOpen) {
-                        spawn.sync(command, [`${rootFolder}/${fileToOpen}`], { stdio: "inherit" });
+                        await execa(command, [`${rootFolder}/${fileToOpen}`], { stdio: "inherit" });
                     }
                     return `Opened project using ${ide}`;
                 } catch (error) {

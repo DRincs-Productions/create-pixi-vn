@@ -1,5 +1,5 @@
 import { intro, outro } from "@clack/prompts";
-import spawn from "cross-spawn";
+import { execa } from "execa";
 import { cyan } from "kolorist";
 import minimist from "minimist";
 import path from "node:path";
@@ -64,9 +64,9 @@ async function init() {
         try {
             await which(pkgManager);
             if (pkgManager === "yarn") {
-                spawn.sync("yarn", [], { cwd: rootFolder, stdio: "inherit" });
+                await execa("yarn", [], { cwd: rootFolder, stdio: "inherit" });
             } else {
-                spawn.sync(pkgManager, ["install"], { cwd: rootFolder, stdio: "inherit" });
+                await execa(pkgManager, ["install"], { cwd: rootFolder, stdio: "inherit" });
             }
         } catch (error) {
             console.error(`Could not use ${pkgManager} to install dependencies`);
