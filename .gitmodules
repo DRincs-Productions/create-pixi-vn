@@ -22,3 +22,19 @@
 	path = template-game-engine
 	url = https://github.com/DRincs-Productions/pixi-vn-game-engine-template
 	branch = main
+[submodule "template-story-react-vite-muijoy"]
+	path = template-story-react-vite-muijoy
+	url = https://github.com/DRincs-Productions/pixi-vn-nonlinear-stories-react-template
+	branch = main
+[submodule "template-story-react-vite-muijoy-ink"]
+	path = template-story-react-vite-muijoy-ink
+	url = https://github.com/DRincs-Productions/pixi-vn-nonlinear-stories-react-template
+	branch = ink
+[submodule "template-story-react-vite-muijoy-ink-tauri"]
+	path = template-story-react-vite-muijoy-ink-tauri
+	url = https://github.com/DRincs-Productions/pixi-vn-nonlinear-stories-react-template
+	branch = ink-tauri
+[submodule "template-story-react-vite-muijoy-tauri"]
+	path = template-story-react-vite-muijoy-tauri
+	url = https://github.com/DRincs-Productions/pixi-vn-nonlinear-stories-react-template
+	branch = tauri
