@@ -38,3 +38,6 @@
 	path = template-story-react-vite-muijoy-tauri
 	url = https://github.com/DRincs-Productions/pixi-vn-nonlinear-stories-react-template
 	branch = tauri
+[submodule "template-nqtr-react-vite-muijoy"]
+	path = template-nqtr-react-vite-muijoy
+	url = https://github.com/DRincs-Productions/nqtr-react-template
