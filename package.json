@@ -21,6 +21,10 @@
     "template-story-react-vite-muijoy-ink",
     "template-story-react-vite-muijoy-ink-tauri",
     "template-story-react-vite-muijoy-tauri",
+    "template-nqtr-react-vite-muijoy",
+    "template-nqtr-react-vite-muijoy-ink",
+    "template-nqtr-react-vite-muijoy-ink-tauri",
+    "template-nqtr-react-vite-muijoy-tauri",
     "dist"
   ],
   "scripts": {
