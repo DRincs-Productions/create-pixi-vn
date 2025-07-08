@@ -64,7 +64,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                     process.exit(0);
             }
             break;
-        case GameTypesEnum.VisualNovel:
+        case GameTypesEnum.TextStory:
             switch (UIFramework) {
                 case UIFrameworkEnum.React:
                     switch (narrativeLanguage) {
@@ -72,7 +72,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             if (multidevice) {
                                 template = "template-story-react-vite-muijoy-tauri";
                             } else {
-                                template = "template-reactemplate-story-reactt-vite-muijoy";
+                                template = "template-story-react-vite-muijoy";
                             }
                             fileToOpen = "src/labels/startLabel.ts";
                             break;
@@ -81,6 +81,43 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                                 template = "template-story-react-vite-muijoy-ink-tauri";
                             } else {
                                 template = "template-story-react-vite-muijoy-ink";
+                            }
+                            fileToOpen = "src/ink/start.ink";
+                            break;
+                        case NarrativeLanguagesEnum.Renpy:
+                            cancel("Error: There are no templates for this narrative language");
+                            process.exit(0);
+                        default:
+                            cancel("Error: Unknown narrative language");
+                            process.exit(0);
+                    }
+                    break;
+                case UIFrameworkEnum.Vue:
+                case UIFrameworkEnum.Angular:
+                    cancel("Error: There are no templates for this game type and UI framework");
+                    process.exit(0);
+                default:
+                    cancel("Error: Unknown UI framework");
+                    process.exit(0);
+            }
+            break;
+        case GameTypesEnum.PointAndClick:
+            switch (UIFramework) {
+                case UIFrameworkEnum.React:
+                    switch (narrativeLanguage) {
+                        case NarrativeLanguagesEnum.Typescript:
+                            if (multidevice) {
+                                template = "template-nqtr-react-vite-muijoy-tauri";
+                            } else {
+                                template = "template-nqtr-react-vite-muijoy";
+                            }
+                            fileToOpen = "src/labels/startLabel.ts";
+                            break;
+                        case NarrativeLanguagesEnum.Ink:
+                            if (multidevice) {
+                                template = "template-nqtr-react-vite-muijoy-ink-tauri";
+                            } else {
+                                template = "template-nqtr-react-vite-muijoy-ink";
                             }
                             fileToOpen = "src/ink/start.ink";
                             break;
