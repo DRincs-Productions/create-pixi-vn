@@ -41,3 +41,16 @@
 [submodule "template-nqtr-react-vite-muijoy"]
 	path = template-nqtr-react-vite-muijoy
 	url = https://github.com/DRincs-Productions/nqtr-react-template
+	branch = main
+[submodule "template-nqtr-react-vite-muijoy-ink"]
+	path = template-nqtr-react-vite-muijoy-ink
+	url = https://github.com/DRincs-Productions/nqtr-react-template
+	branch = ink
+[submodule "template-nqtr-react-vite-muijoy-ink-tauri"]
+	path = template-nqtr-react-vite-muijoy-ink-tauri
+	url = https://github.com/DRincs-Productions/nqtr-react-template
+	branch = ink-tauri
+[submodule "template-nqtr-react-vite-muijoy-tauri"]
+	path = template-nqtr-react-vite-muijoy-tauri
+	url = https://github.com/DRincs-Productions/nqtr-react-template
+	branch = tauri
