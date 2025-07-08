@@ -119,7 +119,7 @@ export default async function selectTemplate(argTargetDir: string | undefined): 
                             } else {
                                 template = "template-nqtr-react-vite-muijoy-ink";
                             }
-                            fileToOpen = "src/ink/start.ink";
+                            fileToOpen = "src/ink/variousActionsLabels.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
                             cancel("Error: There are no templates for this narrative language");
