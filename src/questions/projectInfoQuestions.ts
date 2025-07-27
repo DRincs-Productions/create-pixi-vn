@@ -1,37 +1,25 @@
 import { cancel, isCancel, select, text } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_PROJECT_NAME } from "../constats";
+import { DEFAULT_PACKAGE_NAME, DEFAULT_PROJECT_NAME } from "../constats";
 import OverwriteEnum from "../enum/OverwriteEnum";
 import { isEmptyDir } from "../utils/dir-utility";
 import { isValidPackageName, toValidPackageName } from "../utils/package-utility";
 
-export default async function projectInfoQuestions({
-    argTargetDir,
-    targetDir,
-}: {
-    argTargetDir: string | undefined;
-    targetDir: string;
-}) {
-    const getProjectName = () => (targetDir === "." ? path.basename(path.resolve()) : targetDir);
-    let projectName;
-    if (!argTargetDir) {
-        projectName = await text({
-            message: "Project name:",
-            defaultValue: DEFAULT_PROJECT_NAME,
-            placeholder: DEFAULT_PROJECT_NAME,
-            validate: (dir) => {
-                if (!dir) {
-                    return "Project name cannot be empty";
-                }
-            },
-        });
-        if (isCancel(projectName)) {
-            cancel("Operation cancelled.");
-            process.exit(0);
-        }
-    } else {
-        projectName = DEFAULT_PROJECT_NAME;
+export default async function projectInfoQuestions() {
+    const projectName = await text({
+        message: "Project name:",
+        defaultValue: DEFAULT_PROJECT_NAME,
+        placeholder: DEFAULT_PROJECT_NAME,
+        validate: (dir) => {
+            if (!dir) {
+                return "Project name cannot be empty";
+            }
+        },
+    });
+    if (isCancel(projectName)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
     }
     const description = await text({
         message: "Project description:",
@@ -49,8 +37,8 @@ export default async function projectInfoQuestions({
     }
     const packageName = await text({
         message: "Package name:",
-        defaultValue: toValidPackageName(getProjectName()),
-        placeholder: toValidPackageName(getProjectName()),
+        defaultValue: toValidPackageName(DEFAULT_PACKAGE_NAME),
+        placeholder: toValidPackageName(DEFAULT_PACKAGE_NAME),
         validate: (dir) => {
             if (!dir) {
                 return "Package name cannot be empty";
@@ -64,8 +52,18 @@ export default async function projectInfoQuestions({
         cancel("Operation cancelled.");
         process.exit(0);
     }
+    const currentDirectory = path.basename(path.resolve());
+    const foltderName = await text({
+        message: "Target directory:",
+        defaultValue: packageName,
+        placeholder: `${packageName} (If is equal to ".", the current directory (${currentDirectory}) will be used)`,
+    });
+    if (isCancel(foltderName)) {
+        cancel("Operation cancelled.");
+        process.exit(0);
+    }
     let overwrite;
-    if (fs.existsSync(packageName) && !isEmptyDir(packageName)) {
+    if (fs.existsSync(foltderName) && !isEmptyDir(foltderName)) {
         overwrite = await select({
             message: "Overwrite existing files?",
             options: [
@@ -106,6 +104,7 @@ export default async function projectInfoQuestions({
     }
     return {
         projectName,
+        foltderName,
         description,
         packageName,
         overwrite,

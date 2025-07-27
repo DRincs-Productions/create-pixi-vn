@@ -7,7 +7,6 @@ import which from "which";
 import gitInit from "./steps/gitInit";
 import selectIDE from "./steps/selectIDE";
 import selectTemplate from "./steps/selectTemplate";
-import { formatTargetDir } from "./utils/dir-utility";
 import { asciiArtLog } from "./utils/easter-egg";
 import { pkgFromUserAgent } from "./utils/pkg-utility";
 
@@ -40,7 +39,6 @@ async function init() {
     try {
         asciiArtLog();
         intro(`Welcome to ${cyan("Pixi’VN")}! 🎨✨`);
-        const argTargetDir = formatTargetDir(argv._[0]);
 
         const help = argv.help;
         if (help) {
@@ -48,7 +46,7 @@ async function init() {
             return;
         }
 
-        const { rootFolder, fileToOpen } = await selectTemplate(argTargetDir);
+        const { rootFolder, fileToOpen } = await selectTemplate();
 
         await gitInit({ rootFolder });
 

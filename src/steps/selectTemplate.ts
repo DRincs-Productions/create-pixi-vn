@@ -1,7 +1,6 @@
 import { cancel } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_PACKAGE_NAME } from "../constats";
 import GameTypesEnum from "../enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
@@ -11,19 +10,18 @@ import creatingProject from "./creatingProject";
 
 const cwd = process.cwd();
 
-export default async function selectTemplate(argTargetDir: string | undefined): Promise<{
+export default async function selectTemplate(): Promise<{
     rootFolder: string;
     fileToOpen?: string;
 }> {
-    let targetDir = argTargetDir || DEFAULT_PACKAGE_NAME;
     let fileToOpen: string | undefined = undefined;
 
-    let { description, overwrite, packageName, projectName } = await projectInfoQuestions({ argTargetDir, targetDir });
+    let { description, overwrite, packageName, projectName, foltderName } = await projectInfoQuestions();
     let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } = await gameTypeQuestions({
         packageName,
     });
 
-    const rootFolder = path.join(cwd, targetDir);
+    const rootFolder = path.join(cwd, foltderName);
 
     let template: string;
     switch (gameType) {
