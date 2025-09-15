@@ -23,22 +23,50 @@ export function emptyDir(dir: string) {
     }
 }
 
-export function handleConflict(filePath: string, overwrite: OverwriteEnum) {
-    const stat = fs.statSync(filePath);
+/**
+ * Handles conflicts without ever deleting entire directories
+ */
+export function handleConflict(src: string, dest: string, overwrite: OverwriteEnum): void {
+    if (!fs.existsSync(dest)) return;
 
-    if (stat.isFile()) {
-        // 🔹 Se è un file, rimuovi solo il file
-        fs.rmSync(filePath, { force: true });
-    } else if (stat.isDirectory()) {
-        // 🔹 Se è una directory, NON rimuoverla tutta
-        const entries = fs.readdirSync(filePath);
-        for (const entry of entries) {
-            const entryPath = path.join(filePath, entry);
-            if (overwrite === OverwriteEnum.Overwrite || overwrite === OverwriteEnum.Delete) {
-                handleConflict(entryPath, overwrite);
-            }
-            // Se Skip → non fare nulla
-            // Se Ask → chiedi per ogni file
+    const statDest = fs.statSync(dest);
+
+    if (statDest.isFile()) {
+        if (overwrite === OverwriteEnum.Overwrite || overwrite === OverwriteEnum.Delete) {
+            fs.rmSync(dest, { force: true });
         }
+    } else if (statDest.isDirectory()) {
+        const entries = fs.readdirSync(src);
+        for (const entry of entries) {
+            const srcEntry = path.join(src, entry);
+            const destEntry = path.join(dest, entry);
+            handleConflict(srcEntry, destEntry, overwrite);
+        }
+    }
+}
+
+/**
+ * Copies files and directories recursively while respecting overwrite rules
+ */
+export function copy(src: string, dest: string, overwrite?: OverwriteEnum) {
+    const stat = fs.statSync(src);
+
+    if (stat.isDirectory()) {
+        fs.mkdirSync(dest, { recursive: true });
+        for (const file of fs.readdirSync(src)) {
+            const srcFile = path.join(src, file);
+            const destFile = path.join(dest, file);
+            copy(srcFile, destFile, overwrite);
+        }
+    } else {
+        if (overwrite !== undefined) {
+            if (fs.existsSync(dest)) {
+                if (overwrite === OverwriteEnum.Skip) return;
+                if (overwrite === OverwriteEnum.Overwrite || overwrite === OverwriteEnum.Delete) {
+                    fs.rmSync(dest, { force: true });
+                }
+            }
+        }
+        fs.copyFileSync(src, dest);
     }
 }

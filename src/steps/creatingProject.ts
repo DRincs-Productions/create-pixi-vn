@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import OverwriteEnum from "../enum/OverwriteEnum";
-import { emptyDir, handleConflict } from "../utils/dir-utility";
+import { copy, handleConflict } from "../utils/dir-utility";
 
 const renameFiles: Record<string, string | undefined> = {
     _gitignore: ".gitignore",
@@ -29,18 +29,10 @@ export default async function creatingProject({
     const task = await tasks([
         {
             title: `Creating project in ${rootFolder}...`,
-            task: async (message) => {
-                switch (overwrite) {
-                    case OverwriteEnum.Delete:
-                        emptyDir(rootFolder);
-                        break;
-                    case OverwriteEnum.Overwrite:
-                    case OverwriteEnum.Skip:
-                    case OverwriteEnum.Ask:
-                        break;
-                    default:
-                        fs.mkdirSync(rootFolder, { recursive: true });
-                        break;
+            task: async () => {
+                // If the folder does not exist, create it
+                if (!fs.existsSync(rootFolder)) {
+                    fs.mkdirSync(rootFolder, { recursive: true });
                 }
 
                 const templateDir = path.resolve(fileURLToPath(import.meta.url), "../..", `${template}`);
@@ -50,50 +42,68 @@ export default async function creatingProject({
                     if (content) {
                         fs.writeFileSync(targetPath, content);
                     } else {
-                        copy(path.join(templateDir, file), targetPath);
+                        copy(path.join(templateDir, file), targetPath, overwrite);
                     }
                 };
 
                 const filesNames = fs.readdirSync(templateDir);
                 const promises = filesNames.map(async (fileName) => {
-                    const filePath = path.join(rootFolder, renameFiles[fileName] ?? fileName);
-                    if (fs.existsSync(filePath)) {
+                    const srcFile = path.join(templateDir, fileName);
+                    const destFile = path.join(rootFolder, renameFiles[fileName] ?? fileName);
+
+                    if (fs.existsSync(destFile)) {
                         switch (overwrite) {
                             case OverwriteEnum.Ask:
-                                if (fs.statSync(filePath).isFile()) {
-                                    const overwrite = await confirm({
-                                        message: `File ${filePath} already exists. Do you want to overwrite it?`,
+                                if (fs.statSync(destFile).isFile()) {
+                                    const answer = await confirm({
+                                        message: `File ${destFile} already exists. Do you want to overwrite it?`,
                                         initialValue: false,
                                     });
-                                    if (isCancel(overwrite)) {
+                                    if (isCancel(answer)) {
                                         cancel("Operation cancelled.");
                                         process.exit(0);
                                     }
-                                    if (!overwrite) {
-                                        return;
-                                    }
-                                    fs.rmSync(filePath, { force: true });
+                                    if (!answer) return;
+                                    fs.rmSync(destFile, { force: true });
                                 } else {
-                                    // Directory → chiedi ricorsivamente per ogni file al suo interno
-                                    const entries = fs.readdirSync(filePath);
+                                    // If it’s a directory, ask file by file
+                                    const entries = fs.readdirSync(srcFile);
                                     for (const entry of entries) {
-                                        handleConflict(path.join(filePath, entry), OverwriteEnum.Ask);
+                                        const childSrc = path.join(srcFile, entry);
+                                        const childDest = path.join(destFile, entry);
+                                        if (fs.existsSync(childDest)) {
+                                            const answer = await confirm({
+                                                message: `File ${childDest} already exists. Do you want to overwrite it?`,
+                                                initialValue: false,
+                                            });
+                                            if (isCancel(answer)) {
+                                                cancel("Operation cancelled.");
+                                                process.exit(0);
+                                            }
+                                            if (!answer) continue;
+                                            fs.rmSync(childDest, { force: true });
+                                        }
+                                        copy(childSrc, childDest, overwrite);
                                     }
+                                    return;
                                 }
                                 break;
+
                             case OverwriteEnum.Skip:
                                 return;
-                            case OverwriteEnum.Delete:
+
                             case OverwriteEnum.Overwrite:
-                                handleConflict(filePath, overwrite);
+                            case OverwriteEnum.Delete:
+                                handleConflict(srcFile, destFile, overwrite);
                                 break;
                         }
                     }
+
                     switch (fileName) {
                         case "package.json":
                         case "vite.config.ts":
                         case "index.html":
-                            let file = fs.readFileSync(path.join(templateDir, fileName), "utf-8");
+                            let file = fs.readFileSync(srcFile, "utf-8");
                             file = file.replace(/my-app-package-name/g, packageName);
                             file = file.replace(/my-app-description/g, description);
                             file = file.replace(/my-app-project-name/g, projectName);
@@ -108,7 +118,7 @@ export default async function creatingProject({
                 });
                 await Promise.all(promises);
 
-                // if exist root/src-tauri folder, copy it to root folder
+                // If src-tauri exists → copy customized files
                 const srcTauriDir = path.join(rootFolder, "src-tauri");
                 if (fs.existsSync(srcTauriDir)) {
                     const filesNames = fs.readdirSync(srcTauriDir);
@@ -128,35 +138,19 @@ export default async function creatingProject({
                     await Promise.all(promises);
                 }
 
-                // if exist root/_github folder, rename it to .github
+                // If _github exists → rename it to .github
                 const srcGitHubDir = path.join(rootFolder, "_github");
                 if (fs.existsSync(srcGitHubDir)) {
                     fs.renameSync(srcGitHubDir, path.join(rootFolder, ".github"));
                 }
+
                 return "Project created";
             },
         },
     ]);
+
     if (isCancel(task)) {
         cancel("Operation cancelled.");
         process.exit(0);
-    }
-}
-
-function copyDir(srcDir: string, destDir: string) {
-    fs.mkdirSync(destDir, { recursive: true });
-    for (const file of fs.readdirSync(srcDir)) {
-        const srcFile = path.resolve(srcDir, file);
-        const destFile = path.resolve(destDir, file);
-        copy(srcFile, destFile);
-    }
-}
-
-function copy(src: string, dest: string) {
-    const stat = fs.statSync(src);
-    if (stat.isDirectory()) {
-        copyDir(src, dest);
-    } else {
-        fs.copyFileSync(src, dest);
     }
 }
