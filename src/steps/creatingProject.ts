@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import OverwriteEnum from "../enum/OverwriteEnum";
-import { emptyDir } from "../utils/dir-utility";
+import { emptyDir, handleConflict } from "../utils/dir-utility";
 
 const renameFiles: Record<string, string | undefined> = {
     _gitignore: ".gitignore",
@@ -60,24 +60,32 @@ export default async function creatingProject({
                     if (fs.existsSync(filePath)) {
                         switch (overwrite) {
                             case OverwriteEnum.Ask:
-                                const overwrite = await confirm({
-                                    message: `File ${filePath} already exists. Do you want to overwrite it?`,
-                                    initialValue: false,
-                                });
-                                if (isCancel(overwrite)) {
-                                    cancel("Operation cancelled.");
-                                    process.exit(0);
+                                if (fs.statSync(filePath).isFile()) {
+                                    const overwrite = await confirm({
+                                        message: `File ${filePath} already exists. Do you want to overwrite it?`,
+                                        initialValue: false,
+                                    });
+                                    if (isCancel(overwrite)) {
+                                        cancel("Operation cancelled.");
+                                        process.exit(0);
+                                    }
+                                    if (!overwrite) {
+                                        return;
+                                    }
+                                    fs.rmSync(filePath, { force: true });
+                                } else {
+                                    // Directory → chiedi ricorsivamente per ogni file al suo interno
+                                    const entries = fs.readdirSync(filePath);
+                                    for (const entry of entries) {
+                                        handleConflict(path.join(filePath, entry), OverwriteEnum.Ask);
+                                    }
                                 }
-                                if (!overwrite) {
-                                    return;
-                                }
-                                fs.rmSync(filePath, { recursive: true, force: true });
                                 break;
                             case OverwriteEnum.Skip:
                                 return;
                             case OverwriteEnum.Delete:
                             case OverwriteEnum.Overwrite:
-                                fs.rmSync(filePath, { recursive: true, force: true });
+                                handleConflict(filePath, overwrite);
                                 break;
                         }
                     }

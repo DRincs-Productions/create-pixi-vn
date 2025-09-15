@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import OverwriteEnum from "../enum/OverwriteEnum";
 
 export function formatTargetDir(targetDir: string | undefined) {
     return targetDir?.trim().replace(/\/+$/g, "");
@@ -19,5 +20,25 @@ export function emptyDir(dir: string) {
             continue;
         }
         fs.rmSync(path.resolve(dir, file), { recursive: true, force: true });
+    }
+}
+
+export function handleConflict(filePath: string, overwrite: OverwriteEnum) {
+    const stat = fs.statSync(filePath);
+
+    if (stat.isFile()) {
+        // 🔹 Se è un file, rimuovi solo il file
+        fs.rmSync(filePath, { force: true });
+    } else if (stat.isDirectory()) {
+        // 🔹 Se è una directory, NON rimuoverla tutta
+        const entries = fs.readdirSync(filePath);
+        for (const entry of entries) {
+            const entryPath = path.join(filePath, entry);
+            if (overwrite === OverwriteEnum.Overwrite || overwrite === OverwriteEnum.Delete) {
+                handleConflict(entryPath, overwrite);
+            }
+            // Se Skip → non fare nulla
+            // Se Ask → chiedi per ogni file
+        }
     }
 }
