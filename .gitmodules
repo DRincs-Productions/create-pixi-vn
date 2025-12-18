@@ -54,3 +54,6 @@
 	path = template-nqtr-react-vite-muijoy-tauri
 	url = https://github.com/DRincs-Productions/nqtr-react-template
 	branch = tauri
+[submodule "template-lib"]
+	path = template-lib
+	url = https://github.com/DRincs-Productions/pixi-vn-lib-template

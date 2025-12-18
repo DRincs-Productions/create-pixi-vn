@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "1.7.13",
+  "version": "1.7.14",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -25,6 +25,7 @@
     "template-nqtr-react-vite-muijoy-ink",
     "template-nqtr-react-vite-muijoy-ink-tauri",
     "template-nqtr-react-vite-muijoy-tauri",
+    "template-lib",
     "dist"
   ],
   "scripts": {

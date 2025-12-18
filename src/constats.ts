@@ -30,4 +30,10 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [],
         availableNarrativeLanguages: [],
     },
+    {
+        type: GameTypesEnum.Library,
+        name: "Library",
+        availableUI: [],
+        availableNarrativeLanguages: [],
+    },
 ];

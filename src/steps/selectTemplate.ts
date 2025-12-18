@@ -140,6 +140,10 @@ export default async function selectTemplate(): Promise<{
             template = "template-game-engine";
             fileToOpen = "src/index.ts";
             break;
+        case GameTypesEnum.Library:
+            template = "template-lib";
+            fileToOpen = "src/index.ts";
+            break;
         default:
             cancel("Error: Unknown game type");
             process.exit(0);
