@@ -7,5 +7,6 @@ type GameTypes = {
     name: string;
     availableUI: UIFrameworkEnum[];
     availableNarrativeLanguages: NarrativeLanguagesEnum[];
+    isMultidevice: boolean;
 };
 export default GameTypes;

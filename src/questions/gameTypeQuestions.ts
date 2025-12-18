@@ -91,44 +91,48 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
     } else {
         narrativeLanguage = undefined;
     }
-    const multidevice = await select({
-        message: "Which devices is the project intended for?",
-        options: [
-            {
-                label: "Web page",
-                value: false,
-            },
-            {
-                label: "Web page + Desktop + Mobile (Tauri)",
-                value: true,
-            },
-        ],
-        initialValue: false,
-    });
-    if (isCancel(multidevice)) {
-        cancel("Operation cancelled.");
-        process.exit(0);
-    }
-    let identifier;
-    if (multidevice) {
-        identifier = await text({
-            message: "Project identifier:",
-            initialValue: `com.${packageName}.app`,
-            validate: (value) => {
-                if (!value) {
-                    return "Identifier is required.";
-                }
-                if (!/^[a-zA-Z0-9_.\-]+$/.test(value)) {
-                    return "Identifier can only contain letters, numbers, underscores, dots and dashes.";
-                }
-            },
+    const isMultidevice = GAME_TYPES.find((f) => f.type === gameType)?.isMultidevice;
+    let multidevice: boolean | symbol = false;
+    let identifier: string | symbol = "";
+    if (isMultidevice) {
+        multidevice = await select({
+            message: "Which devices is the project intended for?",
+            options: [
+                {
+                    label: "Web page",
+                    value: false,
+                },
+                {
+                    label: "Web page + Desktop + Mobile (Tauri)",
+                    value: true,
+                },
+            ],
+            initialValue: false,
         });
-        if (isCancel(identifier)) {
+        if (isCancel(multidevice)) {
             cancel("Operation cancelled.");
             process.exit(0);
         }
-    } else {
-        identifier = "";
+        if (multidevice) {
+            identifier = await text({
+                message: "Project identifier:",
+                initialValue: `com.${packageName}.app`,
+                validate: (value) => {
+                    if (!value) {
+                        return "Identifier is required.";
+                    }
+                    if (!/^[a-zA-Z0-9_.\-]+$/.test(value)) {
+                        return "Identifier can only contain letters, numbers, underscores, dots and dashes.";
+                    }
+                },
+            });
+            if (isCancel(identifier)) {
+                cancel("Operation cancelled.");
+                process.exit(0);
+            }
+        } else {
+            identifier = "";
+        }
     }
     return {
         gameType,
