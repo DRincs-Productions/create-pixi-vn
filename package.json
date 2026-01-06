@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "1.7.15",
+  "version": "1.8.0",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -51,13 +51,13 @@
     "@clack/prompts": "^0.11.0",
     "@types/minimist": "^1.2.5",
     "@types/which": "^3.0.4",
-    "inquirer": "^12.9.3",
+    "inquirer": "^13.1.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "unbuild": "^3.6.1"
   },
   "dependencies": {
-    "execa": "^9.6.0",
-    "which": "^5.0.0"
+    "execa": "^9.6.1",
+    "which": "^6.0.0"
   }
 }
