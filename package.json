@@ -48,16 +48,16 @@
   "homepage": "https://pixi-vn.web.app/",
   "funding": "https://github.com/DRincs-Productions/pixi-vn?sponsor=1",
   "devDependencies": {
-    "@clack/prompts": "^0.11.0",
+    "@clack/prompts": "^1.0.0",
     "@types/minimist": "^1.2.5",
     "@types/which": "^3.0.4",
-    "inquirer": "^13.1.0",
+    "inquirer": "^13.2.2",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "unbuild": "^3.6.1"
   },
   "dependencies": {
     "execa": "^9.6.1",
-    "which": "^6.0.0"
+    "which": "^6.0.1"
   }
 }
