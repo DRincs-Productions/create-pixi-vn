@@ -1,6 +1,7 @@
 import { intro, log, outro, tasks } from "@clack/prompts";
 import { execa } from "execa";
 import { cyan } from "kolorist";
+import open from "open";
 import minimist from "minimist";
 import path from "node:path";
 import which from "which";
@@ -92,6 +93,8 @@ async function init() {
         }
         log.message(endLog);
         outro(`You're all set! 🎉 Now go build your game! 🚀`);
+
+        await open("https://pixi-vn.com/start/templates");
 
         console.log();
     } catch (error) {

@@ -48,8 +48,6 @@ export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder
                     await which(command);
                     const openProject = await execa(command, [rootFolder]);
                     message(openProject.stdout); // Log the output of opening the project
-                    const openReadme = await execa(command, [`${rootFolder}/README.md`]);
-                    message(openReadme.stdout); // Log the output of opening README.md
                     if (fileToOpen) {
                         const openFile = await execa(command, [`${rootFolder}/${fileToOpen}`]);
                         message(openFile.stdout); // Log the output of opening the specific file
