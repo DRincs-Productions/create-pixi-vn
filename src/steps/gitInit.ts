@@ -39,6 +39,13 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
                     const addResult = await execa("git", ["add", "."], { cwd: rootFolder });
                     message(addResult.stdout);
 
+                    const userName = await execa("git", ["config", "user.name"]).then((r) => r.stdout.trim()).catch(() => "");
+                    const userEmail = await execa("git", ["config", "user.email"]).then((r) => r.stdout.trim()).catch(() => "");
+                    if (userName && userEmail) {
+                        await execa("git", ["commit", "-m", "Initial commit"], { cwd: rootFolder });
+                        message("Initial commit created.");
+                    }
+
                     return "Git repository initialized.";
                 },
             },

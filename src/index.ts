@@ -55,8 +55,6 @@ async function init() {
             fs.rmSync(lockFile);
         }
 
-        await gitInit({ rootFolder });
-
         const pkgInfo = pkgFromUserAgent(process.env.npm_config_user_agent);
         const pkgManager = pkgInfo ? pkgInfo.name : "npm";
 
@@ -89,6 +87,8 @@ async function init() {
                 await execa(pkgManager, ["run", "ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
             }
         }
+
+        await gitInit({ rootFolder });
 
         await selectIDE({ rootFolder, fileToOpen });
 
