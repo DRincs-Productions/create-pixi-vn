@@ -3,6 +3,7 @@ import { execa } from "execa";
 import { cyan } from "kolorist";
 import open from "open";
 import minimist from "minimist";
+import fs from "node:fs";
 import path from "node:path";
 import which from "which";
 import gitInit from "./steps/gitInit";
@@ -47,7 +48,12 @@ async function init() {
             return;
         }
 
-        const { rootFolder, fileToOpen } = await selectTemplate();
+        const { rootFolder, fileToOpen, canReplaceUI } = await selectTemplate();
+
+        const lockFile = path.join(rootFolder, "package-lock.json");
+        if (fs.existsSync(lockFile)) {
+            fs.rmSync(lockFile);
+        }
 
         await gitInit({ rootFolder });
 
@@ -56,27 +62,35 @@ async function init() {
 
         const cdProjectName = path.relative(cwd, rootFolder);
 
-        await selectIDE({ rootFolder, fileToOpen });
-
-        // run install
-        await tasks([
-            {
-                title: `Installing dependencies...`,
-                task: async (message) => {
-                    try {
-                        await which(pkgManager);
-                        if (pkgManager === "yarn") {
-                            await execa("yarn", [], { cwd: rootFolder });
-                        } else {
-                            await execa(pkgManager, ["install"], { cwd: rootFolder });
+        if (canReplaceUI) {
+            log.info("You will need to select a UI theme for your project.");
+            await tasks([
+                {
+                    title: "Installing shadcn globally...",
+                    task: async () => {
+                        try {
+                            await which(pkgManager);
+                            if (pkgManager === "yarn") {
+                                await execa("yarn", ["global", "add", "shadcn@latest"]);
+                            } else {
+                                await execa(pkgManager, ["install", "-g", "shadcn@latest"]);
+                            }
+                        } catch (error) {
+                            return `Could not install shadcn globally`;
                         }
-                    } catch (error) {
-                        return `Could not use ${pkgManager} to install dependencies`;
-                    }
-                    return `Dependencies installed.`;
+                        return "shadcn installed globally.";
+                    },
                 },
-            },
-        ]);
+            ]);
+            log.step("Running ui:reinit...");
+            if (pkgManager === "yarn") {
+                await execa("yarn", ["ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
+            } else {
+                await execa(pkgManager, ["run", "ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
+            }
+        }
+
+        await selectIDE({ rootFolder, fileToOpen });
 
         log.message(`Refer to the README.md file for detailed information about the project.`);
         let endLog = `To run the game:`;
@@ -85,9 +99,11 @@ async function init() {
         }
         switch (pkgManager) {
             case "yarn":
+                endLog += `\n  yarn`;
                 endLog += `\n  yarn dev`;
                 break;
             default:
+                endLog += `\n  ${pkgManager} install`;
                 endLog += `\n  ${pkgManager} run start`;
                 break;
         }

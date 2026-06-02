@@ -29,7 +29,7 @@
     "dist"
   ],
   "scripts": {
-    "start": "node index.js",
+    "start": "npm run build && node index.js",
     "dev": "unbuild --stub",
     "build": "unbuild",
     "typecheck": "tsc --noEmit",

@@ -103,6 +103,10 @@ export default async function creatingProject({
                         case "package.json":
                         case "vite.config.ts":
                         case "index.html":
+                        case "README.md":
+                        case "Cargo.toml":
+                        case "launch.json":
+                        case "tauri.conf.json":
                             let file = fs.readFileSync(srcFile, "utf-8");
                             file = file.replace(/my-app-package-name/g, packageName);
                             file = file.replace(/my-app-description/g, description);

@@ -25,11 +25,6 @@ export default async function projectInfoQuestions() {
         message: "Project description:",
         defaultValue: "A new game project",
         placeholder: "A new game project",
-        validate: (dir) => {
-            if (!dir) {
-                return "Project description cannot be empty";
-            }
-        },
     });
     if (isCancel(description)) {
         cancel("Operation cancelled.");
@@ -37,13 +32,10 @@ export default async function projectInfoQuestions() {
     }
     const packageName = await text({
         message: "Package name:",
-        defaultValue: toValidPackageName(DEFAULT_PACKAGE_NAME),
-        placeholder: toValidPackageName(DEFAULT_PACKAGE_NAME),
+        defaultValue: toValidPackageName(projectName),
+        placeholder: toValidPackageName(projectName),
         validate: (dir) => {
-            if (!dir) {
-                return "Package name cannot be empty";
-            }
-            if (!isValidPackageName(dir)) {
+            if (dir && !isValidPackageName(dir)) {
                 return "Invalid package name. The name can only include URL-friendly characters.";
             }
         },

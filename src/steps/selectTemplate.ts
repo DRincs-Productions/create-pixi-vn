@@ -1,6 +1,7 @@
 import { cancel } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
+import { GAME_TYPES } from "../constats";
 import GameTypesEnum from "../enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
@@ -13,6 +14,7 @@ const cwd = process.cwd();
 export default async function selectTemplate(): Promise<{
     rootFolder: string;
     fileToOpen?: string;
+    canReplaceUI: boolean;
 }> {
     let fileToOpen: string | undefined = undefined;
 
@@ -159,9 +161,12 @@ export default async function selectTemplate(): Promise<{
         identifier,
     });
 
+    const canReplaceUI = GAME_TYPES.find((f) => f.type === gameType)?.canReplaceUI ?? false;
+
     return {
         rootFolder,
         fileToOpen,
+        canReplaceUI,
     };
 }
 

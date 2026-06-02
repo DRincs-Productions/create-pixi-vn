@@ -12,6 +12,7 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [NarrativeLanguagesEnum.Ink, NarrativeLanguagesEnum.Typescript],
         isMultidevice: true,
+        canReplaceUI: true,
     },
     {
         type: GameTypesEnum.TextStory,
@@ -19,6 +20,7 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [NarrativeLanguagesEnum.Ink, NarrativeLanguagesEnum.Typescript],
         isMultidevice: true,
+        canReplaceUI: false,
     },
     {
         type: GameTypesEnum.PointAndClick,
@@ -26,6 +28,7 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [NarrativeLanguagesEnum.Ink, NarrativeLanguagesEnum.Typescript],
         isMultidevice: true,
+        canReplaceUI: false,
     },
     {
         type: GameTypesEnum.GameEngine,
@@ -33,6 +36,7 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [],
         availableNarrativeLanguages: [],
         isMultidevice: false,
+        canReplaceUI: false,
     },
     {
         type: GameTypesEnum.Library,
@@ -40,5 +44,6 @@ export const GAME_TYPES: GameTypes[] = [
         availableUI: [],
         availableNarrativeLanguages: [],
         isMultidevice: false,
+        canReplaceUI: false,
     },
 ];
