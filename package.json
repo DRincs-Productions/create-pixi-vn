@@ -50,6 +50,7 @@
   "devDependencies": {
     "@clack/prompts": "^1.0.0",
     "@types/minimist": "^1.2.5",
+    "@types/node": "^25.9.1",
     "@types/which": "^3.0.4",
     "inquirer": "^13.2.2",
     "kolorist": "^1.8.0",
