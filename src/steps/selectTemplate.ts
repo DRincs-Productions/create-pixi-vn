@@ -37,7 +37,7 @@ export default async function selectTemplate(): Promise<{
                             } else {
                                 template = "template-react-vite-muijoy";
                             }
-                            fileToOpen = "src/labels/startLabel.ts";
+                            fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
                             if (multidevice) {
@@ -45,7 +45,7 @@ export default async function selectTemplate(): Promise<{
                             } else {
                                 template = "template-react-vite-muijoy-ink";
                             }
-                            fileToOpen = "src/ink/start.ink";
+                            fileToOpen = "ink/start.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
                             cancel("Error: There are no templates for this narrative language");
