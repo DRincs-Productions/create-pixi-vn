@@ -1,10 +1,10 @@
 import { intro, log, outro, tasks } from "@clack/prompts";
 import { execa } from "execa";
 import { cyan } from "kolorist";
-import open from "open";
 import minimist from "minimist";
 import fs from "node:fs";
 import path from "node:path";
+import open from "open";
 import which from "which";
 import gitInit from "./steps/gitInit";
 import selectIDE from "./steps/selectIDE";
@@ -92,7 +92,6 @@ async function init() {
 
         await selectIDE({ rootFolder, fileToOpen });
 
-        log.message(`Refer to the README.md file for detailed information about the project.`);
         let endLog = `To run the game:`;
         if (rootFolder !== cwd) {
             endLog += `\n  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`;
