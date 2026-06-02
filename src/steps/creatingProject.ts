@@ -9,6 +9,21 @@ const renameFiles: Record<string, string | undefined> = {
     _gitignore: ".gitignore",
 };
 
+function applyReplacements(content: string, packageName: string, description: string, projectName: string, identifier?: string): string {
+    content = content.replace(/my-app-package-name/g, packageName);
+    content = content.replace(/my-app-description/g, description);
+    content = content.replace(/my-app-project-name/g, projectName);
+    if (identifier) {
+        content = content.replace(/com\.my-app-project-name\.app/g, identifier);
+    }
+    return content;
+}
+
+function replacePlaceholders(filePath: string, packageName: string, description: string, projectName: string, identifier?: string) {
+    if (!fs.existsSync(filePath)) return;
+    fs.writeFileSync(filePath, applyReplacements(fs.readFileSync(filePath, "utf-8"), packageName, description, projectName, identifier));
+}
+
 export default async function creatingProject({
     rootFolder,
     overwrite,
@@ -103,16 +118,10 @@ export default async function creatingProject({
                         case "package.json":
                         case "vite.config.ts":
                         case "index.html":
-                        case "README.md":
-                        case "Cargo.toml":
-                        case "launch.json":
-                        case "tauri.conf.json":
-                            let file = fs.readFileSync(srcFile, "utf-8");
-                            file = file.replace(/my-app-package-name/g, packageName);
-                            file = file.replace(/my-app-description/g, description);
-                            file = file.replace(/my-app-project-name/g, projectName);
-                            write(fileName, file);
+                        case "README.md": {
+                            write(fileName, applyReplacements(fs.readFileSync(srcFile, "utf-8"), packageName, description, projectName));
                             break;
+                        }
                         case ".git":
                         case "package-lock.json":
                             break;
@@ -122,24 +131,15 @@ export default async function creatingProject({
                 });
                 await Promise.all(promises);
 
-                // If src-tauri exists → copy customized files
+                // If .vscode exists → replace placeholders in launch.json
+                replacePlaceholders(path.join(rootFolder, ".vscode", "launch.json"), packageName, description, projectName);
+
+                // If src-tauri exists → replace placeholders in Cargo.toml and tauri.conf.json
                 const srcTauriDir = path.join(rootFolder, "src-tauri");
                 if (fs.existsSync(srcTauriDir)) {
-                    const filesNames = fs.readdirSync(srcTauriDir);
-                    const promises = filesNames.map(async (fileName) => {
-                        switch (fileName) {
-                            case "Cargo.lock":
-                            case "Cargo.toml":
-                            case "tauri.conf.json":
-                                let file = fs.readFileSync(path.join(srcTauriDir, fileName), "utf-8");
-                                file = file.replace(/my-app-package-name/g, packageName);
-                                file = file.replace(/my-app-description/g, description);
-                                file = file.replace(/my-app-project-name/g, projectName);
-                                file = file.replace(/com.my-app-project-name.app/g, identifier);
-                                write(path.join("src-tauri", fileName), file);
-                        }
-                    });
-                    await Promise.all(promises);
+                    for (const fileName of ["Cargo.toml", "tauri.conf.json"]) {
+                        replacePlaceholders(path.join(srcTauriDir, fileName), packageName, description, projectName, identifier);
+                    }
                 }
 
                 // If _github exists → rename it to .github
