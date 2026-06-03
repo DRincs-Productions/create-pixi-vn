@@ -19,7 +19,11 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
     const initGit = await select({
         message: "Do you want to initialize a git repository? (recommended)",
         options: [
-            { value: true, label: "Yes", hint: "You can use GitHub to track changes and collaborate with others." },
+            {
+                value: true,
+                label: "Yes",
+                hint: "You can use GitHub to track changes and collaborate with others.",
+            },
             { value: false, label: "No", hint: "It is not recommended to skip this step." },
         ],
         initialValue: true,
@@ -33,14 +37,20 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
             {
                 title: `Initializing git repository...`,
                 task: async (message) => {
-                    const initResult = await execa("git", ["init", "-b", "main"], { cwd: rootFolder });
+                    const initResult = await execa("git", ["init", "-b", "main"], {
+                        cwd: rootFolder,
+                    });
                     message(initResult.stdout);
 
                     const addResult = await execa("git", ["add", "."], { cwd: rootFolder });
                     message(addResult.stdout);
 
-                    const userName = await execa("git", ["config", "user.name"]).then((r) => r.stdout.trim()).catch(() => "");
-                    const userEmail = await execa("git", ["config", "user.email"]).then((r) => r.stdout.trim()).catch(() => "");
+                    const userName = await execa("git", ["config", "user.name"])
+                        .then((r) => r.stdout.trim())
+                        .catch(() => "");
+                    const userEmail = await execa("git", ["config", "user.email"])
+                        .then((r) => r.stdout.trim())
+                        .catch(() => "");
                     if (userName && userEmail) {
                         await execa("git", ["commit", "-m", "Initial commit"], { cwd: rootFolder });
                         message("Initial commit created.");
@@ -55,7 +65,7 @@ export default async function gitInit({ rootFolder }: { rootFolder: string }) {
             process.exit(0);
         }
         log.message(
-            `Now, you can use GitHub Desktop upload your project to GitHub.\nGitHub Desktop: https://github.com/apps/desktop`
+            `Now, you can use GitHub Desktop upload your project to GitHub.\nGitHub Desktop: https://github.com/apps/desktop`,
         );
     }
 }

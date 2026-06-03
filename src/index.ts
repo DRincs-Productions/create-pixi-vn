@@ -35,7 +35,7 @@ Options:
   -t, --template NAME        use a specific template
 
 Available templates:
-${cyan('basic-visual-novel       react')}`
+${cyan("basic-visual-novel       react")}`;
 
 async function init() {
     try {
@@ -84,7 +84,10 @@ async function init() {
             if (pkgManager === "yarn") {
                 await execa("yarn", ["ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
             } else {
-                await execa(pkgManager, ["run", "ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
+                await execa(pkgManager, ["run", "ui:reinit"], {
+                    cwd: rootFolder,
+                    stdio: "inherit",
+                });
             }
         }
 

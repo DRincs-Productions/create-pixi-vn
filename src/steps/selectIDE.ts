@@ -3,7 +3,13 @@ import { execa } from "execa";
 import which from "which";
 import IDEEnum from "../enum/IDEEnum";
 
-export default async function selectIDE({ rootFolder, fileToOpen }: { rootFolder: string; fileToOpen?: string }) {
+export default async function selectIDE({
+    rootFolder,
+    fileToOpen,
+}: {
+    rootFolder: string;
+    fileToOpen?: string;
+}) {
     const ide = await select({
         message: "Which IDE do you want to use?",
         options: [

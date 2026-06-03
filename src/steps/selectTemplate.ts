@@ -18,10 +18,12 @@ export default async function selectTemplate(): Promise<{
 }> {
     let fileToOpen: string | undefined = undefined;
 
-    let { description, overwrite, packageName, projectName, foltderName } = await projectInfoQuestions();
-    let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } = await gameTypeQuestions({
-        packageName,
-    });
+    let { description, overwrite, packageName, projectName, foltderName } =
+        await projectInfoQuestions();
+    let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } =
+        await gameTypeQuestions({
+            packageName,
+        });
 
     const rootFolder = path.join(cwd, foltderName);
 

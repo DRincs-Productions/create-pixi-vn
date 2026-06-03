@@ -9,7 +9,13 @@ const renameFiles: Record<string, string | undefined> = {
     _gitignore: ".gitignore",
 };
 
-function applyReplacements(content: string, packageName: string, description: string, projectName: string, identifier?: string): string {
+function applyReplacements(
+    content: string,
+    packageName: string,
+    description: string,
+    projectName: string,
+    identifier?: string,
+): string {
     content = content.replace(/my-app-package-name/g, packageName);
     content = content.replace(/my-app-description/g, description);
     content = content.replace(/my-app-project-name/g, projectName);
@@ -19,9 +25,24 @@ function applyReplacements(content: string, packageName: string, description: st
     return content;
 }
 
-function replacePlaceholders(filePath: string, packageName: string, description: string, projectName: string, identifier?: string) {
+function replacePlaceholders(
+    filePath: string,
+    packageName: string,
+    description: string,
+    projectName: string,
+    identifier?: string,
+) {
     if (!fs.existsSync(filePath)) return;
-    fs.writeFileSync(filePath, applyReplacements(fs.readFileSync(filePath, "utf-8"), packageName, description, projectName, identifier));
+    fs.writeFileSync(
+        filePath,
+        applyReplacements(
+            fs.readFileSync(filePath, "utf-8"),
+            packageName,
+            description,
+            projectName,
+            identifier,
+        ),
+    );
 }
 
 export default async function creatingProject({
@@ -50,7 +71,11 @@ export default async function creatingProject({
                     fs.mkdirSync(rootFolder, { recursive: true });
                 }
 
-                const templateDir = path.resolve(fileURLToPath(import.meta.url), "../..", `${template}`);
+                const templateDir = path.resolve(
+                    fileURLToPath(import.meta.url),
+                    "../..",
+                    `${template}`,
+                );
 
                 const write = (file: string, content?: string) => {
                     const targetPath = path.join(rootFolder, renameFiles[file] ?? file);
@@ -119,7 +144,15 @@ export default async function creatingProject({
                         case "vite.config.ts":
                         case "index.html":
                         case "README.md": {
-                            write(fileName, applyReplacements(fs.readFileSync(srcFile, "utf-8"), packageName, description, projectName));
+                            write(
+                                fileName,
+                                applyReplacements(
+                                    fs.readFileSync(srcFile, "utf-8"),
+                                    packageName,
+                                    description,
+                                    projectName,
+                                ),
+                            );
                             break;
                         }
                         case ".git":
@@ -132,13 +165,24 @@ export default async function creatingProject({
                 await Promise.all(promises);
 
                 // If .vscode exists → replace placeholders in launch.json
-                replacePlaceholders(path.join(rootFolder, ".vscode", "launch.json"), packageName, description, projectName);
+                replacePlaceholders(
+                    path.join(rootFolder, ".vscode", "launch.json"),
+                    packageName,
+                    description,
+                    projectName,
+                );
 
                 // If src-tauri exists → replace placeholders in Cargo.toml and tauri.conf.json
                 const srcTauriDir = path.join(rootFolder, "src-tauri");
                 if (fs.existsSync(srcTauriDir)) {
                     for (const fileName of ["Cargo.toml", "tauri.conf.json"]) {
-                        replacePlaceholders(path.join(srcTauriDir, fileName), packageName, description, projectName, identifier);
+                        replacePlaceholders(
+                            path.join(srcTauriDir, fileName),
+                            packageName,
+                            description,
+                            projectName,
+                            identifier,
+                        );
                     }
                 }
 
