@@ -15,7 +15,6 @@
     "template-react-vite-muijoy",
     "template-react-vite-muijoy-ink",
     "template-react-vite-muijoy-ink-tauri",
-    "template-react-vite-muijoy-electron",
     "template-react-vite-muijoy-tauri",
     "template-story-react-vite-muijoy",
     "template-story-react-vite-muijoy-ink",
@@ -45,7 +44,7 @@
   "bugs": {
     "url": "https://github.com/DRincs-Productions/pixi-vn/issues"
   },
-  "homepage": "https://pixi-vn.web.app/",
+  "homepage": "https://pixi-vn.com/",
   "funding": "https://github.com/DRincs-Productions/pixi-vn?sponsor=1",
   "devDependencies": {
     "@clack/prompts": "^1.0.0",

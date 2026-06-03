@@ -2,10 +2,6 @@
 	path = template-react-vite-muijoy
 	url = https://github.com/DRincs-Productions/pixi-vn-react-template
 	branch = main
-[submodule "template-react-vite-muijoy-electron"]
-	path = template-react-vite-muijoy-electron
-	url = https://github.com/DRincs-Productions/pixi-vn-react-template
-	branch = electron
 [submodule "template-react-vite-muijoy-tauri"]
 	path = template-react-vite-muijoy-tauri
 	url = https://github.com/DRincs-Productions/pixi-vn-react-template
