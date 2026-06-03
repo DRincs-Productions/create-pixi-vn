@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "template-*/*"]
+    "includes": ["**", "!!template-*/*"]
   },
   "formatter": {
     "enabled": true,
