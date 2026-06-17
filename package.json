@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
