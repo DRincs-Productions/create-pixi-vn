@@ -18,8 +18,8 @@
 	path = templates/game-engine
 	url = https://github.com/DRincs-Productions/pixi-vn-game-engine-template
 	branch = main
-[submodule "templates/point-and-click"]
-	path = templates/point-and-click
+[submodule "templates/react/point-and-click"]
+	path = templates/react/point-and-click
 	url = https://github.com/DRincs-Productions/nqtr-react-template
 	branch = main
 [submodule "templates/react/point-and-click-ink"]

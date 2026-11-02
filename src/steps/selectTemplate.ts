@@ -74,7 +74,7 @@ export default async function selectTemplate(): Promise<{
                             if (multidevice) {
                                 template = "templates/react/point-and-click-tauri";
                             } else {
-                                template = "templates/point-and-click";
+                                template = "templates/react/point-and-click";
                             }
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
