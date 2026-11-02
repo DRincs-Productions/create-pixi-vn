@@ -11,7 +11,7 @@
   },
   "files": [
     "index.js",
-    "template",
+    "templates",
     "dist"
   ],
   "scripts": {
