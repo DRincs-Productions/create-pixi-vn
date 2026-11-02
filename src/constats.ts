@@ -18,17 +18,6 @@ export const GAME_TYPES: GameTypes[] = [
         canReplaceUI: true,
     },
     {
-        type: GameTypesEnum.TextStory,
-        name: "Text-based Story",
-        availableUI: [UIFrameworkEnum.React],
-        availableNarrativeLanguages: [
-            NarrativeLanguagesEnum.Ink,
-            NarrativeLanguagesEnum.Typescript,
-        ],
-        isMultidevice: true,
-        canReplaceUI: false,
-    },
-    {
         type: GameTypesEnum.PointAndClick,
         name: "Point & Click Adventure",
         availableUI: [UIFrameworkEnum.React],
