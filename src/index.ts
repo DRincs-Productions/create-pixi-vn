@@ -9,6 +9,7 @@ import which from "which";
 import gitInit from "./steps/gitInit";
 import selectIDE from "./steps/selectIDE";
 import selectTemplate from "./steps/selectTemplate";
+import installAgentSkills from "./steps/installAgentSkills";
 import { asciiArtLog } from "./utils/easter-egg";
 import { pkgFromUserAgent } from "./utils/pkg-utility";
 
@@ -92,6 +93,8 @@ async function init() {
         }
 
         await gitInit({ rootFolder });
+
+        await installAgentSkills({ rootFolder });
 
         await selectIDE({ rootFolder, fileToOpen });
 
