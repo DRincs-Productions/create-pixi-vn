@@ -85,8 +85,6 @@ async function init() {
 
         await gitInit({ rootFolder });
 
-        await selectIDE({ rootFolder, fileToOpen });
-
         let endLog = t("runGame");
         if (rootFolder !== cwd) {
             endLog += `\n  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`;
@@ -105,6 +103,7 @@ async function init() {
         outro(t("finish"));
 
         await open("https://pixi-vn.com/start/templates");
+        await selectIDE({ rootFolder, fileToOpen });
 
         console.log();
     } catch (error) {
