@@ -1,9 +1,16 @@
-import { confirm, isCancel, log, select } from "@clack/prompts";
+import { confirm, isCancel, log, multiselect } from "@clack/prompts";
 import { execa } from "execa";
 import fs from "node:fs";
 import path from "node:path";
 
-type AgentTarget = "codex" | "claude-code" | "other";
+type AgentTarget =
+    | "codex"
+    | "claude-code"
+    | "cursor"
+    | "github-copilot"
+    | "gemini-cli"
+    | "opencode"
+    | "universal";
 
 type ProjectPackage = {
     dependencies?: Record<string, string>;
@@ -44,7 +51,7 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
     if (matchingSkills.length === 0) return;
 
     const shouldInstall = await confirm({
-        message: "Would you like to install AI skills for this project globally?",
+        message: "Install matching AI skills globally for this project?",
         initialValue: false,
     });
     if (isCancel(shouldInstall)) {
@@ -53,8 +60,8 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
     }
     if (!shouldInstall) return;
 
-    const agentTarget = await select<AgentTarget>({
-        message: "Which AI agent should receive the skills?",
+    const agentTargets = await multiselect<AgentTarget>({
+        message: "Select every AI agent where you want to install the skills:",
         options: [
             {
                 value: "codex",
@@ -67,21 +74,37 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
                 hint: "Installs to ~/.claude/skills",
             },
             {
-                value: "other",
-                label: "Other (shared agent skills)",
-                hint: "Uses the shared ~/.agents/skills directory",
+                value: "cursor",
+                label: "Cursor",
+                hint: "Installs to ~/.cursor/skills",
+            },
+            {
+                value: "github-copilot",
+                label: "GitHub Copilot",
+                hint: "Installs to ~/.copilot/skills",
+            },
+            {
+                value: "gemini-cli",
+                label: "Gemini CLI",
+                hint: "Installs to ~/.gemini/skills",
+            },
+            {
+                value: "opencode",
+                label: "OpenCode",
+                hint: "Installs to ~/.config/opencode/skills",
+            },
+            {
+                value: "universal",
+                label: "Other (Universal)",
+                hint: "Shared skills directory: ~/.config/agents/skills",
             },
         ],
-        initialValue: "codex",
+        initialValues: ["codex"],
+        required: true,
     });
-    if (isCancel(agentTarget)) {
+    if (isCancel(agentTargets)) {
         log.info("Skipping AI skill installation.");
         return;
-    }
-
-    const agent = agentTarget === "claude-code" ? "claude-code" : "codex";
-    if (agentTarget === "other") {
-        log.info("Using the Codex install target so compatible agents can read ~/.agents/skills.");
     }
 
     for (const skill of matchingSkills) {
@@ -97,7 +120,7 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
                     "--skill",
                     "*",
                     "--agent",
-                    agent,
+                    ...agentTargets,
                     "-g",
                     "-y",
                 ],
