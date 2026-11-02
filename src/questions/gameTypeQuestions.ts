@@ -1,8 +1,9 @@
-import { cancel, isCancel, log, select, text } from "@clack/prompts";
+import { cancel, isCancel, log, note, select, text } from "@clack/prompts";
 import { cyan, gray, lightRed, red } from "kolorist";
 import { GAME_TYPES } from "../constats";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
+import EngineEnum from "../enum/EngineEnum";
 
 export default async function gameTypeQuestions({ packageName }: { packageName: string }) {
     const gameType = await select({
@@ -94,30 +95,43 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
     } else {
         narrativeLanguage = undefined;
     }
-    const isMultidevice = GAME_TYPES.find((f) => f.type === gameType)?.isMultidevice;
-    let multidevice: boolean | symbol = false;
+    const availableEngines = GAME_TYPES.find((f) => f.type === gameType)?.availableEngines ?? [];
+    let engine: EngineEnum | undefined;
     let identifier: string | symbol = "";
-    if (isMultidevice) {
-        multidevice = await select({
-            message: "Which devices is the project intended for?",
+    if (availableEngines.length > 0) {
+        note(
+            [
+                "Roves (recommended) is an embedded Rust engine, but you do not need to install Rust or another framework to package desktop games. Use Packmaster, a portable packaging app, or automate packaging with GitHub Actions. Android and iOS packaging is also available; mobile support is newer and needs platform tooling.",
+                "Docs: https://roves.pixi-vn.com/",
+                "",
+                "Tauri: creates a Rust subproject that you can customize. It requires Rust and native build tools: Microsoft C++ Build Tools and WebView2 on Windows, system packages such as WebKitGTK on Linux, and Xcode tools on macOS. Android and iOS need their platform SDKs; iOS development requires macOS and Xcode.",
+                "Docs: https://v2.tauri.app/start/prerequisites/",
+            ].join("\n"),
+            "Choose your app engine",
+        );
+        const selectedEngine = await select({
+            message: "Which app engine do you want to use?",
             options: [
                 {
-                    label: "Web page",
-                    value: false,
+                    label: "Roves (recommended)",
+                    value: EngineEnum.Roves,
+                    hint: "Easy packaging with Packmaster or GitHub Actions",
                 },
                 {
-                    label: "Web page + Desktop + Mobile (Tauri)",
-                    value: true,
+                    label: "Tauri",
+                    value: EngineEnum.Tauri,
+                    hint: "Custom Rust backend; requires native build tools",
                 },
             ],
-            initialValue: false,
+            initialValue: EngineEnum.Roves,
         });
-        if (isCancel(multidevice)) {
+        if (isCancel(selectedEngine)) {
             cancel("Operation cancelled.");
             process.exit(0);
         }
-        if (multidevice) {
-            identifier = await text({
+        engine = selectedEngine;
+        if (engine === EngineEnum.Tauri) {
+            const selectedIdentifier = await text({
                 message: "Project identifier:",
                 initialValue: `com.${packageName}.app`,
                 validate: (value) => {
@@ -129,10 +143,11 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
                     }
                 },
             });
-            if (isCancel(identifier)) {
+            if (isCancel(selectedIdentifier)) {
                 cancel("Operation cancelled.");
                 process.exit(0);
             }
+            identifier = selectedIdentifier;
         } else {
             identifier = "";
         }
@@ -141,7 +156,7 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
         gameType,
         UIFramework,
         narrativeLanguage,
-        multidevice,
+        engine,
         identifier,
     };
 }

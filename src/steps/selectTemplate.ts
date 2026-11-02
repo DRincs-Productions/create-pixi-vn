@@ -1,10 +1,10 @@
 import { cancel } from "@clack/prompts";
-import fs from "node:fs";
 import path from "node:path";
 import { GAME_TYPES } from "../constats";
 import GameTypesEnum from "../enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
+import EngineEnum from "../enum/EngineEnum";
 import gameTypeQuestions from "../questions/gameTypeQuestions";
 import projectInfoQuestions from "../questions/projectInfoQuestions";
 import creatingProject from "./creatingProject";
@@ -20,10 +20,9 @@ export default async function selectTemplate(): Promise<{
 
     let { description, overwrite, packageName, projectName, foltderName } =
         await projectInfoQuestions();
-    let { UIFramework, gameType, narrativeLanguage, multidevice, identifier } =
-        await gameTypeQuestions({
-            packageName,
-        });
+    let { UIFramework, gameType, narrativeLanguage, engine, identifier } = await gameTypeQuestions({
+        packageName,
+    });
 
     const rootFolder = path.join(cwd, foltderName);
 
@@ -34,7 +33,7 @@ export default async function selectTemplate(): Promise<{
                 case UIFrameworkEnum.React:
                     switch (narrativeLanguage) {
                         case NarrativeLanguagesEnum.Typescript:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/visual-novel-tauri";
                             } else {
                                 template = "templates/react/visual-novel";
@@ -42,7 +41,7 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/visual-novel-ink-tauri";
                             } else {
                                 template = "templates/react/visual-novel-ink";
@@ -71,7 +70,7 @@ export default async function selectTemplate(): Promise<{
                 case UIFrameworkEnum.React:
                     switch (narrativeLanguage) {
                         case NarrativeLanguagesEnum.Typescript:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/point-and-click-tauri";
                             } else {
                                 template = "templates/react/point-and-click";
@@ -79,7 +78,7 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/point-and-click-ink-tauri";
                             } else {
                                 template = "templates/react/point-and-click-ink";
@@ -108,7 +107,7 @@ export default async function selectTemplate(): Promise<{
                 case UIFrameworkEnum.React:
                     switch (narrativeLanguage) {
                         case NarrativeLanguagesEnum.Typescript:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/interactive-fiction-tauri";
                             } else {
                                 template = "templates/react/interactive-fiction";
@@ -116,7 +115,7 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
-                            if (multidevice) {
+                            if (engine === EngineEnum.Tauri) {
                                 template = "templates/react/interactive-fiction-ink-tauri";
                             } else {
                                 template = "templates/react/interactive-fiction-ink";

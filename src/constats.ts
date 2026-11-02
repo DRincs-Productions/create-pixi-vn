@@ -1,6 +1,7 @@
 import GameTypesEnum from "./enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "./enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "./enum/UIFrameworkEnum";
+import EngineEnum from "./enum/EngineEnum";
 import GameTypes from "./types/GameTypes";
 
 export const DEFAULT_PROJECT_NAME = "My Game";
@@ -14,7 +15,7 @@ export const GAME_TYPES: GameTypes[] = [
             NarrativeLanguagesEnum.Ink,
             NarrativeLanguagesEnum.Typescript,
         ],
-        isMultidevice: true,
+        availableEngines: [EngineEnum.Roves, EngineEnum.Tauri],
         canReplaceUI: true,
     },
     {
@@ -25,7 +26,7 @@ export const GAME_TYPES: GameTypes[] = [
             NarrativeLanguagesEnum.Ink,
             NarrativeLanguagesEnum.Typescript,
         ],
-        isMultidevice: true,
+        availableEngines: [EngineEnum.Roves, EngineEnum.Tauri],
         canReplaceUI: true,
     },
     {
@@ -36,7 +37,7 @@ export const GAME_TYPES: GameTypes[] = [
             NarrativeLanguagesEnum.Ink,
             NarrativeLanguagesEnum.Typescript,
         ],
-        isMultidevice: true,
+        availableEngines: [EngineEnum.Roves, EngineEnum.Tauri],
         canReplaceUI: true,
     },
     {
@@ -44,7 +45,7 @@ export const GAME_TYPES: GameTypes[] = [
         name: "Game Engine",
         availableUI: [],
         availableNarrativeLanguages: [],
-        isMultidevice: false,
+        availableEngines: [],
         canReplaceUI: false,
     },
     {
@@ -52,7 +53,7 @@ export const GAME_TYPES: GameTypes[] = [
         name: "Library",
         availableUI: [],
         availableNarrativeLanguages: [],
-        isMultidevice: false,
+        availableEngines: [],
         canReplaceUI: false,
     },
 ];

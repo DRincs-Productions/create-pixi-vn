@@ -1,13 +1,14 @@
 import GameTypesEnum from "../enum/GameTypesEnum";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
+import EngineEnum from "../enum/EngineEnum";
 
 type GameTypes = {
     type: GameTypesEnum;
     name: string;
     availableUI: UIFrameworkEnum[];
     availableNarrativeLanguages: NarrativeLanguagesEnum[];
-    isMultidevice: boolean;
+    availableEngines: EngineEnum[];
     canReplaceUI: boolean;
 };
 export default GameTypes;
