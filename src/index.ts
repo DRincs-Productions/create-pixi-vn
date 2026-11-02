@@ -61,6 +61,8 @@ async function init() {
 
         const cdProjectName = path.relative(cwd, rootFolder);
 
+        await installAgentSkills({ rootFolder });
+
         if (canReplaceUI) {
             log.info("You will need to select a UI theme for your project.");
             await tasks([
@@ -93,8 +95,6 @@ async function init() {
         }
 
         await gitInit({ rootFolder });
-
-        await installAgentSkills({ rootFolder });
 
         await selectIDE({ rootFolder, fileToOpen });
 
