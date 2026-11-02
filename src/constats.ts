@@ -26,7 +26,7 @@ export const GAME_TYPES: GameTypes[] = [
             NarrativeLanguagesEnum.Typescript,
         ],
         isMultidevice: true,
-        canReplaceUI: false,
+        canReplaceUI: true,
     },
     {
         type: GameTypesEnum.GameEngine,

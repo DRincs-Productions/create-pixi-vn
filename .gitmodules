@@ -37,3 +37,7 @@
 [submodule "templates/lib"]
 	path = templates/lib
 	url = https://github.com/DRincs-Productions/pixi-vn-lib-template
+[submodule "templates/react/interactive-fiction"]
+	path = templates/react/interactive-fiction
+	url = https://github.com/DRincs-Productions/interactive-fiction-react-template
+	branch = main
