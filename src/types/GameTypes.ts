@@ -6,6 +6,7 @@ import EngineEnum from "../enum/EngineEnum";
 type GameTypes = {
     type: GameTypesEnum;
     name: string;
+    hint: string;
     availableUI: UIFrameworkEnum[];
     availableNarrativeLanguages: NarrativeLanguagesEnum[];
     availableEngines: EngineEnum[];

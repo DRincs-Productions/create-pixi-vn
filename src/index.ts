@@ -12,6 +12,7 @@ import selectTemplate from "./steps/selectTemplate";
 import installAgentSkills from "./steps/installAgentSkills";
 import { asciiArtLog } from "./utils/easter-egg";
 import { pkgFromUserAgent } from "./utils/pkg-utility";
+import t from "./i18n";
 
 // Avoids autoconversion to number of the project name by defining that the args
 // non associated with an option ( _ ) needs to be parsed as a string. See #4606
@@ -26,26 +27,14 @@ const argv = minimist<{
 const cwd = process.cwd();
 
 // prettier-ignore
-const helpMessage = `\
-Usage: create-pixi-vn [OPTION]... [DIRECTORY]
-
-Create a new Pixi’VN project.
-With no arguments, start the CLI in interactive mode.
-
-Options:
-  -t, --template NAME        use a specific template
-
-Available templates:
-${cyan("basic-visual-novel       react")}`;
-
 async function init() {
     try {
         asciiArtLog();
-        intro(`Welcome to ${cyan("Pixi’VN")}! 🎨✨`);
+        intro(cyan(t("welcome")));
 
         const help = argv.help;
         if (help) {
-            console.log(helpMessage);
+            console.log(t("help"));
             return;
         }
 
@@ -64,10 +53,10 @@ async function init() {
         await installAgentSkills({ rootFolder });
 
         if (canReplaceUI) {
-            log.info("You will need to select a UI theme for your project.");
+            log.info(t("uiTheme"));
             await tasks([
                 {
-                    title: "Installing shadcn globally...",
+                    title: t("installingShadcn"),
                     task: async () => {
                         try {
                             await which(pkgManager);
@@ -77,13 +66,13 @@ async function init() {
                                 await execa(pkgManager, ["install", "-g", "shadcn@latest"]);
                             }
                         } catch (error) {
-                            return `Could not install shadcn globally`;
+                            return t("shadcnInstallError");
                         }
-                        return "shadcn installed globally.";
+                        return t("shadcnInstalled");
                     },
                 },
             ]);
-            log.step("Running ui:reinit...");
+            log.step(t("runningUIReinit"));
             if (pkgManager === "yarn") {
                 await execa("yarn", ["ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
             } else {
@@ -98,7 +87,7 @@ async function init() {
 
         await selectIDE({ rootFolder, fileToOpen });
 
-        let endLog = `To run the game:`;
+        let endLog = t("runGame");
         if (rootFolder !== cwd) {
             endLog += `\n  cd ${cdProjectName.includes(" ") ? `"${cdProjectName}"` : cdProjectName}`;
         }
@@ -113,7 +102,7 @@ async function init() {
                 break;
         }
         log.message(endLog);
-        outro(`You're all set! 🎉 Now go build your game! 🚀`);
+        outro(t("finish"));
 
         await open("https://pixi-vn.com/start/templates");
 

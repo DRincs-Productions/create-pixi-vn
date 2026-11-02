@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import OverwriteEnum from "../enum/OverwriteEnum";
 import { copy, handleConflict } from "../utils/dir-utility";
+import t from "../i18n";
 
 const renameFiles: Record<string, string | undefined> = {
     _gitignore: ".gitignore",
@@ -96,11 +97,11 @@ export default async function creatingProject({
                             case OverwriteEnum.Ask:
                                 if (fs.statSync(destFile).isFile()) {
                                     const answer = await confirm({
-                                        message: `File ${destFile} already exists. Do you want to overwrite it?`,
+                                        message: t("fileOverwrite", { path: destFile }),
                                         initialValue: false,
                                     });
                                     if (isCancel(answer)) {
-                                        cancel("Operation cancelled.");
+                                        cancel(t("operationCancelled"));
                                         process.exit(0);
                                     }
                                     if (!answer) return;
@@ -113,11 +114,11 @@ export default async function creatingProject({
                                         const childDest = path.join(destFile, entry);
                                         if (fs.existsSync(childDest)) {
                                             const answer = await confirm({
-                                                message: `File ${childDest} already exists. Do you want to overwrite it?`,
+                                                message: t("fileOverwrite", { path: childDest }),
                                                 initialValue: false,
                                             });
                                             if (isCancel(answer)) {
-                                                cancel("Operation cancelled.");
+                                                cancel(t("operationCancelled"));
                                                 process.exit(0);
                                             }
                                             if (!answer) continue;
@@ -198,7 +199,7 @@ export default async function creatingProject({
     ]);
 
     if (isCancel(task)) {
-        cancel("Operation cancelled.");
+        cancel(t("operationCancelled"));
         process.exit(0);
     }
 }

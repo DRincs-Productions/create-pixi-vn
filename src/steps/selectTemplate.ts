@@ -8,6 +8,7 @@ import EngineEnum from "../enum/EngineEnum";
 import gameTypeQuestions from "../questions/gameTypeQuestions";
 import projectInfoQuestions from "../questions/projectInfoQuestions";
 import creatingProject from "./creatingProject";
+import t from "../i18n";
 
 const cwd = process.cwd();
 
@@ -49,19 +50,19 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "ink/start.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
-                            cancel("Error: There are no templates for this narrative language");
+                            cancel(t("noTemplate"));
                             process.exit(0);
                         default:
-                            cancel("Error: Unknown narrative language");
+                            cancel(t("unknownNarrative"));
                             process.exit(0);
                     }
                     break;
                 case UIFrameworkEnum.Vue:
                 case UIFrameworkEnum.Angular:
-                    cancel("Error: There are no templates for this game type and UI framework");
+                    cancel(t("noGameUI"));
                     process.exit(0);
                 default:
-                    cancel("Error: Unknown UI framework");
+                    cancel(t("unknownUI"));
                     process.exit(0);
             }
             break;
@@ -86,19 +87,19 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "ink/start.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
-                            cancel("Error: There are no templates for this narrative language");
+                            cancel(t("noTemplate"));
                             process.exit(0);
                         default:
-                            cancel("Error: Unknown narrative language");
+                            cancel(t("unknownNarrative"));
                             process.exit(0);
                     }
                     break;
                 case UIFrameworkEnum.Vue:
                 case UIFrameworkEnum.Angular:
-                    cancel("Error: There are no templates for this game type and UI framework");
+                    cancel(t("noGameUI"));
                     process.exit(0);
                 default:
-                    cancel("Error: Unknown UI framework");
+                    cancel(t("unknownUI"));
                     process.exit(0);
             }
             break;
@@ -123,19 +124,19 @@ export default async function selectTemplate(): Promise<{
                             fileToOpen = "ink/start.ink";
                             break;
                         case NarrativeLanguagesEnum.Renpy:
-                            cancel("Error: There are no templates for this narrative language");
+                            cancel(t("noTemplate"));
                             process.exit(0);
                         default:
-                            cancel("Error: Unknown narrative language");
+                            cancel(t("unknownNarrative"));
                             process.exit(0);
                     }
                     break;
                 case UIFrameworkEnum.Vue:
                 case UIFrameworkEnum.Angular:
-                    cancel("Error: There are no templates for this game type and UI framework");
+                    cancel(t("noGameUI"));
                     process.exit(0);
                 default:
-                    cancel("Error: Unknown UI framework");
+                    cancel(t("unknownUI"));
                     process.exit(0);
             }
             break;
@@ -148,7 +149,7 @@ export default async function selectTemplate(): Promise<{
             fileToOpen = "src/index.ts";
             break;
         default:
-            cancel("Error: Unknown game type");
+            cancel(t("unknownGame"));
             process.exit(0);
     }
 

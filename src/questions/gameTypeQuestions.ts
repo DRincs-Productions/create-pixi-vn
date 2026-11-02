@@ -4,18 +4,20 @@ import { GAME_TYPES } from "../constats";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
 import EngineEnum from "../enum/EngineEnum";
+import t from "../i18n";
 
 export default async function gameTypeQuestions({ packageName }: { packageName: string }) {
     const gameType = await select({
-        message: "Select the type of game you want to create:",
+        message: t("gameTypePrompt"),
         options: GAME_TYPES.map((gameType) => ({
             label: gameType.name,
             value: gameType.type,
+            hint: gameType.hint,
         })),
         initialValue: GAME_TYPES[0].type,
     });
     if (isCancel(gameType)) {
-        cancel("Operation cancelled.");
+        cancel(t("operationCancelled"));
         process.exit(0);
     }
     const availableUI =
@@ -39,18 +41,16 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
         }) || [];
     let UIFramework;
     if (availableUI.length === 1) {
-        log.warning(
-            `Only one UI framework available: ${availableUI[0].label}. Using it by default.`,
-        );
+        log.warning(t("onlyUI", { name: availableUI[0].label }));
         UIFramework = availableUI[0].value;
     } else if (availableUI.length > 0) {
         UIFramework = await select({
-            message: "Select the UI framework you want to use:",
+            message: t("uiPrompt"),
             options: availableUI,
             initialValue: GAME_TYPES.find((f) => f.type === gameType)?.availableUI[0],
         });
         if (isCancel(UIFramework)) {
-            cancel("Operation cancelled.");
+            cancel(t("operationCancelled"));
             process.exit(0);
         }
     } else {
@@ -59,37 +59,39 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
     const availableNarrativeLanguages =
         GAME_TYPES.find((f) => f.type === gameType)?.availableNarrativeLanguages.map((lang) => {
             let name = "";
+            let hint: string | undefined;
             switch (lang) {
                 case NarrativeLanguagesEnum.Ink:
-                    name = "Ink + Typescript";
+                    name = t("inkLanguage");
+                    hint = t("inkHint");
                     break;
                 case NarrativeLanguagesEnum.Renpy:
                     name = lightRed("Renpy");
                     break;
                 case NarrativeLanguagesEnum.Typescript:
-                    name = cyan("Typescript");
+                    name = cyan(t("typescriptLanguage"));
+                    hint = t("typescriptHint");
                     break;
             }
             return {
                 label: name,
                 value: lang,
+                hint,
             };
         }) || [];
     let narrativeLanguage;
     if (availableNarrativeLanguages.length === 1) {
-        log.warning(
-            `Only one narrative language available: ${availableNarrativeLanguages[0].label}. Using it by default.`,
-        );
+        log.warning(t("onlyNarrative", { name: availableNarrativeLanguages[0].label }));
         narrativeLanguage = availableNarrativeLanguages[0].value;
     } else if (availableNarrativeLanguages.length > 0) {
         narrativeLanguage = await select({
-            message: "Select the narrative language you want to use:",
+            message: t("narrativePrompt"),
             options: availableNarrativeLanguages,
             initialValue: GAME_TYPES.find((f) => f.type === gameType)
                 ?.availableNarrativeLanguages[0],
         });
         if (isCancel(narrativeLanguage)) {
-            cancel("Operation cancelled.");
+            cancel(t("operationCancelled"));
             process.exit(0);
         }
     } else {
@@ -99,52 +101,43 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
     let engine: EngineEnum | undefined;
     let identifier: string | symbol = "";
     if (availableEngines.length > 0) {
-        note(
-            [
-                "Roves (recommended) is an embedded Rust engine, but you do not need to install Rust or another framework to package desktop games. Use Packmaster, a portable packaging app, or automate packaging with GitHub Actions. Android and iOS packaging is also available; mobile support is newer and needs platform tooling.",
-                "Docs: https://roves.pixi-vn.com/",
-                "",
-                "Tauri: creates a Rust subproject that you can customize. It requires Rust and native build tools: Microsoft C++ Build Tools and WebView2 on Windows, system packages such as WebKitGTK on Linux, and Xcode tools on macOS. Android and iOS need their platform SDKs; iOS development requires macOS and Xcode.",
-                "Docs: https://v2.tauri.app/start/prerequisites/",
-            ].join("\n"),
-            "Choose your app engine",
-        );
+        note(t("engineOverview"), t("engineNoteTitle"));
         const selectedEngine = await select({
-            message: "Which app engine do you want to use?",
+            message: t("enginePrompt"),
             options: [
                 {
-                    label: "Roves (recommended)",
+                    label: t("roves"),
                     value: EngineEnum.Roves,
-                    hint: "Easy packaging with Packmaster or GitHub Actions",
+                    hint: t("rovesHint"),
                 },
                 {
-                    label: "Tauri",
+                    label: t("tauri"),
                     value: EngineEnum.Tauri,
-                    hint: "Custom Rust backend; requires native build tools",
+                    hint: t("tauriHint"),
                 },
             ],
             initialValue: EngineEnum.Roves,
         });
         if (isCancel(selectedEngine)) {
-            cancel("Operation cancelled.");
+            cancel(t("operationCancelled"));
             process.exit(0);
         }
         engine = selectedEngine;
         if (engine === EngineEnum.Tauri) {
             const selectedIdentifier = await text({
-                message: "Project identifier:",
+                message: t("projectIdentifier"),
                 initialValue: `com.${packageName}.app`,
                 validate: (value) => {
                     if (!value) {
-                        return "Identifier is required.";
+                        return t("identifierRequired");
                     }
                     if (!/^[a-zA-Z0-9_.\-]+$/.test(value)) {
-                        return "Identifier can only contain letters, numbers, underscores, dots and dashes.";
+                        return t("identifierInvalid");
                     }
                 },
             });
             if (isCancel(selectedIdentifier)) {
-                cancel("Operation cancelled.");
+                cancel(t("operationCancelled"));
                 process.exit(0);
             }
             identifier = selectedIdentifier;

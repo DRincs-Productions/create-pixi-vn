@@ -2,6 +2,7 @@ import { confirm, isCancel, log, multiselect } from "@clack/prompts";
 import { execa } from "execa";
 import fs from "node:fs";
 import path from "node:path";
+import t from "../i18n";
 
 type AgentTarget =
     | "codex"
@@ -23,16 +24,19 @@ const skillPackages = [
         dependency: "@drincs/pixi-vn",
         repository: "DRincs-Productions/pixi-vn@latest",
         label: "Pixi’VN",
+        name: "pixi-vn",
     },
     {
         dependency: "@drincs/pixi-vn-ink",
         repository: "DRincs-Productions/pixi-vn-ink@latest",
         label: "Pixi’VN Ink",
+        name: "pixi-vn-ink",
     },
     {
         dependency: "@drincs/nqtr",
         repository: "DRincs-Productions/nqtr@latest",
         label: "NQTR",
+        name: "nqtr",
     },
 ];
 
@@ -51,66 +55,65 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
     if (matchingSkills.length === 0) return;
 
     const shouldInstall = await confirm({
-        message: "Install matching AI skills globally for this project?",
-        initialValue: false,
+        message: t("aiInstallPrompt"),
+        initialValue: true,
     });
     if (isCancel(shouldInstall)) {
-        log.info("Skipping AI skill installation.");
+        log.info(t("aiSkip"));
         return;
     }
     if (!shouldInstall) return;
 
     const agentTargets = await multiselect<AgentTarget>({
-        message: "Select every AI agent where you want to install the skills:",
+        message: t("aiAgentPrompt"),
         options: [
             {
                 value: "codex",
                 label: "Codex",
-                hint: "Installs to ~/.agents/skills",
+                hint: t("pathHint", { path: "~/.agents/skills" }),
             },
             {
                 value: "claude-code",
                 label: "Claude Code",
-                hint: "Installs to ~/.claude/skills",
+                hint: t("pathHint", { path: "~/.claude/skills" }),
             },
             {
                 value: "cursor",
                 label: "Cursor",
-                hint: "Installs to ~/.cursor/skills",
+                hint: t("pathHint", { path: "~/.cursor/skills" }),
             },
             {
                 value: "github-copilot",
                 label: "GitHub Copilot",
-                hint: "Installs to ~/.copilot/skills",
+                hint: t("pathHint", { path: "~/.copilot/skills" }),
             },
             {
                 value: "gemini-cli",
                 label: "Gemini CLI",
-                hint: "Installs to ~/.gemini/skills",
+                hint: t("pathHint", { path: "~/.gemini/skills" }),
             },
             {
                 value: "opencode",
                 label: "OpenCode",
-                hint: "Installs to ~/.config/opencode/skills",
+                hint: t("pathHint", { path: "~/.config/opencode/skills" }),
             },
             {
                 value: "universal",
                 label: "Other (Universal)",
-                hint: "Shared skills directory: ~/.config/agents/skills",
+                hint: t("universalHint"),
             },
         ],
-        initialValues: ["codex"],
+        initialValues: ["universal"],
         required: true,
     });
     if (isCancel(agentTargets)) {
-        log.info("Skipping AI skill installation.");
+        log.info(t("aiSkip"));
         return;
     }
 
     for (const skill of matchingSkills) {
-        log.step(`Installing ${skill.label} skill...`);
         try {
-            await execa(
+            const subprocess = execa(
                 "npx",
                 [
                     "--yes",
@@ -124,10 +127,35 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
                     "-g",
                     "-y",
                 ],
-                { cwd: rootFolder, stdio: "inherit" },
+                { cwd: rootFolder, stdio: "pipe" },
             );
+            let pendingOutput = "";
+            let hasShownProgress = false;
+            const captureProgress = (chunk: Buffer | string) => {
+                if (hasShownProgress) return;
+                pendingOutput += String(chunk).replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, "");
+                const allSkillsMatch = pendingOutput.match(/Installing all\s+(\d+)\s+skills?/i);
+                const singleSkillMatch = pendingOutput.match(/Skill:\s*([^\r\n]+)/i);
+                if (allSkillsMatch) {
+                    log.step(
+                        t("installingSkillsFor", {
+                            count: allSkillsMatch[1],
+                            name: skill.name,
+                        }),
+                    );
+                    hasShownProgress = true;
+                } else if (singleSkillMatch) {
+                    log.step(t("installingSkillsFor", { count: "1", name: skill.name }));
+                    hasShownProgress = true;
+                } else {
+                    pendingOutput = pendingOutput.slice(-200);
+                }
+            };
+            subprocess.stdout.on("data", captureProgress);
+            subprocess.stderr.on("data", captureProgress);
+            await subprocess;
         } catch (error) {
-            log.error(`Could not install ${skill.label} skills: ${error}`);
+            log.error(t("skillInstallError", { name: skill.label, error: String(error) }));
         }
     }
 }

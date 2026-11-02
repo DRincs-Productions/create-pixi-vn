@@ -3,13 +3,15 @@ import NarrativeLanguagesEnum from "./enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "./enum/UIFrameworkEnum";
 import EngineEnum from "./enum/EngineEnum";
 import GameTypes from "./types/GameTypes";
+import t from "./i18n";
 
 export const DEFAULT_PROJECT_NAME = "My Game";
 export const DEFAULT_PACKAGE_NAME = "my-game";
 export const GAME_TYPES: GameTypes[] = [
     {
         type: GameTypesEnum.VisualNovel,
-        name: "Visual Novel",
+        name: t("gameVisualNovel"),
+        hint: t("visualNovelHint"),
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [
             NarrativeLanguagesEnum.Ink,
@@ -20,7 +22,8 @@ export const GAME_TYPES: GameTypes[] = [
     },
     {
         type: GameTypesEnum.PointAndClick,
-        name: "Point & Click Adventure",
+        name: t("gamePointAndClick"),
+        hint: t("pointAndClickHint"),
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [
             NarrativeLanguagesEnum.Ink,
@@ -31,7 +34,8 @@ export const GAME_TYPES: GameTypes[] = [
     },
     {
         type: GameTypesEnum.InteractiveFiction,
-        name: "Interactive Fiction",
+        name: t("gameInteractiveFiction"),
+        hint: t("interactiveFictionHint"),
         availableUI: [UIFrameworkEnum.React],
         availableNarrativeLanguages: [
             NarrativeLanguagesEnum.Ink,
@@ -42,7 +46,8 @@ export const GAME_TYPES: GameTypes[] = [
     },
     {
         type: GameTypesEnum.GameEngine,
-        name: "Game Engine",
+        name: t("gameEngine"),
+        hint: t("gameEngineHint"),
         availableUI: [],
         availableNarrativeLanguages: [],
         availableEngines: [],
@@ -50,7 +55,8 @@ export const GAME_TYPES: GameTypes[] = [
     },
     {
         type: GameTypesEnum.Library,
-        name: "Library",
+        name: t("gameLibrary"),
+        hint: t("libraryHint"),
         availableUI: [],
         availableNarrativeLanguages: [],
         availableEngines: [],
