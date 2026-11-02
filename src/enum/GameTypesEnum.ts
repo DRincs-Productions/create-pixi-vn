@@ -1,6 +1,7 @@
 enum GameTypesEnum {
     VisualNovel,
     PointAndClick,
+    InteractiveFiction,
     GameEngine,
     Library,
 }

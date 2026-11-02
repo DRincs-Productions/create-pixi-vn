@@ -103,6 +103,43 @@ export default async function selectTemplate(): Promise<{
                     process.exit(0);
             }
             break;
+        case GameTypesEnum.InteractiveFiction:
+            switch (UIFramework) {
+                case UIFrameworkEnum.React:
+                    switch (narrativeLanguage) {
+                        case NarrativeLanguagesEnum.Typescript:
+                            if (multidevice) {
+                                template = "templates/react/interactive-fiction-tauri";
+                            } else {
+                                template = "templates/react/interactive-fiction";
+                            }
+                            fileToOpen = "src/content/labels/start.label.ts";
+                            break;
+                        case NarrativeLanguagesEnum.Ink:
+                            if (multidevice) {
+                                template = "templates/react/interactive-fiction-ink-tauri";
+                            } else {
+                                template = "templates/react/interactive-fiction-ink";
+                            }
+                            fileToOpen = "ink/start.ink";
+                            break;
+                        case NarrativeLanguagesEnum.Renpy:
+                            cancel("Error: There are no templates for this narrative language");
+                            process.exit(0);
+                        default:
+                            cancel("Error: Unknown narrative language");
+                            process.exit(0);
+                    }
+                    break;
+                case UIFrameworkEnum.Vue:
+                case UIFrameworkEnum.Angular:
+                    cancel("Error: There are no templates for this game type and UI framework");
+                    process.exit(0);
+                default:
+                    cancel("Error: Unknown UI framework");
+                    process.exit(0);
+            }
+            break;
         case GameTypesEnum.GameEngine:
             template = "templates/game-engine";
             fileToOpen = "src/index.ts";
@@ -133,22 +170,4 @@ export default async function selectTemplate(): Promise<{
         fileToOpen,
         canReplaceUI,
     };
-}
-
-function copyDir(srcDir: string, destDir: string) {
-    fs.mkdirSync(destDir, { recursive: true });
-    for (const file of fs.readdirSync(srcDir)) {
-        const srcFile = path.resolve(srcDir, file);
-        const destFile = path.resolve(destDir, file);
-        copy(srcFile, destFile);
-    }
-}
-
-function copy(src: string, dest: string) {
-    const stat = fs.statSync(src);
-    if (stat.isDirectory()) {
-        copyDir(src, dest);
-    } else {
-        fs.copyFileSync(src, dest);
-    }
 }

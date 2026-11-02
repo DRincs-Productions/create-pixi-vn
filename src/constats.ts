@@ -29,6 +29,17 @@ export const GAME_TYPES: GameTypes[] = [
         canReplaceUI: true,
     },
     {
+        type: GameTypesEnum.InteractiveFiction,
+        name: "Interactive Fiction",
+        availableUI: [UIFrameworkEnum.React],
+        availableNarrativeLanguages: [
+            NarrativeLanguagesEnum.Ink,
+            NarrativeLanguagesEnum.Typescript,
+        ],
+        isMultidevice: true,
+        canReplaceUI: true,
+    },
+    {
         type: GameTypesEnum.GameEngine,
         name: "Game Engine",
         availableUI: [],
