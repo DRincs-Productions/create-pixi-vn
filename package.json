@@ -11,16 +11,7 @@
   },
   "files": [
     "index.js",
-    "template-game-engine",
-    "template-react-vite-muijoy",
-    "template-react-vite-muijoy-ink",
-    "template-react-vite-muijoy-ink-tauri",
-    "template-react-vite-muijoy-tauri",
-    "template-nqtr-react-vite-muijoy",
-    "template-nqtr-react-vite-muijoy-ink",
-    "template-nqtr-react-vite-muijoy-ink-tauri",
-    "template-nqtr-react-vite-muijoy-tauri",
-    "template-lib",
+    "template",
     "dist"
   ],
   "scripts": {

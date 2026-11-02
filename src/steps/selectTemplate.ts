@@ -35,17 +35,17 @@ export default async function selectTemplate(): Promise<{
                     switch (narrativeLanguage) {
                         case NarrativeLanguagesEnum.Typescript:
                             if (multidevice) {
-                                template = "template-react-vite-muijoy-tauri";
+                                template = "template/react/visual-novel-tauri";
                             } else {
-                                template = "template-react-vite-muijoy";
+                                template = "template/react/visual-novel";
                             }
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
                             if (multidevice) {
-                                template = "template-react-vite-muijoy-ink-tauri";
+                                template = "template/react/visual-novel-ink-tauri";
                             } else {
-                                template = "template-react-vite-muijoy-ink";
+                                template = "template/react/visual-novel-ink";
                             }
                             fileToOpen = "ink/start.ink";
                             break;
@@ -72,17 +72,17 @@ export default async function selectTemplate(): Promise<{
                     switch (narrativeLanguage) {
                         case NarrativeLanguagesEnum.Typescript:
                             if (multidevice) {
-                                template = "template-nqtr-react-vite-muijoy-tauri";
+                                template = "template/react/point-and-click-tauri";
                             } else {
-                                template = "template-nqtr-react-vite-muijoy";
+                                template = "template/point-and-click";
                             }
                             fileToOpen = "src/content/labels/start.label.ts";
                             break;
                         case NarrativeLanguagesEnum.Ink:
                             if (multidevice) {
-                                template = "template-nqtr-react-vite-muijoy-ink-tauri";
+                                template = "template/react/point-and-click-ink-tauri";
                             } else {
-                                template = "template-nqtr-react-vite-muijoy-ink";
+                                template = "template/react/point-and-click-ink";
                             }
                             fileToOpen = "ink/start.ink";
                             break;
@@ -104,11 +104,11 @@ export default async function selectTemplate(): Promise<{
             }
             break;
         case GameTypesEnum.GameEngine:
-            template = "template-game-engine";
+            template = "template/game-engine";
             fileToOpen = "src/index.ts";
             break;
         case GameTypesEnum.Library:
-            template = "template-lib";
+            template = "template/lib";
             fileToOpen = "src/index.ts";
             break;
         default:
