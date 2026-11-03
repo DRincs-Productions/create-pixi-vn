@@ -53,7 +53,3 @@
 	path = templates/react/interactive-fiction-ink-tauri
 	url = https://github.com/DRincs-Productions/interactive-fiction-react-template
 	branch = ink-tauri
-[submodule "templates/react/interactive-fiction-deploy"]
-	path = templates/react/interactive-fiction-deploy
-	url = https://github.com/DRincs-Productions/interactive-fiction-react-template
-	branch = deploy
