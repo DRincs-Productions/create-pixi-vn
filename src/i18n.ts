@@ -17,6 +17,13 @@ const translations = {
             "Love Pixi’VN but want an engine tailored to your game? Use Pixi’VN and its libraries as a solid foundation for your own engine.",
         libraryHint:
             "Extend the Pixi’VN ecosystem with new features that other projects can reuse.",
+        pluginsPrompt: "Select the plugins to add (optional, space to select):",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Animated Live2D characters (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Skeletal Spine 2D animations (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "Plugin dependencies were added to package.json; they will be installed with your next install.",
         uiPrompt: "Select the UI framework you want to use:",
         onlyUI: "Only one UI framework available: {name}. Using it by default.",
         narrativePrompt: "Select the narrative language you want to use:",
@@ -123,6 +130,13 @@ const translations = {
             "Ti piace Pixi’VN ma vuoi un engine su misura per il tuo gioco? Usa Pixi’VN e le sue librerie come base solida per crearne uno.",
         libraryHint:
             "Estendi l’ecosistema Pixi’VN con nuove funzionalità riutilizzabili in altri progetti.",
+        pluginsPrompt: "Seleziona i plugin da aggiungere (opzionale, spazio per selezionare):",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Personaggi animati Live2D (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Animazioni scheletriche Spine 2D (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "Le dipendenze dei plugin sono state aggiunte a package.json; verranno installate al prossimo install.",
         uiPrompt: "Seleziona il framework UI da usare:",
         onlyUI: "È disponibile un solo framework UI: {name}. Verrà usato automaticamente.",
         narrativePrompt: "Seleziona il linguaggio narrativo da usare:",
@@ -229,6 +243,14 @@ const translations = {
             "¿Te gusta Pixi’VN pero quieres un motor adaptado a tu juego? Usa Pixi’VN y sus bibliotecas como base sólida para crear tu propio motor.",
         libraryHint:
             "Amplía el ecosistema Pixi’VN con nuevas funciones reutilizables en otros proyectos.",
+        pluginsPrompt:
+            "Selecciona los plugins que quieres añadir (opcional, espacio para seleccionar):",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Personajes animados Live2D (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Animaciones esqueléticas Spine 2D (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "Las dependencias de los plugins se han añadido a package.json; se instalarán en tu próxima instalación.",
         uiPrompt: "Selecciona el framework de interfaz:",
         onlyUI: "Solo hay un framework de interfaz disponible: {name}. Se usará automáticamente.",
         narrativePrompt: "Selecciona el lenguaje narrativo:",
@@ -335,6 +357,14 @@ const translations = {
             "Vous aimez Pixi’VN, mais souhaitez un moteur adapté à votre jeu ? Utilisez Pixi’VN et ses bibliothèques comme base solide pour créer votre propre moteur.",
         libraryHint:
             "Étendez l’écosystème Pixi’VN avec de nouvelles fonctionnalités réutilisables dans d’autres projets.",
+        pluginsPrompt:
+            "Sélectionnez les plugins à ajouter (facultatif, espace pour sélectionner) :",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Personnages animés Live2D (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Animations squelettiques Spine 2D (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "Les dépendances des plugins ont été ajoutées à package.json ; elles seront installées lors de votre prochaine installation.",
         uiPrompt: "Sélectionnez le framework d’interface :",
         onlyUI: "Un seul framework d’interface est disponible : {name}. Il sera utilisé par défaut.",
         narrativePrompt: "Sélectionnez le langage narratif :",
@@ -442,6 +472,14 @@ const translations = {
             "Du magst Pixi’VN, möchtest aber eine Engine, die genau zu deinem Spiel passt? Nutze Pixi’VN und seine Bibliotheken als solide Grundlage für deine eigene Engine.",
         libraryHint:
             "Erweitere das Pixi’VN-Ökosystem um neue Funktionen, die andere Projekte wiederverwenden können.",
+        pluginsPrompt:
+            "Wähle die Plugins aus, die hinzugefügt werden sollen (optional, Leertaste zum Auswählen):",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Animierte Live2D-Charaktere (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Skelettanimationen mit Spine 2D (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "Die Plugin-Abhängigkeiten wurden zu package.json hinzugefügt; sie werden bei der nächsten Installation installiert.",
         uiPrompt: "Wähle das UI-Framework aus:",
         onlyUI: "Nur ein UI-Framework verfügbar: {name}. Es wird automatisch verwendet.",
         narrativePrompt: "Wähle die Erzählsprache aus:",
@@ -548,6 +586,13 @@ const translations = {
             "Gosta de Pixi’VN, mas quer uma engine adaptada ao seu jogo? Use Pixi’VN e suas bibliotecas como uma base sólida para criar a sua própria engine.",
         libraryHint:
             "Expanda o ecossistema Pixi’VN com novos recursos reutilizáveis em outros projetos.",
+        pluginsPrompt: "Selecione os plugins a adicionar (opcional, espaço para selecionar):",
+        pluginLive2D: "Live2D",
+        pluginLive2DHint: "Personagens animados Live2D (@drincs/pixi-vn-live2d).",
+        pluginSpine2D: "Spine 2D",
+        pluginSpine2DHint: "Animações esqueléticas Spine 2D (@drincs/pixi-vn-spine).",
+        pluginsInstallNote:
+            "As dependências dos plugins foram adicionadas ao package.json; serão instaladas na sua próxima instalação.",
         uiPrompt: "Selecione o framework de interface:",
         onlyUI: "Há apenas um framework de interface disponível: {name}. Ele será usado automaticamente.",
         narrativePrompt: "Selecione a linguagem narrativa:",
@@ -650,7 +695,9 @@ const language = systemLocale.split(/[-_.@]/)[0]?.toLowerCase() as Locale;
 const locale: Locale = language in translations ? language : "en";
 
 export default function t(key: TranslationKey, values?: Record<string, string>): string {
-    let message: string = translations[locale][key] ?? translations.en[key];
+    let message: string =
+        (translations[locale] as Partial<Record<TranslationKey, string>>)[key] ??
+        translations.en[key];
     for (const [name, value] of Object.entries(values ?? {})) {
         message = message.replaceAll(`{${name}}`, value);
     }

@@ -1,9 +1,11 @@
-import { cancel, isCancel, log, note, select, text } from "@clack/prompts";
+import { cancel, isCancel, log, multiselect, note, select, text } from "@clack/prompts";
 import { cyan, gray, lightRed, red } from "kolorist";
 import { GAME_TYPES } from "../constats";
 import NarrativeLanguagesEnum from "../enum/NarrativeLanguagesEnum";
 import UIFrameworkEnum from "../enum/UIFrameworkEnum";
 import EngineEnum from "../enum/EngineEnum";
+import GameTypesEnum from "../enum/GameTypesEnum";
+import PluginEnum from "../enum/PluginEnum";
 import t from "../i18n";
 
 export default async function gameTypeQuestions({ packageName }: { packageName: string }) {
@@ -145,7 +147,32 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
             identifier = "";
         }
     }
+    let plugins: PluginEnum[] = [];
+    if (gameType === GameTypesEnum.VisualNovel || gameType === GameTypesEnum.PointAndClick) {
+        const selectedPlugins = await multiselect({
+            message: t("pluginsPrompt"),
+            options: [
+                {
+                    label: t("pluginLive2D"),
+                    value: PluginEnum.Live2D,
+                    hint: t("pluginLive2DHint"),
+                },
+                {
+                    label: t("pluginSpine2D"),
+                    value: PluginEnum.Spine2D,
+                    hint: t("pluginSpine2DHint"),
+                },
+            ],
+            required: false,
+        });
+        if (isCancel(selectedPlugins)) {
+            cancel(t("operationCancelled"));
+            process.exit(0);
+        }
+        plugins = selectedPlugins;
+    }
     return {
+        plugins,
         gameType,
         UIFramework,
         narrativeLanguage,

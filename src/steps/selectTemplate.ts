@@ -7,6 +7,7 @@ import UIFrameworkEnum from "../enum/UIFrameworkEnum";
 import EngineEnum from "../enum/EngineEnum";
 import gameTypeQuestions from "../questions/gameTypeQuestions";
 import projectInfoQuestions from "../questions/projectInfoQuestions";
+import installPlugins from "./installPlugins";
 import creatingProject from "./creatingProject";
 import t from "../i18n";
 
@@ -21,9 +22,10 @@ export default async function selectTemplate(): Promise<{
 
     let { description, overwrite, packageName, projectName, foltderName } =
         await projectInfoQuestions();
-    let { UIFramework, gameType, narrativeLanguage, engine, identifier } = await gameTypeQuestions({
-        packageName,
-    });
+    let { UIFramework, gameType, narrativeLanguage, engine, identifier, plugins } =
+        await gameTypeQuestions({
+            packageName,
+        });
 
     const rootFolder = path.join(cwd, foltderName);
 
@@ -162,6 +164,8 @@ export default async function selectTemplate(): Promise<{
         overwrite,
         identifier,
     });
+
+    installPlugins({ rootFolder, plugins });
 
     const canReplaceUI = GAME_TYPES.find((f) => f.type === gameType)?.canReplaceUI ?? false;
 
