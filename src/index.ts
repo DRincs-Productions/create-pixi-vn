@@ -9,6 +9,7 @@ import which from "which";
 import gitInit from "./steps/gitInit";
 import selectIDE from "./steps/selectIDE";
 import selectTemplate from "./steps/selectTemplate";
+import selectUIStyle from "./steps/selectUIStyle";
 import installAgentSkills from "./steps/installAgentSkills";
 import { asciiArtLog } from "./utils/easter-egg";
 import { pkgFromUserAgent } from "./utils/pkg-utility";
@@ -54,6 +55,7 @@ async function init() {
 
         if (canReplaceUI) {
             log.info(t("uiTheme"));
+            const uiPreset = await selectUIStyle();
             await tasks([
                 {
                     title: t("installingShadcn"),
@@ -72,14 +74,17 @@ async function init() {
                     },
                 },
             ]);
-            log.step(t("runningUIReinit"));
+            log.step(t("applyingUIStyle"));
+            // Same as the template's `ui:reinit` script, plus the preset chosen above.
+            await execa(
+                "npx",
+                ["shadcn@latest", "init", "-f", "-b", "base", "--reinstall", "--preset", uiPreset],
+                { cwd: rootFolder, stdio: "inherit" },
+            );
             if (pkgManager === "yarn") {
-                await execa("yarn", ["ui:reinit"], { cwd: rootFolder, stdio: "inherit" });
+                await execa("yarn", ["format"], { cwd: rootFolder, stdio: "inherit" });
             } else {
-                await execa(pkgManager, ["run", "ui:reinit"], {
-                    cwd: rootFolder,
-                    stdio: "inherit",
-                });
+                await execa(pkgManager, ["run", "format"], { cwd: rootFolder, stdio: "inherit" });
             }
         }
 

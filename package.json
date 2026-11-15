@@ -43,6 +43,7 @@
     "inquirer": "^14.2.5",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
+    "shadcn": "^4.23.0",
     "unbuild": "^3.6.1"
   },
   "dependencies": {
