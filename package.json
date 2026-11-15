@@ -5,6 +5,16 @@
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
+  "keywords": [
+    "pixi-vn",
+    "pixijs",
+    "visual-novel",
+    "game",
+    "game-development",
+    "project-scaffolding",
+    "cli",
+    "starter-template"
+  ],
   "bin": {
     "create-pixi-vn": "index.js",
     "cva": "index.js"
