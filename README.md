@@ -16,9 +16,10 @@ You can start using Pixi’VN by initializing a new project.
 
 Before starting, you must have the following tools installed:
 
-* [Node.js](https://nodejs.org/) version 20.17+, 22.13+, or 23.5+.
-* Text Editor with TypeScript support.
-  * [Visual Studio Code](https://code.visualstudio.com/)
-  * [Cursor](https://www.cursor.com/)
-* (Recommended) [Git](https://git-scm.com/)
-  * Have a [GitHub account](https://github.com/)
+- [Node.js](https://nodejs.org/) version 20.19.0 or higher.
+- Text editor with TypeScript support or AI coding app, such as:
+  - [Visual Studio Code](https://code.visualstudio.com/)
+  - [Cursor](https://www.cursor.com/)
+  - [ChatGPT](https://chatgpt.com/download/)
+  - [Claude](https://claude.com/download)
+  - [OpenCode](https://opencode.ai/)
