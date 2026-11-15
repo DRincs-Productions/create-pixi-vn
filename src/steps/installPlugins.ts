@@ -7,6 +7,8 @@ type PluginConfig = {
     mainImports: string[];
     hashtagImport: string;
     hashtagCall: string;
+    /** Vite `manualChunks` rule, inserted before the `pixi.js` chunk rule. */
+    manualChunk: string;
 };
 
 const PLUGINS: Record<PluginEnum, PluginConfig> = {
@@ -15,6 +17,7 @@ const PLUGINS: Record<PluginEnum, PluginConfig> = {
         mainImports: [`import "@drincs/pixi-vn-spine";`],
         hashtagImport: `import { createSpineHandler } from "@drincs/pixi-vn-spine/ink";`,
         hashtagCall: "createSpineHandler();",
+        manualChunk: `if (id.includes("@drincs/pixi-vn-spine")) return "spine";`,
     },
     [PluginEnum.Live2D]: {
         dependency: "@drincs/pixi-vn-live2d",
@@ -25,6 +28,7 @@ const PLUGINS: Record<PluginEnum, PluginConfig> = {
         ],
         hashtagImport: `import { createLive2DHandler } from "@drincs/pixi-vn-live2d/ink";`,
         hashtagCall: "createLive2DHandler();",
+        manualChunk: `if (id.includes("@drincs/pixi-vn-live2d")) return "live2d";`,
     },
 };
 
@@ -83,6 +87,22 @@ export default function installPlugins({
             );
         }
         fs.writeFileSync(mainPath, content);
+    }
+
+    // vite.config.ts: plugin chunks before the pixi.js chunk
+    const vitePath = path.join(rootFolder, "vite.config.ts");
+    if (fs.existsSync(vitePath)) {
+        let content = fs.readFileSync(vitePath, "utf-8");
+        const eol = content.includes("\r\n") ? "\r\n" : "\n";
+        for (const plugin of plugins) {
+            const { manualChunk } = PLUGINS[plugin];
+            if (content.includes(manualChunk)) continue;
+            content = content.replace(
+                /^([ \t]*)(if \(id\.includes\("pixi\.js"\)\))/m,
+                (_, indent: string, rule: string) => `${indent}${manualChunk}${eol}${indent}${rule}`,
+            );
+        }
+        fs.writeFileSync(vitePath, content);
     }
 
     // hashtag-commands.ts (ink templates only)
