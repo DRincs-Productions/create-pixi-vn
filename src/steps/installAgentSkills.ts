@@ -19,24 +19,48 @@ type ProjectPackage = {
     optionalDependencies?: Record<string, string>;
 };
 
-const skillPackages = [
+type SkillPackage = {
+    /** All of these dependencies must be installed in the project. */
+    dependencies: string[];
+    repository: string;
+    label: string;
+    name: string;
+    /** Skill to install from the repository. Defaults to all skills ("*"). */
+    skill?: string;
+};
+
+const skillPackages: SkillPackage[] = [
     {
-        dependency: "@drincs/pixi-vn",
+        dependencies: ["@drincs/pixi-vn"],
         repository: "DRincs-Productions/pixi-vn@latest",
         label: "Pixi’VN",
         name: "pixi-vn",
     },
     {
-        dependency: "@drincs/pixi-vn-ink",
+        dependencies: ["@drincs/pixi-vn-ink"],
         repository: "DRincs-Productions/pixi-vn-ink@latest",
         label: "Pixi’VN Ink",
         name: "pixi-vn-ink",
     },
     {
-        dependency: "@drincs/nqtr",
+        dependencies: ["@drincs/nqtr"],
         repository: "DRincs-Productions/nqtr@latest",
         label: "NQTR",
         name: "nqtr",
+    },
+    {
+        dependencies: ["@drincs/pixi-vn-spine"],
+        repository: "DRincs-Productions/pixi-vn-spine@latest",
+        label: "Pixi’VN Spine",
+        name: "pixi-vn-spine",
+        skill: "pixi-vn-spine",
+    },
+    {
+        dependencies: ["@drincs/pixi-vn-spine", "@drincs/pixi-vn-ink"],
+        repository: "DRincs-Productions/pixi-vn-spine@latest",
+        label: "Pixi’VN Spine Ink",
+        name: "pixi-vn-spine-ink",
+        skill: "pixi-vn-spine-ink",
     },
 ];
 
@@ -50,7 +74,9 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
         ...projectPackage.devDependencies,
         ...projectPackage.optionalDependencies,
     };
-    const matchingSkills = skillPackages.filter(({ dependency }) => dependency in dependencies);
+    const matchingSkills = skillPackages.filter((skillPackage) =>
+        skillPackage.dependencies.every((dependency) => dependency in dependencies),
+    );
 
     if (matchingSkills.length === 0) return;
 
@@ -121,7 +147,7 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
                     "add",
                     skill.repository,
                     "--skill",
-                    "*",
+                    skill.skill ?? "*",
                     "--agent",
                     ...agentTargets,
                     "-g",
