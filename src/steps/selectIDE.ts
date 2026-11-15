@@ -62,9 +62,12 @@ async function openUrl(url: string) {
 export default async function selectIDE({
     rootFolder,
     fileToOpen,
+    onSelected,
 }: {
     rootFolder: string;
     fileToOpen?: string;
+    /** Runs once the choice is made, before the project is opened (e.g. OpenCode keeps the terminal busy). */
+    onSelected?: () => Promise<unknown> | unknown;
 }) {
     const ide = await select({
         message: t("idePrompt"),
@@ -83,6 +86,7 @@ export default async function selectIDE({
         cancel(t("operationCancelled"));
         process.exit(0);
     }
+    await onSelected?.();
     if (ide === undefined) return;
 
     await openProjectWith(ide, { rootFolder, fileToOpen });

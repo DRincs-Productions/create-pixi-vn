@@ -102,8 +102,11 @@ async function init() {
         log.message(endLog);
         outro(t("finish"));
 
-        await open("https://pixi-vn.com/start/templates");
-        await selectIDE({ rootFolder, fileToOpen });
+        await selectIDE({
+            rootFolder,
+            fileToOpen,
+            onSelected: () => open("https://pixi-vn.com/start/templates"),
+        });
 
         console.log();
     } catch (error) {
