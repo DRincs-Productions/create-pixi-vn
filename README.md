@@ -10,7 +10,11 @@
   <a target="_blank" href="https://discord.gg/E95FZWakzp" rel="noopener noreferrer nofollow"><img alt="Discord" src="https://img.shields.io/discord/1263071210011496501?color=7289da&label=discord"></a>
 </p>
 
-You can start using Pixi’VN by initializing a new project.
+You can start using Pixi’VN by initializing a new project. To create a new project from a template, run:
+
+```npm
+npm create pixi-vn@latest
+```
 
 ## Prerequisites
 
