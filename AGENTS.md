@@ -21,3 +21,5 @@ Whenever support for installing a plugin is added or changed, add or update regr
 ## Release checks
 
 Whenever preparing a release, update the shadcn CLI dependency and its lockfile to the current version. Before releasing, quickly check that the latest commits on all branches configured in `.gitmodules` still work with the templates. The templates are deployed almost daily and already use `latest` for their dependencies, so this check should focus on compatibility with those current template commits.
+
+Before every release, use GitHub to inspect the latest CI runs for each repository and branch in `.gitmodules`. Compare run commit SHAs with the branch heads. Report failed, missing, pending, or stale checks separately; do not treat an absent run as a passing build. Run `npm test` after updating templates, including the regression cases that use the actual template files.

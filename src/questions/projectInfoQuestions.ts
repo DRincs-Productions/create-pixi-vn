@@ -1,7 +1,7 @@
 import { cancel, isCancel, select, text } from "@clack/prompts";
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_PACKAGE_NAME, DEFAULT_PROJECT_NAME } from "../constats";
+import { DEFAULT_PROJECT_NAME } from "../constats";
 import OverwriteEnum from "../enum/OverwriteEnum";
 import { isEmptyDir } from "../utils/dir-utility";
 import { isValidPackageName, toValidPackageName } from "../utils/package-utility";

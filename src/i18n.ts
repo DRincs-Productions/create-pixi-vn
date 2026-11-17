@@ -18,6 +18,8 @@ const translations = {
         libraryHint:
             "Extend the Pixi’VN ecosystem with new features that other projects can reuse.",
         pluginsPrompt: "Select the plugins to add (optional, space to select):",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Quest journal and progression (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Animated Live2D characters (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -119,7 +121,8 @@ const translations = {
         uiStyleRheaHint: "Clean and minimal · Inter font",
         uiStyleCustom: "Custom",
         uiStyleCustomHint: "Build your own theme on the shadcn website",
-        uiCustomNote: "1. Open {url} (it should open in your browser now).\n2. Pick style, colors, font, radius and the rest of the theme.\n3. Copy the preset code shown on the site.\n4. Paste it below.\nIcons will always be Lucide, whatever you choose on the site.",
+        uiCustomNote:
+            "1. Open {url} (it should open in your browser now).\n2. Pick style, colors, font, radius and the rest of the theme.\n3. Copy the preset code shown on the site.\n4. Paste it below.\nIcons will always be Lucide, whatever you choose on the site.",
         uiCustomCodePrompt: "Paste the preset code:",
         uiCustomCodeInvalid: "This is not a valid shadcn preset code.",
         applyingUIStyle: "Applying the interface style...",
@@ -151,6 +154,8 @@ const translations = {
         libraryHint:
             "Estendi l’ecosistema Pixi’VN con nuove funzionalità riutilizzabili in altri progetti.",
         pluginsPrompt: "Seleziona i plugin da aggiungere (opzionale, spazio per selezionare):",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Diario delle missioni e avanzamento (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Personaggi animati Live2D (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -252,7 +257,8 @@ const translations = {
         uiStyleRheaHint: "Pulito e minimale · font Inter",
         uiStyleCustom: "Personalizzato",
         uiStyleCustomHint: "Crea il tuo tema sul sito di shadcn",
-        uiCustomNote: "1. Apri {url} (dovrebbe aprirsi ora nel browser).\n2. Scegli stile, colori, font, raggio e il resto del tema.\n3. Copia il codice preset mostrato sul sito.\n4. Incollalo qui sotto.\nLe icone saranno sempre Lucide, qualunque cosa scegli sul sito.",
+        uiCustomNote:
+            "1. Apri {url} (dovrebbe aprirsi ora nel browser).\n2. Scegli stile, colori, font, raggio e il resto del tema.\n3. Copia il codice preset mostrato sul sito.\n4. Incollalo qui sotto.\nLe icone saranno sempre Lucide, qualunque cosa scegli sul sito.",
         uiCustomCodePrompt: "Incolla il codice preset:",
         uiCustomCodeInvalid: "Non è un codice preset di shadcn valido.",
         applyingUIStyle: "Applicazione dello stile dell'interfaccia...",
@@ -285,6 +291,8 @@ const translations = {
             "Amplía el ecosistema Pixi’VN con nuevas funciones reutilizables en otros proyectos.",
         pluginsPrompt:
             "Selecciona los plugins que quieres añadir (opcional, espacio para seleccionar):",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Diario de misiones y progreso (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Personajes animados Live2D (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -386,7 +394,8 @@ const translations = {
         uiStyleRheaHint: "Limpio y minimalista · fuente Inter",
         uiStyleCustom: "Personalizado",
         uiStyleCustomHint: "Crea tu propio tema en la web de shadcn",
-        uiCustomNote: "1. Abre {url} (debería abrirse ahora en el navegador).\n2. Elige estilo, colores, fuente, radio y el resto del tema.\n3. Copia el código preset que muestra la web.\n4. Pégalo abajo.\nLos iconos siempre serán Lucide, elijas lo que elijas en la web.",
+        uiCustomNote:
+            "1. Abre {url} (debería abrirse ahora en el navegador).\n2. Elige estilo, colores, fuente, radio y el resto del tema.\n3. Copia el código preset que muestra la web.\n4. Pégalo abajo.\nLos iconos siempre serán Lucide, elijas lo que elijas en la web.",
         uiCustomCodePrompt: "Pega el código preset:",
         uiCustomCodeInvalid: "No es un código preset de shadcn válido.",
         applyingUIStyle: "Aplicando el estilo de la interfaz...",
@@ -419,6 +428,8 @@ const translations = {
             "Étendez l’écosystème Pixi’VN avec de nouvelles fonctionnalités réutilisables dans d’autres projets.",
         pluginsPrompt:
             "Sélectionnez les plugins à ajouter (facultatif, espace pour sélectionner) :",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Journal des qu?tes et progression (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Personnages animés Live2D (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -521,7 +532,8 @@ const translations = {
         uiStyleRheaHint: "Épuré et minimal · police Inter",
         uiStyleCustom: "Personnalisé",
         uiStyleCustomHint: "Créez votre propre thème sur le site de shadcn",
-        uiCustomNote: "1. Ouvrez {url} (il devrait s’ouvrir maintenant dans le navigateur).\n2. Choisissez le style, les couleurs, la police, le rayon et le reste du thème.\n3. Copiez le code preset affiché sur le site.\n4. Collez-le ci-dessous.\nLes icônes seront toujours Lucide, quel que soit votre choix sur le site.",
+        uiCustomNote:
+            "1. Ouvrez {url} (il devrait s’ouvrir maintenant dans le navigateur).\n2. Choisissez le style, les couleurs, la police, le rayon et le reste du thème.\n3. Copiez le code preset affiché sur le site.\n4. Collez-le ci-dessous.\nLes icônes seront toujours Lucide, quel que soit votre choix sur le site.",
         uiCustomCodePrompt: "Collez le code preset :",
         uiCustomCodeInvalid: "Ce n’est pas un code preset shadcn valide.",
         applyingUIStyle: "Application du style de l’interface...",
@@ -554,6 +566,8 @@ const translations = {
             "Erweitere das Pixi’VN-Ökosystem um neue Funktionen, die andere Projekte wiederverwenden können.",
         pluginsPrompt:
             "Wähle die Plugins aus, die hinzugefügt werden sollen (optional, Leertaste zum Auswählen):",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Quest-Tagebuch und Fortschritt (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Animierte Live2D-Charaktere (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -654,7 +668,8 @@ const translations = {
         uiStyleRheaHint: "Klar und minimal · Schrift Inter",
         uiStyleCustom: "Benutzerdefiniert",
         uiStyleCustomHint: "Erstelle dein eigenes Theme auf der shadcn-Website",
-        uiCustomNote: "1. Öffne {url} (sollte sich jetzt im Browser öffnen).\n2. Wähle Stil, Farben, Schrift, Radius und den Rest des Themes.\n3. Kopiere den Preset-Code, den die Website anzeigt.\n4. Füge ihn unten ein.\nDie Icons sind immer Lucide, egal was du auf der Website wählst.",
+        uiCustomNote:
+            "1. Öffne {url} (sollte sich jetzt im Browser öffnen).\n2. Wähle Stil, Farben, Schrift, Radius und den Rest des Themes.\n3. Kopiere den Preset-Code, den die Website anzeigt.\n4. Füge ihn unten ein.\nDie Icons sind immer Lucide, egal was du auf der Website wählst.",
         uiCustomCodePrompt: "Preset-Code einfügen:",
         uiCustomCodeInvalid: "Das ist kein gültiger shadcn-Preset-Code.",
         applyingUIStyle: "Oberflächenstil wird angewendet...",
@@ -687,6 +702,8 @@ const translations = {
         libraryHint:
             "Expanda o ecossistema Pixi’VN com novos recursos reutilizáveis em outros projetos.",
         pluginsPrompt: "Selecione os plugins a adicionar (opcional, espaço para selecionar):",
+        pluginQuestSystem: "Quest System",
+        pluginQuestSystemHint: "Di?rio de miss?es e progresso (@drincs/nqtr).",
         pluginLive2D: "Live2D",
         pluginLive2DHint: "Personagens animados Live2D (@drincs/pixi-vn-live2d).",
         pluginSpine2D: "Spine 2D",
@@ -787,7 +804,8 @@ const translations = {
         uiStyleRheaHint: "Limpo e minimalista · fonte Inter",
         uiStyleCustom: "Personalizado",
         uiStyleCustomHint: "Crie seu próprio tema no site do shadcn",
-        uiCustomNote: "1. Abra {url} (deve abrir agora no navegador).\n2. Escolha estilo, cores, fonte, raio e o resto do tema.\n3. Copie o código preset mostrado no site.\n4. Cole-o abaixo.\nOs ícones serão sempre Lucide, seja qual for sua escolha no site.",
+        uiCustomNote:
+            "1. Abra {url} (deve abrir agora no navegador).\n2. Escolha estilo, cores, fonte, raio e o resto do tema.\n3. Copie o código preset mostrado no site.\n4. Cole-o abaixo.\nOs ícones serão sempre Lucide, seja qual for sua escolha no site.",
         uiCustomCodePrompt: "Cole o código preset:",
         uiCustomCodeInvalid: "Este não é um código preset do shadcn válido.",
         applyingUIStyle: "Aplicando o estilo da interface...",

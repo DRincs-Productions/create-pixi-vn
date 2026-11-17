@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "2.2.12",
+  "version": "2.2.13",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -30,6 +30,7 @@
     "build": "unbuild",
     "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test test/*.test.mjs",
+    "test:template": "npm run build && node scripts/test-quest-template.mjs",
     "prepublishOnly": "npm run build",
     "format": "biome format --write"
   },

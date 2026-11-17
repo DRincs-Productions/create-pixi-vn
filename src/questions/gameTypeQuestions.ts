@@ -148,20 +148,39 @@ export default async function gameTypeQuestions({ packageName }: { packageName: 
         }
     }
     let plugins: PluginEnum[] = [];
-    if (gameType === GameTypesEnum.VisualNovel || gameType === GameTypesEnum.PointAndClick) {
+    if (
+        [
+            GameTypesEnum.VisualNovel,
+            GameTypesEnum.PointAndClick,
+            GameTypesEnum.InteractiveFiction,
+        ].includes(gameType)
+    ) {
         const selectedPlugins = await multiselect({
             message: t("pluginsPrompt"),
             options: [
-                {
-                    label: t("pluginLive2D"),
-                    value: PluginEnum.Live2D,
-                    hint: t("pluginLive2DHint"),
-                },
-                {
-                    label: t("pluginSpine2D"),
-                    value: PluginEnum.Spine2D,
-                    hint: t("pluginSpine2DHint"),
-                },
+                ...(gameType !== GameTypesEnum.PointAndClick
+                    ? [
+                          {
+                              label: t("pluginQuestSystem"),
+                              value: PluginEnum.QuestSystem,
+                              hint: t("pluginQuestSystemHint"),
+                          },
+                      ]
+                    : []),
+                ...(gameType !== GameTypesEnum.InteractiveFiction
+                    ? [
+                          {
+                              label: t("pluginLive2D"),
+                              value: PluginEnum.Live2D,
+                              hint: t("pluginLive2DHint"),
+                          },
+                          {
+                              label: t("pluginSpine2D"),
+                              value: PluginEnum.Spine2D,
+                              hint: t("pluginSpine2DHint"),
+                          },
+                      ]
+                    : []),
             ],
             required: false,
         });

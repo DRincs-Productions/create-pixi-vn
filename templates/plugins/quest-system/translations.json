@@ -1,0 +1,8 @@
+{
+  "quests": "Quests",
+  "quests_toggle_hotkey_description": "Open the quest list.",
+  "completed": "Completed",
+  "failed": "Failed",
+  "no_active_quests": "No active quests.",
+  "quest_is_in_development": "That is all for the moment. The quest is in development."
+}

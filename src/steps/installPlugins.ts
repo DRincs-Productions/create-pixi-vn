@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import PluginEnum from "../enum/PluginEnum";
+import installQuestSystem from "./installQuestSystem";
 
 type PluginConfig = {
     dependency: string;
@@ -12,6 +13,13 @@ type PluginConfig = {
 };
 
 const PLUGINS: Record<PluginEnum, PluginConfig> = {
+    [PluginEnum.QuestSystem]: {
+        dependency: "@drincs/nqtr",
+        mainImports: [],
+        hashtagImport: "",
+        hashtagCall: "",
+        manualChunk: `if (id.includes("@drincs/nqtr")) return "nqtr";`,
+    },
     [PluginEnum.Spine2D]: {
         dependency: "@drincs/pixi-vn-spine",
         mainImports: [`import "@drincs/pixi-vn-spine";`],
@@ -64,13 +72,16 @@ export function installPlugins({
         const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
         const deps: Record<string, string> = pkg.dependencies ?? {};
         for (const plugin of plugins) {
-            deps[PLUGINS[plugin].dependency] ??= "latest";
+            const dependency = PLUGINS[plugin].dependency;
+            if (!pkg.devDependencies?.[dependency]) deps[dependency] ??= "latest";
         }
         pkg.dependencies = Object.fromEntries(
             Object.entries(deps).sort(([a], [b]) => a.localeCompare(b)),
         );
         fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
     }
+
+    if (plugins.includes(PluginEnum.QuestSystem)) installQuestSystem(rootFolder);
 
     // main file: imports (plus plugin setup statements) after the other imports
     const mainPath = ["src/main.tsx", "src/main.ts"]
@@ -99,7 +110,8 @@ export function installPlugins({
             if (content.includes(manualChunk)) continue;
             content = content.replace(
                 /^([ \t]*)(if \(id\.includes\("pixi\.js"\)\))/m,
-                (_, indent: string, rule: string) => `${indent}${manualChunk}${eol}${indent}${rule}`,
+                (_, indent: string, rule: string) =>
+                    `${indent}${manualChunk}${eol}${indent}${rule}`,
             );
         }
         fs.writeFileSync(vitePath, content);
@@ -110,6 +122,7 @@ export function installPlugins({
     if (fs.existsSync(hashtagPath)) {
         let content = fs.readFileSync(hashtagPath, "utf-8");
         for (const plugin of plugins) {
+            if (plugin === PluginEnum.QuestSystem) continue;
             const { hashtagImport, hashtagCall } = PLUGINS[plugin];
             content = insertAfterImports(content, [hashtagImport]);
             if (!content.includes(hashtagCall)) {
