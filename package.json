@@ -29,6 +29,7 @@
     "dev": "unbuild --stub",
     "build": "unbuild",
     "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs",
     "prepublishOnly": "npm run build",
     "format": "biome format --write"
   },

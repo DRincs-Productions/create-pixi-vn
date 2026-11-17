@@ -13,3 +13,11 @@ When the user says “aggiorna i template” (update the templates), perform thi
 7. Verify that the branch and tag are present on `origin` and report the version, commit, and any submodules that could not be updated.
 
 Do not push commits from the template submodule repositories; this workflow fetches their changes and records their updated commits in the main repository.
+
+## Plugin installation regression tests
+
+Whenever support for installing a plugin is added or changed, add or update regression tests for that plugin installation in the same change. Cover the generated dependencies and required template setup, including relevant combinations with existing plugins.
+
+## Release checks
+
+Whenever preparing a release, update the shadcn CLI dependency and its lockfile to the current version. Before releasing, quickly check that the latest commits on all branches configured in `.gitmodules` still work with the templates. The templates are deployed almost daily and already use `latest` for their dependencies, so this check should focus on compatibility with those current template commits.

@@ -49,7 +49,7 @@ function insertAfterImports(content: string, imports: string[], statements: stri
     return lines.join("\n");
 }
 
-export default function installPlugins({
+export function installPlugins({
     rootFolder,
     plugins,
 }: {
@@ -119,3 +119,5 @@ export default function installPlugins({
         fs.writeFileSync(hashtagPath, content);
     }
 }
+
+export default installPlugins;
