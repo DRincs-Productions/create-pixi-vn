@@ -55,7 +55,7 @@ export function copy(src: string, dest: string, overwrite?: OverwriteEnum) {
         fs.mkdirSync(dest, { recursive: true });
         for (const file of fs.readdirSync(src)) {
             const srcFile = path.join(src, file);
-            const destFile = path.join(dest, file);
+            const destFile = path.join(dest, file === "_gitignore" ? ".gitignore" : file);
             copy(srcFile, destFile, overwrite);
         }
     } else {

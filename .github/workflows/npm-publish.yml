@@ -38,9 +38,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: |
           git submodule update --init --recursive
-          sudo apt install rename
           rm .gitmodules
-          for dir in */; do [[ $dir = template-* ]] && cd $dir && rm .git && rename 's/^\.git(.*)/_git$1/' .git* && ls && cd ..; done
+          node scripts/prepare-templates.mjs
           npm i
           npm ci
           npm run build

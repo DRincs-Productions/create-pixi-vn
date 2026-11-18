@@ -62,6 +62,20 @@ const skillPackages: SkillPackage[] = [
         name: "pixi-vn-spine-ink",
         skill: "pixi-vn-spine-ink",
     },
+    {
+        dependencies: ["@drincs/pixi-vn-live2d"],
+        repository: "DRincs-Productions/pixi-vn-live2d@latest",
+        label: "Pixi’VN Live2D",
+        name: "pixi-vn-live2d",
+        skill: "pixi-vn-live2d",
+    },
+    {
+        dependencies: ["@drincs/pixi-vn-live2d", "@drincs/pixi-vn-ink"],
+        repository: "DRincs-Productions/pixi-vn-live2d@latest",
+        label: "Pixi’VN Live2D Ink",
+        name: "pixi-vn-live2d-ink",
+        skill: "pixi-vn-live2d-ink",
+    },
 ];
 
 export default async function installAgentSkills({ rootFolder }: { rootFolder: string }) {
