@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import OverwriteEnum from "../enum/OverwriteEnum";
-import { copy, handleConflict } from "../utils/dir-utility";
+import { copy, emptyDir, handleConflict } from "../utils/dir-utility";
 import t from "../i18n";
 
 const renameFiles: Record<string, string | undefined> = {
@@ -88,7 +88,26 @@ export default async function creatingProject({
                 };
 
                 const filesNames = fs.readdirSync(templateDir);
+                if (overwrite === OverwriteEnum.Delete) {
+                    const relativeTemplate = path.relative(
+                        fs.realpathSync(rootFolder),
+                        fs.realpathSync(templateDir),
+                    );
+                    if (
+                        relativeTemplate === "" ||
+                        (!path.isAbsolute(relativeTemplate) &&
+                            relativeTemplate !== ".." &&
+                            !relativeTemplate.startsWith(`..${path.sep}`))
+                    ) {
+                        throw new Error("Cannot delete a directory that contains the project template.");
+                    }
+                    emptyDir(rootFolder);
+                }
+
                 const promises = filesNames.map(async (fileName) => {
+                    if (fileName === ".git" || fileName === "package-lock.json") return;
+
+
                     const srcFile = path.join(templateDir, fileName);
                     const destFile = path.join(rootFolder, renameFiles[fileName] ?? fileName);
 
@@ -134,7 +153,6 @@ export default async function creatingProject({
                                 return;
 
                             case OverwriteEnum.Overwrite:
-                            case OverwriteEnum.Delete:
                                 handleConflict(srcFile, destFile, overwrite);
                                 break;
                         }
@@ -156,9 +174,6 @@ export default async function creatingProject({
                             );
                             break;
                         }
-                        case ".git":
-                        case "package-lock.json":
-                            break;
                         default:
                             write(fileName);
                     }
