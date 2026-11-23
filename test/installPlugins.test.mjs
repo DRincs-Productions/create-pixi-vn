@@ -93,3 +93,42 @@ describe("installPlugins", () => {
         assert.equal(readProjectFile(root, "package.json"), before);
     });
 });
+
+import addPlugins, { PLUGIN_IDS } from "../dist/steps/addPlugins.mjs";
+import { existsSync } from "node:fs";
+
+describe("addPlugins (create-pixi-vn add)", () => {
+    const files = () => ({
+        "package.json": "{}",
+        "src/main.ts": 'import { Game } from "@drincs/pixi-vn";\n',
+        "vite.config.ts": 'manualChunks(id) {\n            if (id.includes("pixi.js")) return "pixi";\n        }',
+    });
+
+    it("exposes a command id for every plugin", () => {
+        assert.deepEqual(Object.keys(PLUGIN_IDS).sort(), ["live2d", "quest-system", "spine2d"]);
+    });
+
+    it("applies plugins and removes .back files", () => {
+        const root = createProject(files());
+        addPlugins({ rootFolder: root, plugins: [PLUGIN_IDS.spine2d, PLUGIN_IDS.live2d] });
+        const pkg = JSON.parse(readProjectFile(root, "package.json"));
+        assert.equal(pkg.dependencies["@drincs/pixi-vn-spine"], "latest");
+        assert.equal(pkg.dependencies["@drincs/pixi-vn-live2d"], "latest");
+        assert.ok(!existsSync(path.join(root, "package.json.back")));
+        assert.ok(!existsSync(path.join(root, "src/main.ts.back")));
+    });
+
+    it("leaves the project untouched when the dry run fails", () => {
+        const f = files();
+        f["vite.config.ts"] = "export default {};";
+        const root = createProject(f);
+        assert.throws(() => addPlugins({ rootFolder: root, plugins: [PLUGIN_IDS.spine2d] }));
+        assert.equal(readProjectFile(root, "package.json"), "{}");
+        assert.ok(!existsSync(path.join(root, "package.json.back")));
+    });
+
+    it("fails on a folder that is not a project", () => {
+        const root = createProject({ "a.txt": "x" });
+        assert.throws(() => addPlugins({ rootFolder: root, plugins: [PLUGIN_IDS.spine2d] }));
+    });
+});

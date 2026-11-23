@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import open from "open";
 import which from "which";
+import addPlugins, { PLUGIN_IDS } from "./steps/addPlugins";
 import gitInit from "./steps/gitInit";
 import selectIDE from "./steps/selectIDE";
 import selectTemplate from "./steps/selectTemplate";
@@ -20,10 +21,11 @@ import t from "./i18n";
 const argv = minimist<{
     template?: string;
     help?: boolean;
+    dir?: string;
 }>(process.argv.slice(2), {
     default: { help: false },
     alias: { h: "help", t: "template" },
-    string: ["_"],
+    string: ["_", "dir"],
 });
 const cwd = process.cwd();
 
@@ -36,6 +38,27 @@ async function init() {
         const help = argv.help;
         if (help) {
             console.log(t("help"));
+            return;
+        }
+
+        if (argv._[0] === "add") {
+            const ids = argv._.slice(1);
+            const dirIndex = ids.findIndex((i) => !(i in PLUGIN_IDS));
+            const dir = argv.dir ?? (dirIndex >= 0 ? ids.splice(dirIndex, 1)[0] : ".");
+            const unknown = ids.filter((i) => !(i in PLUGIN_IDS));
+            if (ids.length === 0 || unknown.length) {
+                console.error(`Usage: create-pixi-vn add <${Object.keys(PLUGIN_IDS).join("|")}>... [--dir <project>]`);
+                process.exitCode = 1;
+                return;
+            }
+            try {
+                addPlugins({ rootFolder: path.resolve(cwd, dir), plugins: ids.map((i) => PLUGIN_IDS[i]) });
+            } catch (error) {
+                log.error(`Cannot add plugins, project left unchanged: ${(error as Error).message}`);
+                process.exitCode = 1;
+                return;
+            }
+            outro(`Added: ${ids.join(", ")}. Run your package manager install.`);
             return;
         }
 

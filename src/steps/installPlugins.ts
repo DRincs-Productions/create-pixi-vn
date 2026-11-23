@@ -12,7 +12,7 @@ type PluginConfig = {
     manualChunk: string;
 };
 
-const PLUGINS: Record<PluginEnum, PluginConfig> = {
+export const PLUGINS: Record<PluginEnum, PluginConfig> = {
     [PluginEnum.QuestSystem]: {
         dependency: "@drincs/nqtr",
         mainImports: [],

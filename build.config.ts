@@ -1,7 +1,7 @@
 import { defineBuildConfig } from "unbuild";
 
 export default defineBuildConfig({
-    entries: ["src/index", "src/steps/installPlugins"],
+    entries: ["src/index", "src/steps/installPlugins", "src/steps/addPlugins"],
     clean: true,
     rollup: {
         inlineDependencies: true,

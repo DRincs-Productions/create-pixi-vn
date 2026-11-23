@@ -133,7 +133,7 @@ const translations = {
         openIDEError: "Could not open project using {name}, since it was not in your PATH",
         finish: "You're all set! 🎉 Now go build your game! 🚀",
         runGame: "To run the game:",
-        help: "Usage: create-pixi-vn [OPTION]... [DIRECTORY]\n\nCreate a new Pixi’VN project.\nWith no arguments, start the CLI in interactive mode.\n\nOptions:\n  -t, --template NAME        use a specific template\n\nAvailable templates:\nbasic-visual-novel       react",
+        help: "Usage: create-pixi-vn [OPTION]... [DIRECTORY]\n\nCreate a new Pixi’VN project.\nWith no arguments, start the CLI in interactive mode.\n\nCommands:\n  add <plugin>... [--dir DIR]  add plugins (quest-system, spine2d, live2d) to an existing project\n\nOptions:\n  -t, --template NAME        use a specific template\n\nAvailable templates:\nbasic-visual-novel       react",
     },
     it: {
         welcome: "Benvenuto in Pixi’VN! 🎨✨",
