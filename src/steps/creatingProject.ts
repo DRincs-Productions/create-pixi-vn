@@ -205,7 +205,14 @@ export default async function creatingProject({
                 // If _github exists → rename it to .github
                 const srcGitHubDir = path.join(rootFolder, "_github");
                 if (fs.existsSync(srcGitHubDir)) {
-                    fs.renameSync(srcGitHubDir, path.join(rootFolder, ".github"));
+                    const destGitHubDir = path.join(rootFolder, ".github");
+                    if (fs.existsSync(destGitHubDir)) {
+                        // Destination already exists (e.g. overwriting an existing project): merge instead of renaming
+                        fs.cpSync(srcGitHubDir, destGitHubDir, { recursive: true, force: true });
+                        fs.rmSync(srcGitHubDir, { recursive: true, force: true });
+                    } else {
+                        fs.renameSync(srcGitHubDir, destGitHubDir);
+                    }
                 }
 
                 return "Project created";
