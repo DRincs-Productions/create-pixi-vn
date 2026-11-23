@@ -16,6 +16,24 @@ You can start using Pixi’VN by initializing a new project. To create a new pro
 npm create pixi-vn@latest
 ```
 
+## Plugins
+
+At the end of the project creation you are asked whether to add optional plugins. You can also add them later to an existing project created from a template, from the project folder:
+
+```npm
+npm create pixi-vn@latest add <plugin>...
+```
+
+| Plugin | What it is | Command |
+| --- | --- | --- |
+| Quest system | Adds quests to your game with a quest menu in the UI, built on [NQTR](https://pixi-vn.com/nqtr) (`@drincs/nqtr`). | `npm create pixi-vn@latest add quest-system` |
+| Spine 2D | Lets you show and animate [Spine 2D](https://esotericsoftware.com/) skeletal animations for characters and objects (`@drincs/pixi-vn-spine`). | `npm create pixi-vn@latest add spine2d` |
+| Live2D | Lets you show and animate [Live2D](https://www.live2d.com/) models for characters (`@drincs/pixi-vn-live2d`). | `npm create pixi-vn@latest add live2d` |
+
+You can add several plugins at once (`npm create pixi-vn@latest add spine2d live2d`) and target another folder with `--dir <project>`.
+
+The command first tries the change on a temporary copy of the project: if it cannot be applied without errors, your project is left untouched. While it runs, modified files are backed up as `.back` files, which are removed at the end. It updates `package.json` and the template files but does not install the packages, so run your package manager's `install` afterwards.
+
 ## Prerequisites
 
 Before starting, you must have the following tools installed:
