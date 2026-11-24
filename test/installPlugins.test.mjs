@@ -105,7 +105,7 @@ describe("addPlugins (create-pixi-vn add)", () => {
     });
 
     it("exposes a command id for every plugin", () => {
-        assert.deepEqual(Object.keys(PLUGIN_IDS).sort(), ["live2d", "quest-system", "spine2d"]);
+        assert.deepEqual(Object.keys(PLUGIN_IDS).sort(), ["aseprite", "live2d", "quest-system", "spine2d"]);
     });
 
     it("applies plugins and removes .back files", () => {
@@ -163,5 +163,24 @@ describe("addPlugins (create-pixi-vn add)", () => {
         });
         installPlugins({ rootFolder: root, plugins: [] });
         assert.match(readProjectFile(root, ".assetpack.ts"), /pipes: \[aseprite\(\), \.\.\.pixiPipes\(\)\]/);
+    });
+
+    it("installs Aseprite explicitly and fails without @assetpack/core", async () => {
+        const { addPlugins } = await import("../dist/steps/addPlugins.mjs");
+        const files = {
+            "src/main.tsx": 'import "./style.css";\n',
+            ".assetpack.ts": 'export default {\n    pipes: [\n        ...pixiPipes(),\n    ],\n};\n',
+        };
+        const ok = createProject({
+            ...files,
+            "package.json": JSON.stringify({ devDependencies: { "@assetpack/core": "^1.7.0" } }),
+        });
+        addPlugins({ rootFolder: ok, plugins: [3] });
+        assert.match(readProjectFile(ok, ".assetpack.ts"), /aseprite\(\),/);
+        assert.equal(JSON.parse(readProjectFile(ok, "package.json")).devDependencies["@drincs/assetpack-plugin-aseprite"], "latest");
+
+        const ko = createProject({ ...files, "package.json": JSON.stringify({ dependencies: {} }) });
+        assert.throws(() => addPlugins({ rootFolder: ko, plugins: [3] }), /@assetpack\/core/);
+        assert.equal(readProjectFile(ko, ".assetpack.ts"), files[".assetpack.ts"]);
     });
 });

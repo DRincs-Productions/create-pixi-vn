@@ -9,6 +9,7 @@ export const PLUGIN_IDS: Record<string, PluginEnum> = {
     "quest-system": PluginEnum.QuestSystem,
     spine2d: PluginEnum.Spine2D,
     live2d: PluginEnum.Live2D,
+    aseprite: PluginEnum.Aseprite,
 };
 
 const IGNORED = new Set(["node_modules", ".git", "dist", "target", ".back"]);
@@ -37,6 +38,13 @@ function verify(rootFolder: string, plugins: PluginEnum[]) {
         const cfg = PLUGINS[plugin];
         const hasDep = pkg.dependencies?.[cfg.dependency] || pkg.devDependencies?.[cfg.dependency];
         if (!hasDep) throw new Error(`could not add ${cfg.dependency} to package.json`);
+        if (plugin === PluginEnum.Aseprite) {
+            const cfgPath = path.join(rootFolder, ".assetpack.ts");
+            if (!fs.existsSync(cfgPath) || !fs.readFileSync(cfgPath, "utf-8").includes("aseprite(")) {
+                throw new Error("could not update .assetpack.ts");
+            }
+            continue;
+        }
         for (const line of cfg.mainImports) {
             if (!mainContent.includes(line)) throw new Error(`could not update ${path.basename(main)}`);
         }

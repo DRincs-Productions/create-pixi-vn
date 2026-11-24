@@ -27,6 +27,14 @@ export const PLUGINS: Record<PluginEnum, PluginConfig> = {
         hashtagCall: "createSpineHandler();",
         manualChunk: `if (id.includes("@drincs/pixi-vn-spine")) return "spine";`,
     },
+    // Build-time AssetPack plugin: handled by `installAseprite`, no main/vite/ink changes.
+    [PluginEnum.Aseprite]: {
+        dependency: "@drincs/assetpack-plugin-aseprite",
+        mainImports: [],
+        hashtagImport: "",
+        hashtagCall: "",
+        manualChunk: "",
+    },
     [PluginEnum.Live2D]: {
         dependency: "@drincs/pixi-vn-live2d",
         mainImports: [
@@ -64,15 +72,20 @@ const ASEPRITE_IMPORT = `import { aseprite } from "${ASEPRITE_DEPENDENCY}";`;
  * Optional AssetPack plugin converting `.aseprite`, `.ase` and `.pxo` files into
  * AnimatedSprite-ready assets. Applied only when `@assetpack/core` is already installed.
  */
-export function installAseprite(rootFolder: string) {
+export function installAseprite(rootFolder: string, { required = false } = {}) {
+    const fail = (reason: string) => {
+        if (required) throw new Error(reason);
+    };
     const pkgPath = path.join(rootFolder, "package.json");
     const configPath = path.join(rootFolder, ".assetpack.ts");
-    if (!fs.existsSync(pkgPath) || !fs.existsSync(configPath)) return;
+    if (!fs.existsSync(pkgPath) || !fs.existsSync(configPath)) return fail(".assetpack.ts not found");
     const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
-    if (!pkg.dependencies?.["@assetpack/core"] && !pkg.devDependencies?.["@assetpack/core"]) return;
+    if (!pkg.dependencies?.["@assetpack/core"] && !pkg.devDependencies?.["@assetpack/core"]) {
+        return fail("@assetpack/core is not installed in this project");
+    }
 
     const original = fs.readFileSync(configPath, "utf-8");
-    if (!/pipes:\s*\[/.test(original)) return;
+    if (!/pipes:\s*\[/.test(original)) return fail("`pipes: [` not found in .assetpack.ts");
     let content = original;
     if (!content.includes("aseprite(")) {
         // multiline `pipes: [` → own line with the same indent as the next item; inline → prefix
@@ -101,7 +114,7 @@ export function installPlugins({
     rootFolder: string;
     plugins: PluginEnum[];
 }) {
-    installAseprite(rootFolder);
+    installAseprite(rootFolder, { required: plugins.includes(PluginEnum.Aseprite) });
     if (plugins.length === 0) return;
 
     // package.json: add dependencies (no install)
@@ -110,6 +123,7 @@ export function installPlugins({
         const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
         const deps: Record<string, string> = pkg.dependencies ?? {};
         for (const plugin of plugins) {
+            if (plugin === PluginEnum.Aseprite) continue;
             const dependency = PLUGINS[plugin].dependency;
             if (!pkg.devDependencies?.[dependency]) deps[dependency] ??= "latest";
         }
@@ -129,6 +143,7 @@ export function installPlugins({
         let content = fs.readFileSync(mainPath, "utf-8");
         for (const plugin of plugins) {
             const lines = PLUGINS[plugin].mainImports;
+            if (lines.length === 0) continue;
             content = insertAfterImports(
                 content,
                 lines.filter((l) => l.startsWith("import")),
@@ -145,7 +160,7 @@ export function installPlugins({
         const eol = content.includes("\r\n") ? "\r\n" : "\n";
         for (const plugin of plugins) {
             const { manualChunk } = PLUGINS[plugin];
-            if (content.includes(manualChunk)) continue;
+            if (!manualChunk || content.includes(manualChunk)) continue;
             content = content.replace(
                 /^([ \t]*)(if \(id\.includes\("pixi\.js"\)\))/m,
                 (_, indent: string, rule: string) =>
@@ -160,7 +175,7 @@ export function installPlugins({
     if (fs.existsSync(hashtagPath)) {
         let content = fs.readFileSync(hashtagPath, "utf-8");
         for (const plugin of plugins) {
-            if (plugin === PluginEnum.QuestSystem) continue;
+            if (plugin === PluginEnum.QuestSystem || plugin === PluginEnum.Aseprite) continue;
             const { hashtagImport, hashtagCall } = PLUGINS[plugin];
             content = insertAfterImports(content, [hashtagImport]);
             if (!content.includes(hashtagCall)) {
