@@ -131,4 +131,37 @@ describe("addPlugins (create-pixi-vn add)", () => {
         const root = createProject({ "a.txt": "x" });
         assert.throws(() => addPlugins({ rootFolder: root, plugins: [PLUGIN_IDS.spine2d] }));
     });
+
+    it("adds the Aseprite AssetPack plugin only when @assetpack/core is installed", () => {
+        const config = 'import { pixiPipes } from "@assetpack/core/pixi";\n\nexport default {\n    pipes: [\n        ...pixiPipes(),\n    ],\n};\n';
+        const withCore = createProject({
+            "package.json": JSON.stringify({ devDependencies: { "@assetpack/core": "^1.7.0" } }),
+            ".assetpack.ts": config,
+        });
+        installPlugins({ rootFolder: withCore, plugins: [] });
+        installPlugins({ rootFolder: withCore, plugins: [] });
+        const updated = readProjectFile(withCore, ".assetpack.ts");
+        assert.match(updated, /import \{ aseprite \} from "@drincs\/assetpack-plugin-aseprite";/);
+        assert.equal(updated.match(/aseprite\(\)/g).length, 1);
+        assert.match(updated, /pipes: \[\n        aseprite\(\),\n        \.\.\.pixiPipes\(\)/);
+        const pkg = JSON.parse(readProjectFile(withCore, "package.json"));
+        assert.equal(pkg.devDependencies["@drincs/assetpack-plugin-aseprite"], "latest");
+
+        const withoutCore = createProject({
+            "package.json": JSON.stringify({ dependencies: {} }),
+            ".assetpack.ts": config,
+        });
+        installPlugins({ rootFolder: withoutCore, plugins: [] });
+        assert.equal(readProjectFile(withoutCore, ".assetpack.ts"), config);
+        assert.equal(readProjectFile(withoutCore, "package.json").includes("aseprite"), false);
+    });
+
+    it("adds Aseprite to inline pipes arrays", () => {
+        const root = createProject({
+            "package.json": JSON.stringify({ devDependencies: { "@assetpack/core": "^1.7.0" } }),
+            ".assetpack.ts": 'import { pixiPipes } from "@assetpack/core/pixi";\nexport default { pipes: [...pixiPipes()] };\n',
+        });
+        installPlugins({ rootFolder: root, plugins: [] });
+        assert.match(readProjectFile(root, ".assetpack.ts"), /pipes: \[aseprite\(\), \.\.\.pixiPipes\(\)\]/);
+    });
 });

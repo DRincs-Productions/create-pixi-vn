@@ -35,3 +35,7 @@ npm create pixi-vn@latest add <plugin-id>... [--dir <project>]
 Plugin ids are registered in `PLUGIN_IDS` in `src/steps/addPlugins.ts` (currently `quest-system`, `spine2d`, `live2d`). Whenever a plugin is added, register its id there, list it in the `help` text in `src/i18n.ts`, and add tests for the command in `test/installPlugins.test.mjs`.
 
 `add` first dry-runs the change on a temporary copy and verifies it; only if that succeeds does it modify the project. During the real run, files are saved as `.back` and removed at the end (restored on failure). New plugins must keep `installPlugins`/`verify` consistent so the dry run can detect templates they cannot be applied to.
+
+## Plugin AI skills
+
+Every plugin that has an associated AI skill must have its entry in `skillPackages` in `src/steps/installAgentSkills.ts` (and the `-ink` variant when it exists). After `add <plugin-id>...` the `add` command calls `installAgentSkills`, the same prompt shown at project creation: it asks whether to install the skills of every package in the project, plugins included. Keep this logic when adding or changing plugins, and cover the new skill entry with tests when possible.

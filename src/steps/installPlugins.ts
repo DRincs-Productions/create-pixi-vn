@@ -57,6 +57,43 @@ function insertAfterImports(content: string, imports: string[], statements: stri
     return lines.join("\n");
 }
 
+const ASEPRITE_DEPENDENCY = "@drincs/assetpack-plugin-aseprite";
+const ASEPRITE_IMPORT = `import { aseprite } from "${ASEPRITE_DEPENDENCY}";`;
+
+/**
+ * Optional AssetPack plugin converting `.aseprite`, `.ase` and `.pxo` files into
+ * AnimatedSprite-ready assets. Applied only when `@assetpack/core` is already installed.
+ */
+export function installAseprite(rootFolder: string) {
+    const pkgPath = path.join(rootFolder, "package.json");
+    const configPath = path.join(rootFolder, ".assetpack.ts");
+    if (!fs.existsSync(pkgPath) || !fs.existsSync(configPath)) return;
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
+    if (!pkg.dependencies?.["@assetpack/core"] && !pkg.devDependencies?.["@assetpack/core"]) return;
+
+    const original = fs.readFileSync(configPath, "utf-8");
+    if (!/pipes:\s*\[/.test(original)) return;
+    let content = original;
+    if (!content.includes("aseprite(")) {
+        // multiline `pipes: [` → own line with the same indent as the next item; inline → prefix
+        content = content.replace(/^([ \t]*)pipes:\s*\[[ \t]*(\r?\n)([ \t]*)/m, (_, indent, eol, inner) => `${indent}pipes: [${eol}${inner}aseprite(),${eol}${inner}`);
+        if (!content.includes("aseprite(")) content = content.replace(/pipes:\s*\[/, "pipes: [aseprite(), ");
+    }
+    content = insertAfterImports(content, [ASEPRITE_IMPORT]);
+    if (content !== original) fs.writeFileSync(configPath, content);
+
+    // Build tool: goes next to @assetpack/core
+    const target = pkg.devDependencies?.["@assetpack/core"] ? "devDependencies" : "dependencies";
+    if (!pkg.dependencies?.[ASEPRITE_DEPENDENCY] && !pkg.devDependencies?.[ASEPRITE_DEPENDENCY]) {
+        pkg[target] = Object.fromEntries(
+            Object.entries({ ...pkg[target], [ASEPRITE_DEPENDENCY]: "latest" }).sort(([a], [b]) =>
+                a.localeCompare(b),
+            ),
+        );
+        fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
+    }
+}
+
 export function installPlugins({
     rootFolder,
     plugins,
@@ -64,6 +101,7 @@ export function installPlugins({
     rootFolder: string;
     plugins: PluginEnum[];
 }) {
+    installAseprite(rootFolder);
     if (plugins.length === 0) return;
 
     // package.json: add dependencies (no install)

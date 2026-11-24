@@ -58,6 +58,8 @@ async function init() {
                 process.exitCode = 1;
                 return;
             }
+            // Same prompt as project creation: offers the AI skills of the project's packages (including the new plugins).
+            await installAgentSkills({ rootFolder: path.resolve(cwd, dir) });
             outro(`Added: ${ids.join(", ")}. Run your package manager install.`);
             return;
         }
