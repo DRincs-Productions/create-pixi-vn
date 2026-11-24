@@ -29,7 +29,7 @@ npm create pixi-vn@latest add <plugin>...
 | Quest system | Adds quests to your game with a quest menu in the UI, built on [NQTR](https://pixi-vn.com/nqtr) (`@drincs/nqtr`). | `npm create pixi-vn@latest add quest-system` |
 | Spine 2D | Lets you show and animate [Spine 2D](https://esotericsoftware.com/) skeletal animations for characters and objects (`@drincs/pixi-vn-spine`). | `npm create pixi-vn@latest add spine2d` |
 | Live2D | Lets you show and animate [Live2D](https://www.live2d.com/) models for characters (`@drincs/pixi-vn-live2d`). | `npm create pixi-vn@latest add live2d` |
-| Aseprite | Converts `.aseprite`, `.ase` and `.pxo` files into assets usable directly by `AnimatedSprite`. | `npm create pixi-vn@latest add aseprite` |
+| Aseprite | Converts `.aseprite`, `.ase` and `.pxo` files into assets usable directly by `AnimatedSprite`, as an [AssetPack](https://pixijs.io/assetpack/) plugin (`@drincs/assetpack-plugin-aseprite`). | `npm create pixi-vn@latest add aseprite` |
 
 After adding plugins, you are asked whether to install the AI skills of the packages in your project (the same prompt shown when a project is created), so that plugins such as Live2D or Spine 2D come with their skills.
 
