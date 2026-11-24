@@ -99,15 +99,25 @@ async function init() {
             ]);
             log.step(t("applyingUIStyle"));
             // Same as the template's `ui:reinit` script, plus the preset chosen above.
-            await execa(
-                "npx",
-                ["shadcn@latest", "init", "-f", "-b", "base", "--reinstall", "--preset", uiPreset],
-                { cwd: rootFolder, stdio: "inherit" },
-            );
-            if (pkgManager === "yarn") {
-                await execa("yarn", ["format"], { cwd: rootFolder, stdio: "inherit" });
-            } else {
-                await execa(pkgManager, ["run", "format"], { cwd: rootFolder, stdio: "inherit" });
+            const shadcnArgs = ["shadcn@latest", "init", "-f", "-b", "base", "--reinstall", "--preset", uiPreset];
+            const runShadcn = (env?: Record<string, string>) =>
+                execa("npx", shadcnArgs, { cwd: rootFolder, stdio: "inherit", env });
+            try {
+                try {
+                    await runShadcn();
+                } catch {
+                    // Peer dependency conflicts (ERESOLVE) in the freshly resolved "latest" packages:
+                    // shadcn runs `npm install` internally, so the env var reaches it.
+                    log.warn(t("uiStyleRetry"));
+                    await runShadcn({ npm_config_legacy_peer_deps: "true" });
+                }
+                if (pkgManager === "yarn") {
+                    await execa("yarn", ["format"], { cwd: rootFolder, stdio: "inherit" });
+                } else {
+                    await execa(pkgManager, ["run", "format"], { cwd: rootFolder, stdio: "inherit" });
+                }
+            } catch {
+                log.warn(t("uiStyleFailed", { command: `npx ${shadcnArgs.join(" ")}` }));
             }
         }
 
