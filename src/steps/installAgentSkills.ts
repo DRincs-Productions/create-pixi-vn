@@ -25,8 +25,8 @@ type SkillPackage = {
     repository: string;
     label: string;
     name: string;
-    /** Skill to install from the repository. Defaults to all skills ("*"). */
-    skill?: string;
+    /** Skills to install from the repository. Defaults to all skills ("*"). */
+    skills?: string[];
 };
 
 const skillPackages: SkillPackage[] = [
@@ -53,28 +53,28 @@ const skillPackages: SkillPackage[] = [
         repository: "DRincs-Productions/pixi-vn-spine@latest",
         label: "Pixi’VN Spine",
         name: "pixi-vn-spine",
-        skill: "pixi-vn-spine",
+        skills: ["pixi-vn-spine"],
     },
     {
         dependencies: ["@drincs/pixi-vn-spine", "@drincs/pixi-vn-ink"],
         repository: "DRincs-Productions/pixi-vn-spine@latest",
         label: "Pixi’VN Spine Ink",
         name: "pixi-vn-spine-ink",
-        skill: "pixi-vn-spine-ink",
+        skills: ["pixi-vn-spine-ink"],
     },
     {
         dependencies: ["@drincs/pixi-vn-live2d"],
         repository: "DRincs-Productions/pixi-vn-live2d@latest",
         label: "Pixi’VN Live2D",
         name: "pixi-vn-live2d",
-        skill: "pixi-vn-live2d",
+        skills: ["pixi-vn-live2d"],
     },
     {
         dependencies: ["@drincs/pixi-vn-live2d", "@drincs/pixi-vn-ink"],
         repository: "DRincs-Productions/pixi-vn-live2d@latest",
         label: "Pixi’VN Live2D Ink",
         name: "pixi-vn-live2d-ink",
-        skill: "pixi-vn-live2d-ink",
+        skills: ["pixi-vn-live2d-ink"],
     },
 ];
 
@@ -94,28 +94,75 @@ const generalSkillPackages: SkillPackage[] = [
         repository: "pbakaus/impeccable",
         label: "Impeccable",
         name: "impeccable",
-        skill: "impeccable",
+        skills: ["impeccable"],
     },
     {
         dependencies: [],
         repository: "vercel-labs/skills",
         label: "find-skills",
         name: "find-skills",
-        skill: "find-skills",
+        skills: ["find-skills"],
     },
     {
         dependencies: [],
         repository: "mattpocock/skills",
         label: "grill-me",
         name: "grill-me",
-        skill: "grill-me",
+        skills: ["grill-me"],
     },
     {
         dependencies: ["react"],
         repository: "vercel-labs/agent-skills",
         label: "Vercel React Best Practices",
         name: "vercel-react-best-practices",
-        skill: "vercel-react-best-practices",
+        skills: ["vercel-react-best-practices"],
+    },
+    {
+        dependencies: [],
+        repository: "gamedev-skills/awesome-gamedev-agent-skills",
+        label: "Gamedev Disciplines",
+        name: "gamedev-disciplines",
+        skills: [
+            "ai-behavior-trees-utility-ai",
+            "audio-design",
+            "camera-systems",
+            "create-game-assets",
+            "dialogue-systems",
+            "game-ai",
+            "game-feel",
+            "game-ui-ux",
+            "input-systems",
+            "level-design",
+            "performance-optimization",
+            "physics-tuning",
+            "procedural-gen",
+            "save-systems",
+            "shader-programming",
+        ],
+    },
+    {
+        dependencies: [],
+        repository: "gamedev-skills/awesome-gamedev-agent-skills",
+        label: "Gamedev Genres",
+        name: "gamedev-genres",
+        skills: [
+            "card-game",
+            "fps-shooter",
+            "platformer",
+            "puzzle",
+            "roguelike",
+            "rpg",
+            "survival-crafting",
+            "tower-defense",
+            "visual-novel",
+        ],
+    },
+    {
+        dependencies: [],
+        repository: "gamedev-skills/awesome-gamedev-agent-skills",
+        label: "Gamedev Workflows",
+        name: "gamedev-workflows",
+        skills: ["game-docs", "game-jam", "itch-publish", "prototype-fast", "steam-publish"],
     },
 ];
 
@@ -208,7 +255,7 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
                     "add",
                     skill.repository,
                     "--skill",
-                    skill.skill ?? "*",
+                    ...(skill.skills ?? ["*"]),
                     "--agent",
                     ...agentTargets,
                     "-g",
@@ -218,6 +265,10 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
             );
             let pendingOutput = "";
             let hasShownProgress = false;
+            if (skill.skills && skill.skills.length > 1) {
+                log.step(t("installingSkillsFor", { count: String(skill.skills.length), name: skill.name }));
+                hasShownProgress = true;
+            }
             const captureProgress = (chunk: Buffer | string) => {
                 if (hasShownProgress) return;
                 pendingOutput += String(chunk).replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, "");
