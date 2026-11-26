@@ -13,6 +13,7 @@ import selectTemplate from "./steps/selectTemplate";
 import selectUIStyle from "./steps/selectUIStyle";
 import installAgentSkills from "./steps/installAgentSkills";
 import { asciiArtLog } from "./utils/easter-egg";
+import { isRovesProject, readProjectDependencies } from "./utils/roves";
 import { pkgFromUserAgent } from "./utils/pkg-utility";
 import t from "./i18n";
 
@@ -77,6 +78,28 @@ async function init() {
         const cdProjectName = path.relative(cwd, rootFolder);
 
         await installAgentSkills({ rootFolder });
+
+        const projectDependencies = readProjectDependencies(rootFolder);
+        if (projectDependencies && isRovesProject(projectDependencies)) {
+            await tasks([
+                {
+                    title: t("installingRovesCli"),
+                    task: async () => {
+                        try {
+                            await which(pkgManager);
+                            if (pkgManager === "yarn") {
+                                await execa("yarn", ["global", "add", "@drincs/roves-cli@latest"]);
+                            } else {
+                                await execa(pkgManager, ["install", "-g", "@drincs/roves-cli@latest"]);
+                            }
+                        } catch (error) {
+                            return t("rovesCliInstallError");
+                        }
+                        return t("rovesCliInstalled");
+                    },
+                },
+            ]);
+        }
 
         if (canReplaceUI) {
             log.info(t("uiTheme"));

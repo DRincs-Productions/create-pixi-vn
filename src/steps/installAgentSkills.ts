@@ -3,6 +3,7 @@ import { execa } from "execa";
 import fs from "node:fs";
 import path from "node:path";
 import t from "../i18n";
+import { ROVES_DEPENDENCIES, TAURI_DEPENDENCIES } from "../utils/roves";
 
 type AgentTarget =
     | "codex"
@@ -22,6 +23,8 @@ type ProjectPackage = {
 type SkillPackage = {
     /** All of these dependencies must be installed in the project. */
     dependencies: string[];
+    /** None of these dependencies may be installed in the project. */
+    excludedDependencies?: string[];
     repository: string;
     label: string;
     name: string;
@@ -76,6 +79,14 @@ const skillPackages: SkillPackage[] = [
         name: "pixi-vn-live2d-ink",
         skills: ["pixi-vn-live2d-ink"],
     },
+    {
+        // Roves projects: the Tauri templates also ship @drincs/roves-api, so exclude them.
+        dependencies: ROVES_DEPENDENCIES,
+        excludedDependencies: TAURI_DEPENDENCIES,
+        repository: "DRincs-Productions/roves@latest",
+        label: "Roves",
+        name: "roves",
+    },
 ];
 
 /**
@@ -109,13 +120,6 @@ const generalSkillPackages: SkillPackage[] = [
         label: "grill-me",
         name: "grill-me",
         skills: ["grill-me"],
-    },
-    {
-        dependencies: ["react"],
-        repository: "vercel-labs/agent-skills",
-        label: "Vercel React Best Practices",
-        name: "vercel-react-best-practices",
-        skills: ["vercel-react-best-practices"],
     },
     {
         dependencies: [],
@@ -168,7 +172,8 @@ const generalSkillPackages: SkillPackage[] = [
 
 export function getMatchingSkills(dependencies: Record<string, string>): SkillPackage[] {
     const matches = (skillPackage: SkillPackage) =>
-        skillPackage.dependencies.every((dependency) => dependency in dependencies);
+        skillPackage.dependencies.every((dependency) => dependency in dependencies) &&
+        !skillPackage.excludedDependencies?.some((dependency) => dependency in dependencies);
     const projectSkills = skillPackages.filter(matches);
     if (projectSkills.length === 0) return [];
     return [...projectSkills, ...generalSkillPackages.filter(matches)];
