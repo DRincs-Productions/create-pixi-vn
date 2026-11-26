@@ -78,6 +78,55 @@ const skillPackages: SkillPackage[] = [
     },
 ];
 
+/**
+ * General-purpose skills installed together with the project skills
+ * whenever the user selects at least one AI agent.
+ */
+const generalSkillPackages: SkillPackage[] = [
+    {
+        dependencies: [],
+        repository: "emilkowalski/skills",
+        label: "Emil Kowalski Skills",
+        name: "emil-kowalski",
+    },
+    {
+        dependencies: [],
+        repository: "pbakaus/impeccable",
+        label: "Impeccable",
+        name: "impeccable",
+        skill: "impeccable",
+    },
+    {
+        dependencies: [],
+        repository: "vercel-labs/skills",
+        label: "find-skills",
+        name: "find-skills",
+        skill: "find-skills",
+    },
+    {
+        dependencies: [],
+        repository: "mattpocock/skills",
+        label: "grill-me",
+        name: "grill-me",
+        skill: "grill-me",
+    },
+    {
+        dependencies: ["react"],
+        repository: "vercel-labs/agent-skills",
+        label: "Vercel React Best Practices",
+        name: "vercel-react-best-practices",
+        skill: "vercel-react-best-practices",
+    },
+];
+
+export function getMatchingSkills(dependencies: Record<string, string>): SkillPackage[] {
+    const matches = (skillPackage: SkillPackage) =>
+        skillPackage.dependencies.every((dependency) => dependency in dependencies);
+    const projectSkills = skillPackages.filter(matches);
+    if (projectSkills.length === 0) return [];
+    return [...projectSkills, ...generalSkillPackages.filter(matches)];
+}
+
 export default async function installAgentSkills({ rootFolder }: { rootFolder: string }) {
     const packageJsonPath = path.join(rootFolder, "package.json");
     if (!fs.existsSync(packageJsonPath)) return;
@@ -88,9 +137,7 @@ export default async function installAgentSkills({ rootFolder }: { rootFolder: s
         ...projectPackage.devDependencies,
         ...projectPackage.optionalDependencies,
     };
-    const matchingSkills = skillPackages.filter((skillPackage) =>
-        skillPackage.dependencies.every((dependency) => dependency in dependencies),
-    );
+    const matchingSkills = getMatchingSkills(dependencies);
 
     if (matchingSkills.length === 0) return;
 
