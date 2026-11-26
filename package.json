@@ -1,7 +1,7 @@
 {
   "name": "create-pixi-vn",
   "description": "Create a new Pixi’VN project",
-  "version": "2.2.22",
+  "version": "2.2.23",
   "type": "module",
   "license": "GPL-3.0",
   "author": "DRincs-Productions",
@@ -55,7 +55,7 @@
     "inquirer": "^14.2.5",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
-    "shadcn": "^4.23.0",
+    "shadcn": "^4.23.1",
     "unbuild": "^3.6.1"
   },
   "dependencies": {
